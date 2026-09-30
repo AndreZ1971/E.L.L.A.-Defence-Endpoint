@@ -1,5 +1,7 @@
 # E.D. Endpoint Profile (EDEP)
 
+[![CI](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/actions/workflows/ci.yml) [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg)](LICENSE) [![Spezifikation](https://img.shields.io/badge/SPEC-0.1.0_Entwurf-orange.svg)](SPEC.md)
+
 **Offenes Sicherheitsprofil für Windows-Endgeräte: Outbound-Zero-Trust, Telemetrie-Souveränität und deterministische Isolation.**
 
 EDEP legt fest, was ein Windows-Rechner technisch erzwingen muss, damit gilt:
