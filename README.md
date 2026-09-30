@@ -34,7 +34,7 @@ eine Erklärung mit konkreter Empfehlung, in der Konsole und als HTML-Bericht.
 | Frage                                       | Antwort                                                                                                                                                 |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Stimmt das, was hier steht?                 | Jede technische Aussage hat eine Quelle oder einen Messwert: [Nachweisregister](docs/EVIDENCE.md). Was noch nicht geprüft ist, steht dort offen als ⏳. |
-| Woher stammen die Fakten?                   | 24 verlinkte Quellen, überwiegend Microsoft Learn und MITRE ATT&CK: [SPEC, Anhang B](SPEC.md#anhang-b--quellen)                                         |
+| Woher stammen die Fakten?                   | 26 verlinkte Quellen, überwiegend Microsoft Learn und MITRE ATT&CK: [SPEC, Anhang B](SPEC.md#anhang-b--quellen)                                         |
 | Was kann EDEP **nicht**?                    | Restrisiken und sieben bekannte Umgehungen, jede mit Test: [SPEC 3.3/3.4](SPEC.md#34-bekannte-umgehungen-normativ)                                      |
 | Wo weicht EDEP von Microsoft ab, und warum? | [DD-12](docs/DESIGN-DECISIONS.md)                                                                                                                       |
 | Wie prüfe ich es selbst?                    | In 5 Minuten ohne Risiko, in 30 Minuten in einer VM: [Selbst prüfen](docs/VERIFY-YOURSELF.md)                                                           |

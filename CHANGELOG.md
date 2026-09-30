@@ -13,7 +13,7 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 - SPEC 3.4 „Bekannte Umgehungen“ (B-01 bis B-07) mit Umgehungstests T-BYP-01 bis T-BYP-07
 - EDEP-NET-10: Freigaben nur für admin-geschützte Programmpfade
 - EDEP-LOG-06: BITS-Clientprotokoll als Erkennung für B-01
-- Quellenverzeichnis (SPEC Anhang B, 24 Quellen), Nachweisregister (`docs/EVIDENCE.md`),
+- Quellenverzeichnis (SPEC Anhang B, 26 Quellen), Nachweisregister (`docs/EVIDENCE.md`),
   Prüfanleitung (`docs/VERIFY-YOURSELF.md`), `SECURITY.md`
 - DD-11 (Programmidentität per App-Control-AppID-Tags prüfen), DD-12 (bewusste Abweichungen von Microsoft)
 - CI: Syntax, BOM, PSScriptAnalyzer, Rauchtests, Schema-Validierung mit Negativtests

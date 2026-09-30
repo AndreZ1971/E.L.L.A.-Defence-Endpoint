@@ -11,7 +11,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
       Umgehungstests T-BYP-01/-04/-05/-07, Restore. Protokoll unter `conformance/runs/<datum>-<edition>/`
 - [x] E-16: Spaltenposition „Setting Value“ in `auditpol /backup` bestätigt (CI, 2026-09-30)
 - [x] E-22: JSON-Feldname `IsSystemPolicy` in `CiTool -lp -json` bestätigt (CI, 2026-09-30)
-- [ ] E-34: Herstellerbeleg (Policy CSP) für `PublishUserActivities`/`UploadUserActivities` verlinken
+- [x] E-34: Herstellerbeleg für `PublishUserActivities`/`UploadUserActivities` verlinkt (Q-26, 2026-09-30)
 - [ ] E-65: L2-Agent: Rust-Toolchain installieren, `cargo test`
 - [ ] GitHub: Private Vulnerability Reporting aktivieren (für SECURITY.md)
 

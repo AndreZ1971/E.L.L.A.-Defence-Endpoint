@@ -102,7 +102,7 @@ Snapshot zurücksetzen.
 ## Stufe 3: die Aussagen selbst
 
 - **Jede Quelle ist verlinkt:** [SPEC.md, Anhang B](../SPEC.md#anhang-b--quellen).
-  24 Quellen, fast alle Herstellerdokumentation (Microsoft Learn) oder MITRE ATT&CK.
+  26 Quellen, fast alle Herstellerdokumentation (Microsoft Learn) oder MITRE ATT&CK.
 - **Jede Aussage hat einen Status:** [EVIDENCE.md](EVIDENCE.md). Was nicht geprüft ist,
   steht dort als ⏳, mit Prüfweg.
 - **Jede Abweichung von Microsoft ist begründet:** [DESIGN-DECISIONS.md, DD-12](DESIGN-DECISIONS.md).
