@@ -13,7 +13,7 @@
     VariablesToExport    = @()
     AliasesToExport      = @()
     FileList             = @(
-        'EDEP.psd1', 'EDEP.psm1', 'EdepL1.Common.ps1', 'EdepL1.Checks.ps1', 'EdepAudit.ps1',
+        'EDEP.psd1', 'EDEP.psm1', 'EdepStrings.ps1', 'EdepL1.Common.ps1', 'EdepL1.Checks.ps1', 'EdepAudit.ps1',
         'Invoke-EdepAudit.ps1', 'Install-EdepL1.ps1', 'Test-EdepL1.ps1', 'Restore-EdepL1.ps1'
     )
     PrivateData          = @{

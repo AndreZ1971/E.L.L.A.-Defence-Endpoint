@@ -11,6 +11,9 @@
     Für eine verständliche Bewertung mit Punktzahl und HTML-Bericht (auch ohne
     Adminrechte): Invoke-EdepAudit.ps1
 
+.PARAMETER Language
+    de oder en für die Detailtexte. Standard: Windows-Anzeigesprache.
+
 .PARAMETER Json
     Gibt das Prüfprotokoll als JSON aus (für Konformitätsnachweise, SPEC.md Abschnitt 5).
 
@@ -20,17 +23,22 @@
     .\Test-EdepL1.ps1 -Json | Set-Content edep-l1-report.json
 #>
 [CmdletBinding()]
-param([switch]$Json)
+param(
+    [switch]$Json,
+    [ValidateSet('de', 'en')][string]$Language
+)
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'EdepStrings.ps1')
 . (Join-Path $PSScriptRoot 'EdepL1.Common.ps1')
 . (Join-Path $PSScriptRoot 'EdepL1.Checks.ps1')
+if ($Language) { Set-EdepLanguage $Language }
 
 $results = @(Get-EdepL1CheckResult)
 
 $failed = @($results | Where-Object { $_.Status -in 'FAIL', 'UNKNOWN' }).Count
 $passed = $results.Count - $failed
-$summary = "EDEP $EdepVersion L1 — geprüft $(Get-Date -Format 'yyyy-MM-dd') — $passed/$($results.Count) erfüllt"
+$summary = Get-EdepText 'l1.summary' @($EdepVersion, (Get-Date -Format 'yyyy-MM-dd'), $passed, $results.Count)
 
 if ($Json) {
     [ordered]@{

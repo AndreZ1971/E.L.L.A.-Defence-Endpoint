@@ -1,131 +1,179 @@
 ﻿# EDEP-Audit: bewertet, wie offen ein Windows-System für Datenabfluss und Angriffe ist.
-# Setzt EdepL1.Common.ps1 und EdepL1.Checks.ps1 voraus. Ändert nichts am System.
+# Setzt EdepStrings.ps1, EdepL1.Common.ps1 und EdepL1.Checks.ps1 voraus. Ändert nichts am System.
 
 # ---------------------------------------------------------------------------
-# Katalog: Titel, Kategorie, Gewicht, Begründung und Empfehlung je Prüfung.
+# Katalog: Kategorie, Gewicht sowie Titel, Begründung und Empfehlung je Sprache.
 # Gewicht 0 = wird angezeigt, geht aber nicht in die Punktzahl ein.
 # ---------------------------------------------------------------------------
 $script:EdepAuditCatalog = [ordered]@{
-    'EDEP-NET-03' = @{
-        Title = 'Ausgehender Verkehr standardmäßig blockiert'; Category = 'Ausgehender Verkehr'; Weight = 10
-        Why   = 'Ist ausgehender Verkehr standardmäßig erlaubt, kann jedes Programm, auch Schadcode, ungehindert Daten senden und Befehle nachladen. Windows lässt ausgehend standardmäßig alles zu, auch mit Defender.'
-        Fix   = 'Ausgehende Standardaktion auf Block setzen und nur benötigte Programme freigeben (Install-EdepL1.ps1 -Enforce -AllowProgram ...). Vorher im Audit-Modus das Firewall-Log auswerten.'
-    }
-    'EDEP-NET-04' = @{
-        Title = 'Windows-Bordwerkzeuge (LOLBins) ausgehend gesperrt'; Category = 'Ausgehender Verkehr'; Weight = 8
-        Why   = 'Angreifer laden Schadcode bevorzugt mit Bordwerkzeugen wie PowerShell, curl, certutil oder mshta nach, weil diese signiert und überall vorhanden sind.'
-        Fix   = 'Ausgehende Blockregeln für die Programme aus SPEC.md Anhang A anlegen (Install-EdepL1.ps1 erledigt das auch im Audit-Modus).'
-    }
-    'EDEP-NET-10' = @{
-        Title = 'Freigegebene Programme nur durch Admins änderbar'; Category = 'Ausgehender Verkehr'; Weight = 6
-        Why   = 'Liegt ein Programm mit Netzfreigabe in einem Ordner, den der Benutzer beschreiben darf (z. B. AppData), kann Schadcode die Datei austauschen oder eine DLL daneben legen und erbt die Freigabe.'
-        Fix   = 'Programme systemweit unter C:\Program Files installieren oder die Freigabe entfernen. In EDEP L2 wird die Freigabe zusätzlich an Signatur oder Hash gebunden.'
-    }
-    'EDEP-LOG-06' = @{
-        Title = 'BITS-Übertragungen werden protokolliert'; Category = 'Protokollierung'; Weight = 3
-        Why   = 'Über den Windows-Dienst BITS kann jeder Benutzer Dateien laden und hochladen, auch wenn Programme sonst gesperrt sind (MITRE ATT&CK T1197). Das Protokoll ist das Erkennungsmittel.'
-        Fix   = 'Protokoll Microsoft-Windows-Bits-Client/Operational aktivieren (wevtutil sl Microsoft-Windows-Bits-Client/Operational /e:true).'
-    }
-    'EDEP-TEL-02' = @{
-        Title = 'Telemetrie-Dienste ausgehend gesperrt'; Category = 'Telemetrie'; Weight = 4
-        Why   = 'DiagTrack und dmwappushservice übertragen Diagnose- und Nutzungsdaten an Microsoft.'
-        Fix   = 'Ausgehende Blockregeln auf Dienstebene (nicht per IP- oder Hosts-Liste, das bricht Updates).'
-    }
-    'EDEP-NET-01' = @{
-        Title = 'Firewall aktiv, eingehend blockiert'; Category = 'Eingehender Verkehr'; Weight = 8
-        Why   = 'Ohne aktive Firewall sind alle lauschenden Dienste aus dem Netz erreichbar.'
-        Fix   = 'Firewall in allen Profilen aktivieren, eingehende Standardaktion Block.'
-    }
-    'EDEP-NET-02' = @{
-        Title = 'Stealth-Modus aktiv'; Category = 'Eingehender Verkehr'; Weight = 3
-        Why   = 'Im Stealth-Modus antwortet der Rechner nicht auf Anfragen an geschlossene Ports und ist für Scanner schwerer zu erkennen.'
-        Fix   = 'Registrierungswert DisableStealthMode entfernen oder auf 0 setzen.'
-    }
-    'EDEP-NET-05' = @{
-        Title = 'SMB/RDP/WinRM/RPC in öffentlichen Netzen gesperrt'; Category = 'Eingehender Verkehr'; Weight = 5
-        Why   = 'In Hotel-, Bahn- oder Café-WLANs sind Datei- und Fernwartungsdienste ein häufiger Einstiegspunkt.'
-        Fix   = 'Eingehende Blockregel im Profil Public für TCP 135, 445, 3389, 5985, 5986.'
-    }
-    'EDEP-ID-01' = @{
-        Title = 'App Control for Business aktiv'; Category = 'Programmkontrolle'; Weight = 6
-        Why   = 'App Control legt fest, welcher Code überhaupt starten darf, und wird vom Windows-Kernel durchgesetzt.'
-        Fix   = 'Mit der Richtlinie DefaultWindows_Audit im Audit-Modus beginnen (Install-EdepL1.ps1 -DeployAppControlAudit), Protokolle auswerten, dann erzwingen.'
-    }
-    'EDEP-TEL-01' = @{
-        Title = 'Telemetrie auf niedrigster Stufe'; Category = 'Telemetrie'; Weight = 3
-        Why   = 'Ohne Richtlinie können optionale Diagnosedaten übertragen werden.'
-        Fix   = 'Richtlinie AllowTelemetry auf 0 setzen (wirkt auf Home/Pro als 1 = Required).'
-    }
-    'EDEP-TEL-03' = @{
-        Title = 'Werbe-ID und Aktivitätsverlauf deaktiviert'; Category = 'Telemetrie'; Weight = 2
-        Why   = 'Werbe-ID und Aktivitätsverlauf ermöglichen Profilbildung. Microsoft empfiehlt selbst, den Verlauf abzuschalten, nicht nur seinen Upload.'
-        Fix   = 'Richtlinien AdvertisingInfo\DisabledByGroupPolicy=1 sowie System\EnableActivityFeed=0, PublishUserActivities=0, UploadUserActivities=0.'
-    }
-    'EDEP-TEL-04' = @{
-        Title = 'Sicherheitsupdates erreichbar'; Category = 'Telemetrie'; Weight = 5
-        Why   = 'Wer beim Abschotten Windows Update, Defender-Signaturen oder Zertifikatsprüfungen blockiert, macht das System unsicherer.'
-        Fix   = 'Dienste wuauserv, BITS, DoSvc, CryptSvc, W32Time und Defender ausgehend erlauben.'
-    }
-    'EDEP-LOG-01' = @{
-        Title = 'Blockierte Verbindungen werden protokolliert'; Category = 'Protokollierung'; Weight = 4
-        Why   = 'Ohne Protokoll bleibt unbemerkt, welche Programme wohin senden wollten.'
-        Fix   = 'Firewall-Log für verworfene Pakete und Überwachung „Filterplattformverbindung“ (Ereignis 5157) aktivieren.'
-    }
-    'EDEP-LOG-02' = @{
-        Title = 'Firewall-Log bleibt lokal'; Category = 'Protokollierung'; Weight = 2
-        Why   = 'Protokolle sollen nur mit ausdrücklicher Entscheidung das Gerät verlassen.'
-        Fix   = 'LogFileName auf einen lokalen Pfad setzen.'
-    }
-    'EDEP-OPS-01' = @{
-        Title = 'EDEP-Sicherung vorhanden'; Category = 'Betrieb'; Weight = 0
-        Why   = 'Nur relevant, wenn EDEP angewendet wurde: Ohne Sicherung gibt es keinen sauberen Rückweg.'
-        Fix   = 'Install-EdepL1.ps1 legt vor jeder Änderung eine Sicherung an.'
-    }
-    'AUD-SMB1' = @{
-        Title = 'SMBv1-Client nicht aktiv'; Category = 'Angriffsfläche'; Weight = 5
-        Why   = 'SMBv1 ist veraltet und war Einfallstor von WannaCry und NotPetya.'
-        Fix   = 'Windows-Feature „SMB 1.0/CIFS-Dateifreigabeunterstützung“ entfernen.'
-    }
-    'AUD-LLMNR' = @{
-        Title = 'LLMNR deaktiviert'; Category = 'Angriffsfläche'; Weight = 3
-        Why   = 'Über LLMNR-Antworten kann ein Angreifer im selben Netz Namensauflösungen fälschen und Anmelde-Hashes abgreifen.'
-        Fix   = 'Richtlinie „Multicastnamensauflösung deaktivieren“ (DNSClient\EnableMulticast = 0).'
-    }
-    'AUD-NETBIOS' = @{
-        Title = 'NetBIOS über TCP/IP deaktiviert'; Category = 'Angriffsfläche'; Weight = 2
-        Why   = 'NetBIOS-Namensdienst ermöglicht denselben Angriff wie LLMNR und verrät Rechner- und Benutzernamen.'
-        Fix   = 'Pro Netzwerkadapter NetBIOS über TCP/IP deaktivieren (NetbiosOptions = 2).'
-    }
-    'AUD-RDP' = @{
-        Title = 'Remotedesktop aus oder mit NLA'; Category = 'Angriffsfläche'; Weight = 4
-        Why   = 'Offenes RDP ist einer der häufigsten Einstiegspunkte für Ransomware. Ohne Netzwerkebenen-Authentifizierung (NLA) ist der Anmeldebildschirm ungeschützt erreichbar.'
-        Fix   = 'Remotedesktop deaktivieren oder zumindest NLA erzwingen und nur über VPN erreichbar machen.'
-    }
-    'AUD-PSV2' = @{
-        Title = 'PowerShell 2.0 entfernt'; Category = 'Angriffsfläche'; Weight = 3
-        Why   = 'Mit „powershell -Version 2“ umgehen Angreifer Skriptprotokollierung und AMSI.'
-        Fix   = 'Windows-Feature „Windows PowerShell 2.0“ entfernen.'
-    }
-    'AUD-NETPROT' = @{
-        Title = 'Defender Network Protection aktiv'; Category = 'Ausgehender Verkehr'; Weight = 4
-        Why   = 'Network Protection blockiert Verbindungen zu bekannten Schad- und Phishing-Zielen für alle Programme, nicht nur im Browser.'
-        Fix   = 'Set-MpPreference -EnableNetworkProtection Enabled'
-    }
-    'AUD-ASR' = @{
-        Title = 'Defender-ASR-Regeln im Blockiermodus'; Category = 'Programmkontrolle'; Weight = 3
-        Why   = 'Attack-Surface-Reduction-Regeln stoppen typische Angriffsketten, z. B. Office-Makros, die Prozesse starten.'
-        Fix   = 'ASR-Regeln zunächst im Audit-, dann im Blockiermodus aktivieren (Add-MpPreference -AttackSurfaceReductionRules_Ids ...).'
-    }
-    'AUD-PSLOG' = @{
-        Title = 'PowerShell-Skriptblockprotokollierung aktiv'; Category = 'Protokollierung'; Weight = 2
-        Why   = 'Ohne Skriptblockprotokoll ist nicht nachvollziehbar, welcher PowerShell-Code ausgeführt wurde.'
-        Fix   = 'Richtlinie „PowerShell-Skriptblockprotokollierung aktivieren“ (ScriptBlockLogging\EnableScriptBlockLogging = 1).'
-    }
-    'AUD-LISTEN' = @{
-        Title = 'Aus dem Netz erreichbare Dienste'; Category = 'Angriffsfläche'; Weight = 0
-        Why   = 'Jeder Prozess, der auf einer Nicht-Loopback-Adresse lauscht, ist potenziell von außen erreichbar, sofern die Firewall es zulässt.'
-        Fix   = 'Nicht benötigte Dienste beenden; benötigte nur im Profil Domain/Private freigeben.'
-    }
+    'EDEP-NET-03' = @{ Category = 'cat.out'; Weight = 10
+        de = @{ Title = 'Ausgehender Verkehr standardmäßig blockiert'
+                Why   = 'Ist ausgehender Verkehr standardmäßig erlaubt, kann jedes Programm, auch Schadcode, ungehindert Daten senden und Befehle nachladen. Windows lässt ausgehend standardmäßig alles zu, auch mit Defender.'
+                Fix   = 'Ausgehende Standardaktion auf Block setzen und nur benötigte Programme freigeben (Install-EdepL1.ps1 -Enforce -AllowProgram ...). Vorher im Audit-Modus das Firewall-Log auswerten.' }
+        en = @{ Title = 'Outbound traffic blocked by default'
+                Why   = 'If outbound traffic is allowed by default, every program, including malware, can send data and download payloads unhindered. Windows allows all outbound traffic by default, even with Defender.'
+                Fix   = 'Set the default outbound action to Block and allow only required programs (Install-EdepL1.ps1 -Enforce -AllowProgram ...). Review the firewall log in audit mode first.' } }
+    'EDEP-NET-04' = @{ Category = 'cat.out'; Weight = 8
+        de = @{ Title = 'Windows-Bordwerkzeuge (LOLBins) ausgehend gesperrt'
+                Why   = 'Angreifer laden Schadcode bevorzugt mit Bordwerkzeugen wie PowerShell, curl, certutil oder mshta nach, weil diese signiert und überall vorhanden sind.'
+                Fix   = 'Ausgehende Blockregeln für die Programme aus SPEC.md Anhang A anlegen (Install-EdepL1.ps1 erledigt das auch im Audit-Modus).' }
+        en = @{ Title = 'Built-in Windows tools (LOLBins) blocked outbound'
+                Why   = 'Attackers prefer built-in tools such as PowerShell, curl, certutil or mshta to download payloads because they are signed and present everywhere.'
+                Fix   = 'Create outbound block rules for the programs in SPEC.md Annex A (Install-EdepL1.ps1 does this even in audit mode).' } }
+    'EDEP-NET-10' = @{ Category = 'cat.out'; Weight = 6
+        de = @{ Title = 'Freigegebene Programme nur durch Admins änderbar'
+                Why   = 'Liegt ein Programm mit Netzfreigabe in einem Ordner, den der Benutzer beschreiben darf (z. B. AppData), kann Schadcode die Datei austauschen oder eine DLL daneben legen und erbt die Freigabe.'
+                Fix   = 'Programme systemweit unter C:\Program Files installieren oder die Freigabe entfernen. In EDEP L2 wird die Freigabe zusätzlich an Signatur oder Hash gebunden.' }
+        en = @{ Title = 'Allowed programs modifiable by admins only'
+                Why   = 'If a program with network access lives in a folder the user can write to (e.g. AppData), malware can replace the file or plant a DLL next to it and inherit the permission.'
+                Fix   = 'Install programs system-wide under C:\Program Files or remove the permission. EDEP L2 additionally binds permissions to signature or hash.' } }
+    'AUD-NETPROT' = @{ Category = 'cat.out'; Weight = 4
+        de = @{ Title = 'Defender Network Protection aktiv'
+                Why   = 'Network Protection blockiert Verbindungen zu bekannten Schad- und Phishing-Zielen für alle Programme, nicht nur im Browser.'
+                Fix   = 'Set-MpPreference -EnableNetworkProtection Enabled' }
+        en = @{ Title = 'Defender Network Protection enabled'
+                Why   = 'Network Protection blocks connections to known malicious and phishing destinations for all programs, not only in the browser.'
+                Fix   = 'Set-MpPreference -EnableNetworkProtection Enabled' } }
+    'EDEP-NET-01' = @{ Category = 'cat.in'; Weight = 8
+        de = @{ Title = 'Firewall aktiv, eingehend blockiert'
+                Why   = 'Ohne aktive Firewall sind alle lauschenden Dienste aus dem Netz erreichbar.'
+                Fix   = 'Firewall in allen Profilen aktivieren, eingehende Standardaktion Block.' }
+        en = @{ Title = 'Firewall enabled, inbound blocked'
+                Why   = 'Without an active firewall, every listening service is reachable from the network.'
+                Fix   = 'Enable the firewall in all profiles with default inbound action Block.' } }
+    'EDEP-NET-02' = @{ Category = 'cat.in'; Weight = 3
+        de = @{ Title = 'Stealth-Modus aktiv'
+                Why   = 'Im Stealth-Modus antwortet der Rechner nicht auf Anfragen an geschlossene Ports und ist für Scanner schwerer zu erkennen.'
+                Fix   = 'Registrierungswert DisableStealthMode entfernen oder auf 0 setzen.' }
+        en = @{ Title = 'Stealth mode active'
+                Why   = 'In stealth mode the computer does not answer requests to closed ports and is harder for scanners to detect.'
+                Fix   = 'Remove the registry value DisableStealthMode or set it to 0.' } }
+    'EDEP-NET-05' = @{ Category = 'cat.in'; Weight = 5
+        de = @{ Title = 'SMB/RDP/WinRM/RPC in öffentlichen Netzen gesperrt'
+                Why   = 'In Hotel-, Bahn- oder Café-WLANs sind Datei- und Fernwartungsdienste ein häufiger Einstiegspunkt.'
+                Fix   = 'Eingehende Blockregel im Profil Public für TCP 135, 445, 3389, 5985, 5986.' }
+        en = @{ Title = 'SMB/RDP/WinRM/RPC blocked on public networks'
+                Why   = 'On hotel, train or café Wi-Fi, file sharing and remote management services are a common entry point.'
+                Fix   = 'Inbound block rule in the Public profile for TCP 135, 445, 3389, 5985, 5986.' } }
+    'EDEP-ID-01' = @{ Category = 'cat.prog'; Weight = 6
+        de = @{ Title = 'App Control for Business aktiv'
+                Why   = 'App Control legt fest, welcher Code überhaupt starten darf, und wird vom Windows-Kernel durchgesetzt.'
+                Fix   = 'Mit der Richtlinie DefaultWindows_Audit im Audit-Modus beginnen (Install-EdepL1.ps1 -DeployAppControlAudit), Protokolle auswerten, dann erzwingen.' }
+        en = @{ Title = 'App Control for Business active'
+                Why   = 'App Control defines which code may run at all and is enforced by the Windows kernel.'
+                Fix   = 'Start with the DefaultWindows_Audit policy in audit mode (Install-EdepL1.ps1 -DeployAppControlAudit), review the logs, then enforce.' } }
+    'AUD-ASR' = @{ Category = 'cat.prog'; Weight = 3
+        de = @{ Title = 'Defender-ASR-Regeln im Blockiermodus'
+                Why   = 'Attack-Surface-Reduction-Regeln stoppen typische Angriffsketten, z. B. Office-Makros, die Prozesse starten.'
+                Fix   = 'ASR-Regeln zunächst im Audit-, dann im Blockiermodus aktivieren (Add-MpPreference -AttackSurfaceReductionRules_Ids ...).' }
+        en = @{ Title = 'Defender ASR rules in block mode'
+                Why   = 'Attack surface reduction rules stop typical attack chains, e.g. Office macros launching processes.'
+                Fix   = 'Enable ASR rules in audit mode first, then in block mode (Add-MpPreference -AttackSurfaceReductionRules_Ids ...).' } }
+    'EDEP-TEL-01' = @{ Category = 'cat.tel'; Weight = 3
+        de = @{ Title = 'Telemetrie auf niedrigster Stufe'
+                Why   = 'Ohne Richtlinie können optionale Diagnosedaten übertragen werden.'
+                Fix   = 'Richtlinie AllowTelemetry auf 0 setzen (wirkt auf Home/Pro als 1 = Required).' }
+        en = @{ Title = 'Telemetry at the lowest level'
+                Why   = 'Without a policy, optional diagnostic data may be sent.'
+                Fix   = 'Set the AllowTelemetry policy to 0 (acts as 1 = Required on Home/Pro).' } }
+    'EDEP-TEL-02' = @{ Category = 'cat.tel'; Weight = 4
+        de = @{ Title = 'Telemetrie-Dienste ausgehend gesperrt'
+                Why   = 'DiagTrack und dmwappushservice übertragen Diagnose- und Nutzungsdaten an Microsoft.'
+                Fix   = 'Ausgehende Blockregeln auf Dienstebene (nicht per IP- oder Hosts-Liste, das bricht Updates).' }
+        en = @{ Title = 'Telemetry services blocked outbound'
+                Why   = 'DiagTrack and dmwappushservice send diagnostic and usage data to Microsoft.'
+                Fix   = 'Outbound block rules at service level (not via IP or hosts lists, which break updates).' } }
+    'EDEP-TEL-03' = @{ Category = 'cat.tel'; Weight = 2
+        de = @{ Title = 'Werbe-ID und Aktivitätsverlauf deaktiviert'
+                Why   = 'Werbe-ID und Aktivitätsverlauf ermöglichen Profilbildung. Microsoft empfiehlt selbst, den Verlauf abzuschalten, nicht nur seinen Upload.'
+                Fix   = 'Richtlinien AdvertisingInfo\DisabledByGroupPolicy=1 sowie System\EnableActivityFeed=0, PublishUserActivities=0, UploadUserActivities=0.' }
+        en = @{ Title = 'Advertising ID and activity history disabled'
+                Why   = 'The advertising ID and activity history enable profiling. Microsoft itself recommends turning off the history, not just its upload.'
+                Fix   = 'Policies AdvertisingInfo\DisabledByGroupPolicy=1 and System\EnableActivityFeed=0, PublishUserActivities=0, UploadUserActivities=0.' } }
+    'EDEP-TEL-04' = @{ Category = 'cat.tel'; Weight = 5
+        de = @{ Title = 'Sicherheitsupdates erreichbar'
+                Why   = 'Wer beim Abschotten Windows Update, Defender-Signaturen oder Zertifikatsprüfungen blockiert, macht das System unsicherer.'
+                Fix   = 'Dienste wuauserv, BITS, DoSvc, CryptSvc, W32Time und Defender ausgehend erlauben.' }
+        en = @{ Title = 'Security updates reachable'
+                Why   = 'Blocking Windows Update, Defender signatures or certificate checks while locking down makes the system less secure.'
+                Fix   = 'Allow the services wuauserv, BITS, DoSvc, CryptSvc, W32Time and Defender outbound.' } }
+    'EDEP-LOG-01' = @{ Category = 'cat.log'; Weight = 4
+        de = @{ Title = 'Blockierte Verbindungen werden protokolliert'
+                Why   = 'Ohne Protokoll bleibt unbemerkt, welche Programme wohin senden wollten.'
+                Fix   = 'Firewall-Log für verworfene Pakete und Überwachung „Filterplattformverbindung“ (Ereignis 5157) aktivieren.' }
+        en = @{ Title = 'Blocked connections are logged'
+                Why   = 'Without a log, it goes unnoticed which programs tried to send data where.'
+                Fix   = 'Enable the firewall log for dropped packets and the audit subcategory "Filtering Platform Connection" (event 5157).' } }
+    'EDEP-LOG-02' = @{ Category = 'cat.log'; Weight = 2
+        de = @{ Title = 'Firewall-Log bleibt lokal'
+                Why   = 'Protokolle sollen nur mit ausdrücklicher Entscheidung das Gerät verlassen.'
+                Fix   = 'LogFileName auf einen lokalen Pfad setzen.' }
+        en = @{ Title = 'Firewall log stays local'
+                Why   = 'Logs should leave the device only by explicit decision.'
+                Fix   = 'Set LogFileName to a local path.' } }
+    'EDEP-LOG-06' = @{ Category = 'cat.log'; Weight = 3
+        de = @{ Title = 'BITS-Übertragungen werden protokolliert'
+                Why   = 'Über den Windows-Dienst BITS kann jeder Benutzer Dateien laden und hochladen, auch wenn Programme sonst gesperrt sind (MITRE ATT&CK T1197). Das Protokoll ist das Erkennungsmittel.'
+                Fix   = 'Protokoll Microsoft-Windows-Bits-Client/Operational aktivieren (wevtutil sl Microsoft-Windows-Bits-Client/Operational /e:true).' }
+        en = @{ Title = 'BITS transfers are logged'
+                Why   = 'Through the Windows BITS service any user can download and upload files even when programs are otherwise blocked (MITRE ATT&CK T1197). The log is the means of detection.'
+                Fix   = 'Enable the log Microsoft-Windows-Bits-Client/Operational (wevtutil sl Microsoft-Windows-Bits-Client/Operational /e:true).' } }
+    'AUD-PSLOG' = @{ Category = 'cat.log'; Weight = 2
+        de = @{ Title = 'PowerShell-Skriptblockprotokollierung aktiv'
+                Why   = 'Ohne Skriptblockprotokoll ist nicht nachvollziehbar, welcher PowerShell-Code ausgeführt wurde.'
+                Fix   = 'Richtlinie „PowerShell-Skriptblockprotokollierung aktivieren“ (ScriptBlockLogging\EnableScriptBlockLogging = 1).' }
+        en = @{ Title = 'PowerShell script block logging enabled'
+                Why   = 'Without script block logging it cannot be traced which PowerShell code was executed.'
+                Fix   = 'Policy "Turn on PowerShell Script Block Logging" (ScriptBlockLogging\EnableScriptBlockLogging = 1).' } }
+    'AUD-SMB1' = @{ Category = 'cat.surface'; Weight = 5
+        de = @{ Title = 'SMBv1-Client nicht aktiv'
+                Why   = 'SMBv1 ist veraltet und war Einfallstor von WannaCry und NotPetya.'
+                Fix   = 'Windows-Feature „SMB 1.0/CIFS-Dateifreigabeunterstützung“ entfernen.' }
+        en = @{ Title = 'SMBv1 client not active'
+                Why   = 'SMBv1 is obsolete and was the entry point for WannaCry and NotPetya.'
+                Fix   = 'Remove the Windows feature "SMB 1.0/CIFS File Sharing Support".' } }
+    'AUD-RDP' = @{ Category = 'cat.surface'; Weight = 4
+        de = @{ Title = 'Remotedesktop aus oder mit NLA'
+                Why   = 'Offenes RDP ist einer der häufigsten Einstiegspunkte für Ransomware. Ohne Netzwerkebenen-Authentifizierung (NLA) ist der Anmeldebildschirm ungeschützt erreichbar.'
+                Fix   = 'Remotedesktop deaktivieren oder zumindest NLA erzwingen und nur über VPN erreichbar machen.' }
+        en = @{ Title = 'Remote Desktop off or with NLA'
+                Why   = 'Exposed RDP is one of the most common ransomware entry points. Without Network Level Authentication (NLA) the logon screen is reachable unprotected.'
+                Fix   = 'Disable Remote Desktop or at least enforce NLA and make it reachable only via VPN.' } }
+    'AUD-LLMNR' = @{ Category = 'cat.surface'; Weight = 3
+        de = @{ Title = 'LLMNR deaktiviert'
+                Why   = 'Über LLMNR-Antworten kann ein Angreifer im selben Netz Namensauflösungen fälschen und Anmelde-Hashes abgreifen.'
+                Fix   = 'Richtlinie „Multicastnamensauflösung deaktivieren“ (DNSClient\EnableMulticast = 0).' }
+        en = @{ Title = 'LLMNR disabled'
+                Why   = 'Through LLMNR responses an attacker on the same network can spoof name resolution and capture logon hashes.'
+                Fix   = 'Policy "Turn off multicast name resolution" (DNSClient\EnableMulticast = 0).' } }
+    'AUD-PSV2' = @{ Category = 'cat.surface'; Weight = 3
+        de = @{ Title = 'PowerShell 2.0 entfernt'
+                Why   = 'Mit „powershell -Version 2“ umgehen Angreifer Skriptprotokollierung und AMSI.'
+                Fix   = 'Windows-Feature „Windows PowerShell 2.0“ entfernen.' }
+        en = @{ Title = 'PowerShell 2.0 removed'
+                Why   = 'With "powershell -Version 2" attackers bypass script logging and AMSI.'
+                Fix   = 'Remove the Windows feature "Windows PowerShell 2.0".' } }
+    'AUD-NETBIOS' = @{ Category = 'cat.surface'; Weight = 2
+        de = @{ Title = 'NetBIOS über TCP/IP deaktiviert'
+                Why   = 'NetBIOS-Namensdienst ermöglicht denselben Angriff wie LLMNR und verrät Rechner- und Benutzernamen.'
+                Fix   = 'Pro Netzwerkadapter NetBIOS über TCP/IP deaktivieren (NetbiosOptions = 2).' }
+        en = @{ Title = 'NetBIOS over TCP/IP disabled'
+                Why   = 'The NetBIOS name service enables the same attack as LLMNR and reveals computer and user names.'
+                Fix   = 'Disable NetBIOS over TCP/IP per network adapter (NetbiosOptions = 2).' } }
+    'AUD-LISTEN' = @{ Category = 'cat.surface'; Weight = 0
+        de = @{ Title = 'Aus dem Netz erreichbare Dienste'
+                Why   = 'Jeder Prozess, der auf einer Nicht-Loopback-Adresse lauscht, ist potenziell von außen erreichbar, sofern die Firewall es zulässt.'
+                Fix   = 'Nicht benötigte Dienste beenden; benötigte nur im Profil Domain/Private freigeben.' }
+        en = @{ Title = 'Services reachable from the network'
+                Why   = 'Every process listening on a non-loopback address is potentially reachable from outside if the firewall allows it.'
+                Fix   = 'Stop unneeded services; allow needed ones only in the Domain/Private profile.' } }
+    'EDEP-OPS-01' = @{ Category = 'cat.ops'; Weight = 0
+        de = @{ Title = 'EDEP-Sicherung vorhanden'
+                Why   = 'Nur relevant, wenn EDEP angewendet wurde: Ohne Sicherung gibt es keinen sauberen Rückweg.'
+                Fix   = 'Install-EdepL1.ps1 legt vor jeder Änderung eine Sicherung an.' }
+        en = @{ Title = 'EDEP backup present'
+                Why   = 'Only relevant if EDEP was applied: without a backup there is no clean way back.'
+                Fix   = 'Install-EdepL1.ps1 creates a backup before every change.' } }
 }
 
 function Get-EdepAuditExtraResult {
@@ -133,78 +181,81 @@ function Get-EdepAuditExtraResult {
     param([bool]$IsAdmin)
 
     $results = [System.Collections.Generic.List[object]]::new()
-    function Add-Result([string]$Id, [string]$Status, [string]$Detail) {
-        $results.Add([pscustomobject]@{ Id = $Id; Status = $Status; Detail = $Detail })
+    function Add-Result([string]$Id, [string]$Status, [string]$Key, [object[]]$Arguments = @()) {
+        $results.Add([pscustomobject]@{ Id = $Id; Status = $Status; Detail = (Get-EdepText $Key $Arguments) })
     }
 
     # --- SMBv1 ---------------------------------------------------------------
     $smb1 = Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\mrxsmb10' -ErrorAction SilentlyContinue
-    if (-not $smb1) { Add-Result 'AUD-SMB1' 'PASS' 'SMBv1-Client-Treiber nicht installiert' }
-    elseif ($smb1.Start -eq 4) { Add-Result 'AUD-SMB1' 'WARN' 'SMBv1-Client-Treiber installiert, aber deaktiviert' }
-    else { Add-Result 'AUD-SMB1' 'FAIL' "SMBv1-Client-Treiber aktiv (Start=$($smb1.Start))" }
+    if (-not $smb1) { Add-Result 'AUD-SMB1' 'PASS' 'smb1.pass' }
+    elseif ($smb1.Start -eq 4) { Add-Result 'AUD-SMB1' 'WARN' 'smb1.warn' }
+    else { Add-Result 'AUD-SMB1' 'FAIL' 'smb1.fail' @($smb1.Start) }
 
     # --- LLMNR ---------------------------------------------------------------
     $llmnr = Get-ItemProperty 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient' -Name EnableMulticast -ErrorAction SilentlyContinue
-    if ($llmnr -and $llmnr.EnableMulticast -eq 0) { Add-Result 'AUD-LLMNR' 'PASS' 'Per Richtlinie deaktiviert' }
-    else { Add-Result 'AUD-LLMNR' 'FAIL' 'Aktiv (Windows-Standard)' }
+    if ($llmnr -and $llmnr.EnableMulticast -eq 0) { Add-Result 'AUD-LLMNR' 'PASS' 'llmnr.pass' }
+    else { Add-Result 'AUD-LLMNR' 'FAIL' 'llmnr.fail' }
 
     # --- NetBIOS über TCP/IP ---------------------------------------------------
     $ifaces = @(Get-ChildItem 'HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters\Interfaces' -ErrorAction SilentlyContinue |
         ForEach-Object { (Get-ItemProperty $_.PSPath -ErrorAction SilentlyContinue).NetbiosOptions })
     $enabled = @($ifaces | Where-Object { $_ -ne 2 }).Count
-    if ($ifaces.Count -eq 0) { Add-Result 'AUD-NETBIOS' 'UNKNOWN' 'Keine NetBT-Schnittstellen gefunden' }
-    elseif ($enabled -eq 0) { Add-Result 'AUD-NETBIOS' 'PASS' "Auf allen $($ifaces.Count) Schnittstellen deaktiviert" }
-    else { Add-Result 'AUD-NETBIOS' 'FAIL' "Auf $enabled von $($ifaces.Count) Schnittstellen aktiv oder per DHCP gesteuert" }
+    if ($ifaces.Count -eq 0) { Add-Result 'AUD-NETBIOS' 'UNKNOWN' 'netbios.unknown' }
+    elseif ($enabled -eq 0) { Add-Result 'AUD-NETBIOS' 'PASS' 'netbios.pass' @($ifaces.Count) }
+    else { Add-Result 'AUD-NETBIOS' 'FAIL' 'netbios.fail' @($enabled, $ifaces.Count) }
 
     # --- RDP -----------------------------------------------------------------
     $ts = Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server' -Name fDenyTSConnections -ErrorAction SilentlyContinue
-    if ($ts -and $ts.fDenyTSConnections -eq 1) { Add-Result 'AUD-RDP' 'PASS' 'Remotedesktop deaktiviert' }
+    if ($ts -and $ts.fDenyTSConnections -eq 1) { Add-Result 'AUD-RDP' 'PASS' 'rdp.pass' }
     else {
         $nla = Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name UserAuthentication -ErrorAction SilentlyContinue
-        if ($nla -and $nla.UserAuthentication -eq 1) { Add-Result 'AUD-RDP' 'WARN' 'Remotedesktop aktiv, NLA erzwungen' }
-        else { Add-Result 'AUD-RDP' 'FAIL' 'Remotedesktop aktiv ohne NLA' }
+        if ($nla -and $nla.UserAuthentication -eq 1) { Add-Result 'AUD-RDP' 'WARN' 'rdp.warn' }
+        else { Add-Result 'AUD-RDP' 'FAIL' 'rdp.fail' }
     }
 
     # --- PowerShell 2.0 --------------------------------------------------------
     $ps2 = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\PowerShell\1\PowerShellEngine' -ErrorAction SilentlyContinue
-    if ($ps2 -and $ps2.PowerShellVersion -like '2.*') { Add-Result 'AUD-PSV2' 'FAIL' 'PowerShell-2.0-Engine installiert' }
-    else { Add-Result 'AUD-PSV2' 'PASS' 'PowerShell-2.0-Engine nicht vorhanden' }
+    if ($ps2 -and $ps2.PowerShellVersion -like '2.*') { Add-Result 'AUD-PSV2' 'FAIL' 'psv2.fail' }
+    else { Add-Result 'AUD-PSV2' 'PASS' 'psv2.pass' }
 
     # --- Defender: Network Protection und ASR (nur mit Adminrechten sichtbar) ---
     $mp = $null
-    if ($IsAdmin) { $mp = Get-MpPreference -ErrorAction SilentlyContinue }
-    $mpStatus = if ($IsAdmin) { Get-MpComputerStatus -ErrorAction SilentlyContinue } else { $null }
+    $mpStatus = $null
+    if ($IsAdmin) {
+        $mp = Get-MpPreference -ErrorAction SilentlyContinue
+        $mpStatus = Get-MpComputerStatus -ErrorAction SilentlyContinue
+    }
     if (-not $IsAdmin) {
-        Add-Result 'AUD-NETPROT' 'UNKNOWN' 'Defender-Einstellungen nur mit Adminrechten lesbar'
-        Add-Result 'AUD-ASR' 'UNKNOWN' 'Defender-Einstellungen nur mit Adminrechten lesbar'
+        Add-Result 'AUD-NETPROT' 'UNKNOWN' 'def.noadmin'
+        Add-Result 'AUD-ASR' 'UNKNOWN' 'def.noadmin'
     }
     elseif (-not $mp -or ($mpStatus -and -not $mpStatus.AntivirusEnabled)) {
-        Add-Result 'AUD-NETPROT' 'UNKNOWN' 'Microsoft Defender ist nicht der aktive Virenschutz'
-        Add-Result 'AUD-ASR' 'UNKNOWN' 'Microsoft Defender ist nicht der aktive Virenschutz'
+        Add-Result 'AUD-NETPROT' 'UNKNOWN' 'def.notactive'
+        Add-Result 'AUD-ASR' 'UNKNOWN' 'def.notactive'
     }
     else {
         switch ([int]$mp.EnableNetworkProtection) {
-            1 { Add-Result 'AUD-NETPROT' 'PASS' 'Aktiv (Blockieren)' }
-            2 { Add-Result 'AUD-NETPROT' 'WARN' 'Nur Audit-Modus' }
-            default { Add-Result 'AUD-NETPROT' 'FAIL' 'Deaktiviert' }
+            1 { Add-Result 'AUD-NETPROT' 'PASS' 'np.pass' }
+            2 { Add-Result 'AUD-NETPROT' 'WARN' 'np.warn' }
+            default { Add-Result 'AUD-NETPROT' 'FAIL' 'np.fail' }
         }
         $actions = @($mp.AttackSurfaceReductionRules_Actions | ForEach-Object { [int]$_ })
         $block = @($actions | Where-Object { $_ -eq 1 }).Count
         $audit = @($actions | Where-Object { $_ -in 2, 6 }).Count
-        if ($block -gt 0) { Add-Result 'AUD-ASR' 'PASS' "$block Regel(n) blockierend, $audit im Audit/Warnmodus" }
-        elseif ($audit -gt 0) { Add-Result 'AUD-ASR' 'WARN' "$audit Regel(n) nur im Audit/Warnmodus" }
-        else { Add-Result 'AUD-ASR' 'FAIL' 'Keine ASR-Regel aktiv' }
+        if ($block -gt 0) { Add-Result 'AUD-ASR' 'PASS' 'asr.pass' @($block, $audit) }
+        elseif ($audit -gt 0) { Add-Result 'AUD-ASR' 'WARN' 'asr.warn' @($audit) }
+        else { Add-Result 'AUD-ASR' 'FAIL' 'asr.fail' }
     }
 
     # --- PowerShell-Skriptblockprotokollierung --------------------------------
     $sbl = Get-ItemProperty 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging' -Name EnableScriptBlockLogging -ErrorAction SilentlyContinue
-    if ($sbl -and $sbl.EnableScriptBlockLogging -eq 1) { Add-Result 'AUD-PSLOG' 'PASS' 'Per Richtlinie aktiv' }
-    else { Add-Result 'AUD-PSLOG' 'FAIL' 'Nicht aktiv' }
+    if ($sbl -and $sbl.EnableScriptBlockLogging -eq 1) { Add-Result 'AUD-PSLOG' 'PASS' 'pslog.pass' }
+    else { Add-Result 'AUD-PSLOG' 'FAIL' 'pslog.fail' }
 
     # --- Lauschende Dienste (informativ) --------------------------------------
     $listen = @(Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue |
         Where-Object { $_.LocalAddress -notmatch '^(127\.|::1$)' })
-    if ($listen.Count -eq 0) { Add-Result 'AUD-LISTEN' 'INFO' 'Keine TCP-Dienste auf externen Adressen' }
+    if ($listen.Count -eq 0) { Add-Result 'AUD-LISTEN' 'INFO' 'listen.none' }
     else {
         $byProc = $listen | Group-Object OwningProcess | ForEach-Object {
             $name = (Get-Process -Id ([int]$_.Name) -ErrorAction SilentlyContinue).ProcessName
@@ -212,7 +263,7 @@ function Get-EdepAuditExtraResult {
             $ports = ($_.Group.LocalPort | Sort-Object -Unique) -join ','
             "$name ($ports)"
         }
-        Add-Result 'AUD-LISTEN' 'INFO' "$($listen.Count) lauschende TCP-Endpunkte: $(($byProc | Sort-Object) -join '; ')"
+        Add-Result 'AUD-LISTEN' 'INFO' 'listen.some' @($listen.Count, (($byProc | Sort-Object) -join '; '))
     }
 
     $results
@@ -234,13 +285,14 @@ function Get-EdepAuditScore($Findings) {
 
 function ConvertTo-EdepAuditHtml($Report) {
     $enc = { param($s) [System.Net.WebUtility]::HtmlEncode([string]$s) }
-    $statusLabel = @{ PASS = 'Erfüllt'; WARN = 'Teilweise'; FAIL = 'Offen'; UNKNOWN = 'Nicht prüfbar'; INFO = 'Info' }
 
     $css = @'
 :root{--bg:#f6f7f9;--card:#fff;--fg:#1b1f24;--muted:#5b6571;--line:#e3e6ea;
 --pass:#1a7f37;--warn:#9a6700;--fail:#cf222e;--unk:#6e7781;--info:#0969da;--accent:#0969da}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--card:#161b22;--fg:#e6edf3;--muted:#8d96a0;
 --line:#30363d;--pass:#3fb950;--warn:#d29922;--fail:#f85149;--unk:#8d96a0;--info:#58a6ff;--accent:#58a6ff}}
+:root[data-theme="dark"]{--bg:#0d1117;--card:#161b22;--fg:#e6edf3;--muted:#8d96a0;
+--line:#30363d;--pass:#3fb950;--warn:#d29922;--fail:#f85149;--unk:#8d96a0;--info:#58a6ff;--accent:#58a6ff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);
 font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 main{max-width:980px;margin:0 auto;padding:24px 16px 48px}
@@ -269,44 +321,44 @@ footer{margin-top:32px;font-size:12px;color:var(--muted)}
 '@
 
     $order = @{ FAIL = 0; WARN = 1; UNKNOWN = 2; INFO = 3; PASS = 4 }
-    $sb = [System.Text.StringBuilder]::new()
-    [void]$sb.Append('<!doctype html><html lang="de"><head><meta charset="utf-8">')
-    [void]$sb.Append('<meta name="viewport" content="width=device-width,initial-scale=1">')
-    [void]$sb.Append("<title>EDEP-Audit $(& $enc $Report.Computer)</title><style>$css</style></head><body><main>")
-    [void]$sb.Append("<h1>EDEP-Audit: $(& $enc $Report.Computer)</h1>")
-    [void]$sb.Append("<div class=`"meta`">$(& $enc $Report.Os) · geprüft $(& $enc $Report.CheckedDisplay) · EDEP $(& $enc $Report.Version) · $(if ($Report.IsAdmin) { 'mit Adminrechten' } else { 'ohne Adminrechte' })</div>")
-
+    $admin = if ($Report.IsAdmin) { Get-EdepText 'html.admin' } else { Get-EdepText 'html.noadmin' }
     $c = $Report.Counts
+    $sb = [System.Text.StringBuilder]::new()
+    [void]$sb.Append("<!doctype html><html lang=`"$($Report.Language)`"><head><meta charset=`"utf-8`">")
+    [void]$sb.Append('<meta name="viewport" content="width=device-width,initial-scale=1">')
+    [void]$sb.Append("<title>$(& $enc (Get-EdepText 'html.title' @($Report.Computer)))</title><style>$css</style></head><body><main>")
+    [void]$sb.Append("<h1>$(& $enc (Get-EdepText 'html.title' @($Report.Computer)))</h1>")
+    [void]$sb.Append("<div class=`"meta`">$(& $enc $Report.Os) · $(& $enc (Get-EdepText 'html.checked' @($Report.CheckedDisplay))) · EDEP $(& $enc $Report.Version) · $(& $enc $admin)</div>")
+
     [void]$sb.Append('<section class="hero">')
     [void]$sb.Append("<div class=`"score`">$($Report.Score.Score)<small>/100</small></div>")
-    [void]$sb.Append("<div><div class=`"grade`">Stufe $($Report.Score.Grade)</div></div>")
-    [void]$sb.Append("<div class=`"counts`"><span>Offen: <b>$($c.FAIL)</b></span><span>Teilweise: <b>$($c.WARN)</b></span><span>Erfüllt: <b>$($c.PASS)</b></span><span>Nicht prüfbar: <b>$($c.UNKNOWN)</b></span></div>")
-    [void]$sb.Append('</section>')
-
-    if (-not $Report.IsAdmin) {
-        [void]$sb.Append('<p class="note">Ohne Adminrechte sind einige Prüfungen nicht möglich (App Control, Überwachungsrichtlinie, Defender). Sie fließen nicht in die Punktzahl ein. Für ein vollständiges Ergebnis PowerShell als Administrator starten.</p>')
+    [void]$sb.Append("<div><div class=`"grade`">$(& $enc (Get-EdepText 'html.grade' @($Report.Score.Grade)))</div></div>")
+    [void]$sb.Append('<div class="counts">')
+    foreach ($s in 'FAIL', 'WARN', 'PASS', 'UNKNOWN') {
+        [void]$sb.Append("<span>$(& $enc (Get-EdepText "st.$s")): <b>$($c.$s)</b></span>")
     }
+    [void]$sb.Append('</div></section>')
 
-    [void]$sb.Append('<h2>Kategorien</h2><div class="cats">')
+    if (-not $Report.IsAdmin) { [void]$sb.Append("<p class=`"note`">$(& $enc (Get-EdepText 'html.note'))</p>") }
+
+    [void]$sb.Append("<h2>$(& $enc (Get-EdepText 'html.categories'))</h2><div class=`"cats`">")
     foreach ($cat in $Report.Categories) {
-        [void]$sb.Append("<div class=`"cat`"><b>$(& $enc $cat.Name)</b><div class=`"meta`">$($cat.Score) % · $($cat.Open) offen</div><div class=`"bar`"><span style=`"width:$($cat.Score)%`"></span></div></div>")
+        [void]$sb.Append("<div class=`"cat`"><b>$(& $enc $cat.Name)</b><div class=`"meta`">$(& $enc (Get-EdepText 'html.catline' @($cat.Score, $cat.Open)))</div><div class=`"bar`"><span style=`"width:$($cat.Score)%`"></span></div></div>")
     }
-    [void]$sb.Append('</div><h2>Befunde</h2>')
+    [void]$sb.Append("</div><h2>$(& $enc (Get-EdepText 'html.findings'))</h2>")
 
     foreach ($f in ($Report.Findings | Sort-Object { $order[$_.Status] }, { - $_.Weight })) {
         $st = $f.Status
-        [void]$sb.Append("<article class=`"f $st`"><h3><span class=`"b $st`">$($statusLabel[$st])</span>$(& $enc $f.Title)<span class=`"id`">$(& $enc $f.Id)</span></h3>")
+        [void]$sb.Append("<article class=`"f $st`"><h3><span class=`"b $st`">$(& $enc (Get-EdepText "st.$st"))</span>$(& $enc $f.Title)<span class=`"id`">$(& $enc $f.Id)</span></h3>")
         [void]$sb.Append("<p class=`"d`">$(& $enc $f.Detail)</p>")
         if ($st -ne 'PASS') {
-            [void]$sb.Append("<p class=`"why`"><b>Warum:</b> $(& $enc $f.Why)</p>")
-            [void]$sb.Append("<p class=`"fix`"><b>Empfehlung:</b> $(& $enc $f.Fix)</p>")
+            [void]$sb.Append("<p class=`"why`"><b>$(& $enc (Get-EdepText 'html.why'))</b> $(& $enc $f.Why)</p>")
+            [void]$sb.Append("<p class=`"fix`"><b>$(& $enc (Get-EdepText 'html.fix'))</b> $(& $enc $f.Fix)</p>")
         }
         [void]$sb.Append('</article>')
     }
 
-    [void]$sb.Append('<footer>Dieses Audit hat nichts am System verändert. Punktzahl: gewichtete Summe (Erfüllt = volles, Teilweise = halbes Gewicht; nicht prüfbare und informative Punkte zählen nicht). ')
-    [void]$sb.Append('EDEP ist ein offener Standard: https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint</footer>')
-    [void]$sb.Append('</main></body></html>')
+    [void]$sb.Append("<footer>$(& $enc (Get-EdepText 'html.footer'))</footer></main></body></html>")
     $sb.ToString()
 }
 
@@ -314,6 +366,7 @@ function Invoke-EdepAudit {
     <#
     .SYNOPSIS
         Bewertet, wie offen dieses Windows-System für Datenabfluss und Angriffe ist. Ändert nichts.
+        Rates how open this Windows system is to data exfiltration and attacks. Changes nothing.
 
     .DESCRIPTION
         Führt die EDEP-L1-Prüfungen und zusätzliche Prüfungen zur Angriffsfläche aus und
@@ -332,18 +385,25 @@ function Invoke-EdepAudit {
     .PARAMETER PassThru
         Gibt das Berichtsobjekt zurück (z. B. für ConvertTo-Json).
 
+    .PARAMETER Language
+        de oder en. Standard: Windows-Anzeigesprache (Deutsch, sonst Englisch).
+
     .EXAMPLE
         Invoke-EdepAudit -Open
     .EXAMPLE
-        Invoke-EdepAudit -NoHtml -PassThru | ConvertTo-Json -Depth 5
+        Invoke-EdepAudit -Language en -NoHtml -PassThru | ConvertTo-Json -Depth 5
     #>
     [CmdletBinding()]
     param(
         [string]$OutputPath = (Get-Location).ProviderPath,
         [switch]$NoHtml,
         [switch]$Open,
-        [switch]$PassThru
+        [switch]$PassThru,
+        [ValidateSet('de', 'en')][string]$Language
     )
+
+    if ($Language) { Set-EdepLanguage $Language }
+    $lang = $EdepLanguage
 
     $isAdmin = Test-EdepIsAdmin
     $raw = @(Get-EdepL1CheckResult) + @(Get-EdepAuditExtraResult -IsAdmin $isAdmin)
@@ -351,13 +411,14 @@ function Invoke-EdepAudit {
     $findings = foreach ($r in $raw) {
         $meta = $EdepAuditCatalog[$r.Id]
         if (-not $meta) { continue }
+        $text = $meta[$lang]
         # EDEP-spezifische Sicherung ist für ein reines Audit ohne EDEP nicht relevant.
         $status = $r.Status
         if ($r.Id -eq 'EDEP-OPS-01' -and $status -eq 'FAIL') { $status = 'INFO' }
         [pscustomobject]@{
             Id = $r.Id; Status = $status; Detail = $r.Detail
-            Title = $meta.Title; Category = $meta.Category; Weight = $meta.Weight
-            Why = $meta.Why; Fix = $meta.Fix
+            Title = $text.Title; Category = (Get-EdepText $meta.Category); Weight = $meta.Weight
+            Why = $text.Why; Fix = $text.Fix
         }
     }
 
@@ -379,10 +440,11 @@ function Invoke-EdepAudit {
     $report = [pscustomobject]@{
         Profile        = 'EDEP-Audit'
         Version        = $EdepVersion
+        Language       = $lang
         Computer       = $env:COMPUTERNAME
         Os             = if ($os) { "$($os.Caption) $($os.Version)" } else { 'Windows' }
         Checked        = $now.ToString('o')
-        CheckedDisplay = $now.ToString('dd.MM.yyyy HH:mm')
+        CheckedDisplay = $now.ToString((Get-EdepText 'date.format'))
         IsAdmin        = $isAdmin
         Score          = Get-EdepAuditScore $findings
         Counts         = [pscustomobject]$counts
@@ -395,8 +457,8 @@ function Invoke-EdepAudit {
     $colors = @{ PASS = 'Green'; WARN = 'Yellow'; FAIL = 'Red'; UNKNOWN = 'DarkGray'; INFO = 'Cyan' }
     $order = @{ FAIL = 0; WARN = 1; UNKNOWN = 2; INFO = 3; PASS = 4 }
     Write-Host ''
-    Write-Host "EDEP-Audit $($report.Computer) — $($report.Score.Score)/100 (Stufe $($report.Score.Grade))" -ForegroundColor White
-    Write-Host "Offen: $($counts.FAIL)  Teilweise: $($counts.WARN)  Erfüllt: $($counts.PASS)  Nicht prüfbar: $($counts.UNKNOWN)" -ForegroundColor Gray
+    Write-Host (Get-EdepText 'ui.headline' @($report.Computer, $report.Score.Score, $report.Score.Grade)) -ForegroundColor White
+    Write-Host (Get-EdepText 'ui.counts' @($counts.FAIL, $counts.WARN, $counts.PASS, $counts.UNKNOWN)) -ForegroundColor Gray
     Write-Host ''
     foreach ($f in ($findings | Sort-Object { $order[$_.Status] }, { - $_.Weight })) {
         Write-Host ('{0,-8} {1}' -f $f.Status, $f.Title) -ForegroundColor $colors[$f.Status]
@@ -404,7 +466,7 @@ function Invoke-EdepAudit {
     }
     if (-not $isAdmin) {
         Write-Host ''
-        Write-Host 'Hinweis: Ohne Adminrechte sind einige Prüfungen nicht möglich. Für ein vollständiges Ergebnis als Administrator ausführen.' -ForegroundColor Yellow
+        Write-Host (Get-EdepText 'ui.noadmin') -ForegroundColor Yellow
     }
 
     if (-not $NoHtml) {
@@ -413,7 +475,7 @@ function Invoke-EdepAudit {
         [IO.File]::WriteAllText($file, (ConvertTo-EdepAuditHtml $report), [Text.UTF8Encoding]::new($false))
         $report.HtmlPath = $file
         Write-Host ''
-        Write-Host "Bericht: $file" -ForegroundColor Cyan
+        Write-Host (Get-EdepText 'ui.report' @($file)) -ForegroundColor Cyan
         if ($Open) { Start-Process $file }
     }
 

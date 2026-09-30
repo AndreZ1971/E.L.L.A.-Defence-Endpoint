@@ -10,6 +10,7 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 
 - `Invoke-EdepAudit`: kostenloses Audit mit Punktzahl, Erklärungen und HTML-Bericht, auch ohne Adminrechte
 - PowerShell-Modul `EDEP` (Manifest, Build- und Signierskript)
+- Zweisprachigkeit (Deutsch/Englisch) für Audit, Prüfdetails und HTML-Bericht (`-Language`), `README.en.md`
 - SPEC 3.4 „Bekannte Umgehungen“ (B-01 bis B-07) mit Umgehungstests T-BYP-01 bis T-BYP-07
 - EDEP-NET-10: Freigaben nur für admin-geschützte Programmpfade
 - EDEP-LOG-06: BITS-Clientprotokoll als Erkennung für B-01

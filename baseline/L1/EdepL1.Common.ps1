@@ -26,6 +26,9 @@ $script:BitsClientLog = 'Microsoft-Windows-Bits-Client/Operational'
 
 # EDEP-NET-10: Diese Konten dürfen Programme mit Netzfreigabe ändern.
 # SYSTEM, Administratoren, TrustedInstaller.
+# Präfix für "nicht lesbar" (nicht unsicher, nur unbekannt); sprachunabhängig.
+$script:EdepAclUnknownMarker = '?: '
+
 $script:EdepTrustedWriterSids = @(
     'S-1-5-18'
     'S-1-5-32-544'
@@ -138,7 +141,7 @@ function Get-EdepWritableByNonAdmin([string]$Path) {
                 $acl = Get-Acl -LiteralPath $item
                 $ownerSid = try { ([Security.Principal.NTAccount]$acl.Owner).Translate([Security.Principal.SecurityIdentifier]).Value } catch { $null }
                 if ($ownerSid -and $EdepTrustedWriterSids -notcontains $ownerSid) {
-                    $reasons += "$item gehört $($acl.Owner)"
+                    $reasons += Get-EdepText 'acl.owner' @($item, $acl.Owner)
                 }
                 foreach ($ace in $acl.Access) {
                     if ($ace.AccessControlType -ne 'Allow') { continue }
@@ -146,12 +149,12 @@ function Get-EdepWritableByNonAdmin([string]$Path) {
                     if (([int]$ace.FileSystemRights -band $mask) -eq 0) { continue }
                     $sid = try { $ace.IdentityReference.Translate([Security.Principal.SecurityIdentifier]).Value } catch { $null }
                     if ($sid -and $EdepTrustedWriterSids -notcontains $sid) {
-                        $reasons += "$item schreibbar für $($ace.IdentityReference)"
+                        $reasons += Get-EdepText 'acl.writable' @($item, $ace.IdentityReference)
                     }
                 }
             }
             # Nicht lesbar ist nicht unsicher (z. B. WindowsApps ohne Adminrechte): gesondert markieren.
-            catch { $reasons += "UNBEKANNT: $item ACL nicht lesbar" }
+            catch { $reasons += $EdepAclUnknownMarker + (Get-EdepText 'acl.unreadable' @($item)) }
         }
         $parent = Split-Path -Path $item -Parent
         if (-not $parent -or $parent -eq $item) { break }

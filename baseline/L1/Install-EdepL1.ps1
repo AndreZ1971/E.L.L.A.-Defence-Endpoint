@@ -45,6 +45,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'EdepStrings.ps1')
 . (Join-Path $PSScriptRoot 'EdepL1.Common.ps1')
 
 function Write-Step([string]$Text) { Write-Host "==> $Text" -ForegroundColor Cyan }
@@ -54,7 +55,7 @@ foreach ($p in $AllowProgram) {
     # EDEP-NET-10: Eine Freigabe für einen von Benutzern änderbaren Pfad wäre eine Hintertür (Umgehung B-04).
     $why = @(Get-EdepWritableByNonAdmin $p)
     if ($why.Count) {
-        # Als Administrator ist jede ACL lesbar; "UNBEKANNT" wird daher ebenfalls abgelehnt.
+        # Als Administrator ist jede ACL lesbar; "nicht lesbar" wird daher ebenfalls abgelehnt.
         throw ("AllowProgram '$p' ist für Nicht-Administratoren änderbar und darf nicht freigegeben werden (EDEP-NET-10):`n  " +
             ($why -join "`n  ") + "`nProgramm systemweit (z. B. unter C:\Program Files) installieren und erneut versuchen.")
     }

@@ -22,8 +22,9 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] CI: Syntax, BOM, PSScriptAnalyzer, Rauchtests, Schema-Validierung
 - [ ] Code-Signing-Zertifikat beschaffen (OV genügt für Skripte; Schlüssel auf Hardware-Token/HSM)
 - [ ] Signiert in der PowerShell Gallery veröffentlichen: `Install-Module EDEP`
-- [ ] Englische Texte (Katalog und README), Sprache nach `$PSUICulture`
-- [ ] Beispielbericht als Bild im README
+- [x] Englische Texte: Audit, Prüfdetails, HTML-Bericht, `README.en.md`; Sprache nach Windows-Anzeigesprache oder `-Language`
+- [ ] Englische Texte für `Install-EdepL1`/`Restore-EdepL1` und die Spezifikation
+- [x] Beispielbericht als Bild im README (aus der CI, hell/dunkel)
 - [ ] Ankündigung (z. B. r/sysadmin, heise-Forum, LinkedIn, MSP-Communities)
 
 **Erfolgskriterium:** Downloads, Issues, Anfragen. Ohne Resonanz nach 6–8 Wochen: Positionierung überdenken, bevor L2 gebaut wird.

@@ -20,6 +20,7 @@
 param([string]$BackupPath)
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'EdepStrings.ps1')
 . (Join-Path $PSScriptRoot 'EdepL1.Common.ps1')
 
 if (-not $BackupPath) {

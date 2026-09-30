@@ -7,8 +7,13 @@
     Läuft ohne Adminrechte; als Administrator werden zusätzlich App Control, Überwachungs-
     richtlinie und Defender-Einstellungen geprüft.
 
+.PARAMETER Language
+    de oder en. Standard: Windows-Anzeigesprache.
+
 .EXAMPLE
     .\Invoke-EdepAudit.ps1 -Open
+.EXAMPLE
+    .\Invoke-EdepAudit.ps1 -Language en -Open
 .EXAMPLE
     .\Invoke-EdepAudit.ps1 -NoHtml -PassThru | ConvertTo-Json -Depth 5 | Set-Content edep-audit-report.json
 #>
@@ -17,7 +22,8 @@ param(
     [string]$OutputPath = (Get-Location).ProviderPath,
     [switch]$NoHtml,
     [switch]$Open,
-    [switch]$PassThru
+    [switch]$PassThru,
+    [ValidateSet('de', 'en')][string]$Language
 )
 
 $ErrorActionPreference = 'Stop'
