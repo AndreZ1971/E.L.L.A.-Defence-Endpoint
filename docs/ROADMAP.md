@@ -13,7 +13,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] E-22: JSON-Feldname `IsSystemPolicy` in `CiTool -lp -json` bestätigt (CI, 2026-09-30)
 - [x] E-34: Herstellerbeleg für `PublishUserActivities`/`UploadUserActivities` verlinkt (Q-26, 2026-09-30)
 - [ ] E-65: L2-Agent: Rust-Toolchain installieren, `cargo test`
-- [ ] GitHub: Private Vulnerability Reporting aktivieren (für SECURITY.md)
+- [x] GitHub: Repo öffentlich, Private Vulnerability Reporting aktiviert (2026-09-30)
 
 ## M1: Kostenloses Audit-Tool (dieses Repo, MIT)
 
