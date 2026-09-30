@@ -35,9 +35,25 @@ jobs:
         shell: powershell
         run: |
           Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
-          $r = Invoke-ScriptAnalyzer -Path baseline, tools -Recurse -Severity Error
+          # -Path akzeptiert nur einen Pfad; daher je Ordner einzeln.
+          $r = foreach ($p in 'baseline', 'tools') { Invoke-ScriptAnalyzer -Path $p -Recurse -Severity Error }
           $r | Format-Table -AutoSize | Out-String | Write-Host
           if ($r) { exit 1 }
+
+      - name: Nachweise mit Adminrechten (EVIDENCE E-16, E-22)
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Continue'
+          Write-Host '--- E-16: auditpol /backup (Kopfzeile und Filterplattformverbindung)'
+          $f = Join-Path $env:RUNNER_TEMP 'auditpol.csv'
+          auditpol.exe /backup /file:$f | Out-Null
+          Get-Content $f | Select-Object -First 1
+          Get-Content $f | Where-Object { $_ -match '0CCE9226-69AE-11D9-BED3-505054503030' }
+          Write-Host '--- E-22: CiTool -lp -json (Feldnamen und Richtlinien)'
+          $j = CiTool.exe -lp -json | Out-String | ConvertFrom-Json
+          ($j.Policies | Select-Object -First 1).PSObject.Properties.Name -join ', '
+          $j.Policies | Select-Object FriendlyName, IsEnforced, IsSystemPolicy | Format-Table -AutoSize | Out-String | Write-Host
+          exit 0
 
       - name: Modulmanifest
         shell: powershell
