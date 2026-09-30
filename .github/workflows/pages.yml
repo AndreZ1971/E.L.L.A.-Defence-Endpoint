@@ -1,0 +1,51 @@
+name: Pages
+
+# Veröffentlicht die Projektseite (site/) auf GitHub Pages.
+# Vorher wird jede Zahl der Seite mit dem Repository abgeglichen und geprüft,
+# dass die Seite keine externen Ressourcen lädt (tools/check-site.py).
+# Schlägt eine Prüfung fehl, wird nichts veröffentlicht.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Zahlen und Zusagen der Seite prüfen
+        run: python3 tools/check-site.py
+
+      - name: Seite zusammenstellen
+        run: |
+          mkdir -p _site/images
+          cp -r site/. _site/
+          cp docs/images/*.png _site/images/
+          touch _site/.nojekyll
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

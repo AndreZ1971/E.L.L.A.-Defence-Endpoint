@@ -19,6 +19,7 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 - DD-11 (Programmidentität per App-Control-AppID-Tags prüfen), DD-12 (bewusste Abweichungen von Microsoft)
 - CI: Syntax, BOM, PSScriptAnalyzer, Rauchtests, Schema-Validierung mit Negativtests
 - Roadmap
+- Projektseite auf GitHub Pages (https://andrez1971.github.io/E.L.L.A.-Defence-Endpoint/), Deutsch/Englisch, ohne externe Ressourcen; jede Zahl wird vor dem Veröffentlichen gegen das Repository geprüft (`tools/check-site.py`)
 
 ### Korrigiert
 

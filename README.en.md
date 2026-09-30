@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Specification](https://img.shields.io/badge/SPEC-0.1.0_draft-orange.svg)](SPEC.md)
 
-**[Deutsch](README.md) · English**
+**[Deutsch](README.md) · English** · [Project page](https://andrez1971.github.io/E.L.L.A.-Defence-Endpoint/en/)
 
 **Open security profile for Windows endpoints: outbound zero trust, telemetry sovereignty and deterministic isolation.**
 

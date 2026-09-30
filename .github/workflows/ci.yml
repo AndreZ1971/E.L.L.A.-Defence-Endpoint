@@ -95,3 +95,5 @@ jobs:
       - run: npm install --no-save ajv@8 yaml@2
       - name: Beispielrichtlinie validieren
         run: node tools/validate-policy.mjs examples/policy.example.yaml
+      - name: Projektseite gegen Repository prüfen
+        run: python3 tools/check-site.py

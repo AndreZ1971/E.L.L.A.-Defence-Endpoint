@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EDEP – Offener Sicherheitsstandard für Windows</title>
+    <meta
+      name="description"
+      content="EDEP ist ein offener, prüfbarer Sicherheitsstandard für Windows: ausgehender Verkehr nur für zugelassene Programme, Telemetrie auf das Minimum, jede Blockade protokolliert. Mit kostenlosem Audit-Tool."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="alternate" hreflang="en" href="en/" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap">
+        <a class="brand" href="./">EDEP<small>E.D. Endpoint Profile</small></a>
+        <nav class="main" aria-label="Hauptnavigation">
+          <a href="#audit">Audit</a>
+          <a href="#pruefen">Nachweise</a>
+          <a href="#stufen">Stufen</a>
+          <a href="#grenzen">Grenzen</a>
+          <a href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint"
+            >GitHub</a
+          >
+          <a class="lang" href="en/" hreflang="en" lang="en">English</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="hero wrap">
+        <p class="eyebrow">Offener Sicherheitsstandard für Windows</p>
+        <h1>
+          Windows lässt jedes Programm ins Netz. EDEP legt fest, wer darf.
+        </h1>
+        <p class="lead">
+          EDEP beschreibt, was ein Windows-Rechner technisch erzwingen muss:
+          ausgehender Verkehr nur für zugelassene Programme, Telemetrie auf das
+          Minimum der Edition, jede Blockade lokal protokolliert. Jede Aussage
+          ist belegt, jede bekannte Grenze steht dabei.
+        </p>
+        <div class="cta">
+          <a class="btn primary" href="#audit">Kostenloses Audit starten</a>
+          <a
+            class="btn"
+            href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint"
+            >Quellcode auf GitHub</a
+          >
+        </div>
+        <p class="meta-line">
+          Entwurf 0.1.0 · MIT-Lizenz · läuft ohne Cloud · ergänzt Microsoft
+          Defender, ersetzt ihn nicht
+        </p>
+      </div>
+
+      <section aria-labelledby="problem">
+        <div class="wrap">
+          <h2 id="problem">Das Problem, in Microsofts eigenen Worten</h2>
+          <p class="intro">
+            Die Windows-Firewall blockiert eingehende Verbindungen, ausgehende
+            aber standardmäßig nicht. Microsoft empfiehlt das ausdrücklich so:
+          </p>
+          <blockquote class="source">
+            <p>
+              „It's recommended to <em>allow outbound</em> by default for most
+              deployments for the sake of simplification with app deployments,
+              unless the organization prefers tight security controls over
+              ease-of-use.“
+            </p>
+            <cite
+              >Microsoft Learn,
+              <a
+                href="https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/rules"
+                >Windows Firewall Rules</a
+              >, Abschnitt „Outbound rules considerations“</cite
+            >
+          </blockquote>
+          <div class="grid three" style="margin-top: 20px">
+            <div class="card">
+              <h3>Die Folge</h3>
+              <p>
+                Was einmal auf dem Rechner läuft, darf senden: Schadcode, eine
+                kompromittierte Erweiterung, ein Skript aus einem Makro.
+                Virenschutz erkennt vieles, aber nicht alles. Was unerkannt
+                bleibt, darf ungehindert Daten hinausschicken.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Die Alternative</h3>
+              <p>
+                Microsoft selbst nennt ausgehendes Blockieren eine Option „for
+                certain highly secure environments“. EDEP macht daraus einen
+                prüfbaren Standard, statt es jedem Administrator selbst zu
+                überlassen.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Der Preis</h3>
+              <p>
+                Jedes Programm braucht eine Freigabe. Das ist Aufwand, und EDEP
+                verschweigt ihn nicht. Das Audit zeigt zuerst, wo ein Rechner
+                heute steht.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="audit" aria-labelledby="audit-h">
+        <div class="wrap">
+          <h2 id="audit-h">Kostenloses Audit: Wie offen ist dein Windows?</h2>
+          <p class="intro">
+            Eine Minute, keine Installation, keine Änderung am System. Ergebnis:
+            eine Punktzahl von 0 bis 100 und zu jedem offenen Punkt eine
+            Begründung mit konkreter Empfehlung.
+          </p>
+          <div class="grid audit">
+            <div>
+              <div class="code">
+                <button class="copy" type="button" data-copy="audit-cmd">
+                  Kopieren
+                </button>
+                <pre
+                  id="audit-cmd"
+                ><span class="c"># In PowerShell (für das vollständige Ergebnis als Administrator)</span>
+git clone https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint
+cd E.L.L.A.-Defence-Endpoint\baseline\L1
+.\Invoke-EdepAudit.ps1 -Open</pre>
+              </div>
+              <p class="note">
+                Ohne Git:
+                <a
+                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/archive/refs/heads/main.zip"
+                  >ZIP laden</a
+                >, entpacken und vorher
+                <code>Set-ExecutionPolicy -Scope Process Bypass</code>
+                ausführen. Die Skripte sind noch nicht signiert; das steht auf
+                der
+                <a
+                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/ROADMAP.md"
+                  >Roadmap</a
+                >. Den Code kann jeder vorher lesen, er ist kurz.
+              </p>
+            </div>
+            <div>
+              <ul class="checks">
+                <li>
+                  <strong>Ändert nichts.</strong> Nur lesende Abfragen.
+                  Nachprüfbar per Vorher-Nachher-Vergleich der
+                  Firewall-Konfiguration.
+                </li>
+                <li>
+                  <strong>Läuft ohne Adminrechte.</strong> Was dann nicht
+                  prüfbar ist, wird so benannt und nicht bewertet.
+                </li>
+                <li>
+                  <strong
+                    ><span data-check="audit-items">24</span> Prüfpunkte</strong
+                  >
+                  in sechs Kategorien: ausgehender und eingehender Verkehr,
+                  Programmkontrolle, Telemetrie, Protokollierung,
+                  Angriffsfläche.
+                </li>
+                <li>
+                  <strong>Deutsch und Englisch</strong>, nach
+                  Windows-Anzeigesprache.
+                </li>
+                <li>
+                  <strong>Sendet nichts.</strong> Der Bericht ist eine lokale
+                  HTML-Datei.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <figure class="shot">
+            <picture>
+              <source
+                media="(prefers-color-scheme: dark)"
+                srcset="images/audit-beispiel-dunkel.png"
+              />
+              <img
+                src="images/audit-beispiel-hell.png"
+                width="1000"
+                height="1195"
+                alt="EDEP-Audit-Bericht: 42 von 100 Punkten, Stufe D, Kategorien mit Fortschrittsbalken und offene Befunde mit Begründung und Empfehlung"
+                loading="lazy"
+              />
+            </picture>
+            <figcaption>
+              Echter Bericht eines ungehärteten Windows Server 2025, erzeugt in
+              der öffentlichen CI mit Adminrechten. Kein Mock-up.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="pruefen" aria-labelledby="pruefen-h">
+        <div class="wrap">
+          <h2 id="pruefen-h">Nicht glauben, prüfen</h2>
+          <p class="intro">
+            Ein Sicherheitsstandard ist nur so gut wie seine Belege. Diese
+            Zahlen werden bei jeder Veröffentlichung dieser Seite automatisch
+            mit dem Repository abgeglichen; weicht eine ab, wird die Seite nicht
+            veröffentlicht.
+          </p>
+          <div class="stats">
+            <a
+              class="stat"
+              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/SPEC.md#4-anforderungen"
+              ><b data-check="requirements">44</b
+              ><span>Anforderungen mit MUSS/SOLL und eindeutiger ID</span></a
+            >
+            <a
+              class="stat"
+              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/SPEC.md#anhang-b--quellen"
+              ><b data-check="sources">26</b
+              ><span
+                >verlinkte Quellen, überwiegend Microsoft Learn und MITRE
+                ATT&amp;CK</span
+              ></a
+            >
+            <a
+              class="stat"
+              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/conformance/README.md"
+              ><b data-check="tests">58</b
+              ><span>Konformitätstests, auch für Umgehungen</span></a
+            >
+            <a
+              class="stat"
+              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/SPEC.md#34-bekannte-umgehungen-normativ"
+              ><b data-check="bypasses">7</b
+              ><span>bekannte Umgehungen, offen dokumentiert</span></a
+            >
+            <a
+              class="stat"
+              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/EVIDENCE.md#errata"
+              ><b data-check="errata">7</b
+              ><span
+                >eigene Fehler gefunden, korrigiert und verzeichnet</span
+              ></a
+            >
+            <a
+              class="stat open"
+              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/EVIDENCE.md"
+              ><b data-check="evidence-open">3</b
+              ><span
+                >von <span data-check="evidence-total">47</span> Nachweisen noch
+                offen</span
+              ></a
+            >
+          </div>
+          <p class="note">
+            Offen heißt: noch nicht auf einer VM bzw. mit Rust-Toolchain
+            gemessen. Das
+            <a
+              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/EVIDENCE.md"
+              >Nachweisregister</a
+            >
+            nennt für jeden offenen Punkt den Prüfweg. Wer ihn durchläuft, hilft
+            dem Projekt:
+            <a
+              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/VERIFY-YOURSELF.md"
+              >Selbst prüfen</a
+            >.
+          </p>
+        </div>
+      </section>
+
+      <section id="stufen" aria-labelledby="stufen-h">
+        <div class="wrap">
+          <h2 id="stufen-h">Drei Stufen</h2>
+          <p class="intro">
+            Jede Stufe ist erreicht, wenn alle ihre Pflichtanforderungen ihre
+            Tests bestehen. Teilerfüllung ist keine Konformität.
+          </p>
+          <div class="grid three">
+            <div class="card">
+              <h3>L1 Baseline <span class="badge ok">verfügbar</span></h3>
+              <p>
+                Nur Windows-Bordmittel: Firewall mit ausgehendem Standard-Block,
+                App Control, Telemetrie-Richtlinien, Protokollierung. Anwenden,
+                prüfen (<span data-check="l1-checks">15</span> automatische
+                Prüfungen) und vollständig zurücknehmen per Skript.
+              </p>
+            </div>
+            <div class="card">
+              <h3>L2 Enforced <span class="badge dev">in Entwicklung</span></h3>
+              <p>
+                Netzwerkrechte an die kryptografische Identität eines Programms
+                gebunden (Signatur oder Hash), persistente und Boot-Time-Filter,
+                Manipulationserkennung. Ohne eigenen Kernel-Treiber.
+              </p>
+            </div>
+            <div class="card">
+              <h3>L3 Isolated <span class="badge plan">geplant</span></h3>
+              <p>
+                Deterministische Notfall-Isolation bei Köderdatei-Zugriff,
+                Volumenschwelle oder Manipulation. Ein lokales Modell darf nur
+                beraten, nie blockieren.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="grenzen" aria-labelledby="grenzen-h">
+        <div class="wrap">
+          <h2 id="grenzen-h">Was EDEP nicht kann</h2>
+          <p class="intro">
+            Diese Grenzen sind Teil des Standards. Eine Implementierung darf
+            nicht behaupten, sie zu überwinden, solange kein Test das belegt.
+          </p>
+          <div class="grid two">
+            <div class="card">
+              <h3>Außerhalb des Geltungsbereichs</h3>
+              <p>
+                Angreifer mit Administrator- oder Kernel-Rechten · Inhalte
+                verschlüsselter Verbindungen (TLS wird bewusst nicht
+                aufgebrochen) · kompromittierte signierte Software · physischer
+                Zugriff.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Bekannte Umgehungen, zum Beispiel</h3>
+              <p>
+                <strong>BITS-Jobs:</strong> Jeder Benutzer kann über den
+                Windows-Dienst BITS Dateien laden und senden (MITRE ATT&amp;CK
+                T1197). EDEP L1 kann das nur protokollieren, nicht verhindern.
+              </p>
+              <p>
+                <strong>DNS-Tunnel</strong> und
+                <strong>Missbrauch erlaubter Programme</strong> sind ebenfalls
+                dokumentiert, jeweils mit Test.
+              </p>
+            </div>
+          </div>
+          <h3 style="margin: 32px 0 12px">
+            Bewusste Abweichungen von Microsoft
+          </h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Thema</th>
+                  <th>Microsoft empfiehlt</th>
+                  <th>EDEP verlangt</th>
+                  <th>Preis</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Ausgehender Verkehr</td>
+                  <td>erlauben (für die meisten Umgebungen)</td>
+                  <td>blockieren, Freigabe je Programm</td>
+                  <td>Jede Anwendung braucht eine Freigabe</td>
+                </tr>
+                <tr>
+                  <td>Diagnosedaten</td>
+                  <td>mindestens „Required“ bei Nutzung von Windows Update</td>
+                  <td>niedrigste Stufe der Edition</td>
+                  <td>
+                    Keine Update-Fehlerdaten an Microsoft
+                    (Enterprise/Education/Server)
+                  </td>
+                </tr>
+                <tr>
+                  <td>Telemetrie-Endpunkt <code>settings-win</code></td>
+                  <td>nicht sperren</td>
+                  <td>Telemetriedienst vollständig sperren</td>
+                  <td>Einstellungen nicht mehr fernsteuerbar</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">
+            Begründungen:
+            <a
+              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/DESIGN-DECISIONS.md"
+              >Designentscheidungen, DD-12</a
+            >.
+          </p>
+        </div>
+      </section>
+
+      <section aria-labelledby="mit-h">
+        <div class="wrap">
+          <h2 id="mit-h">Mitmachen</h2>
+          <div class="grid three">
+            <div class="card">
+              <h3>Durchlauf auf einer VM</h3>
+              <p>
+                Der vollständige L1-Test in einer VM ist der wichtigste offene
+                Nachweis. Die
+                <a
+                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/VERIFY-YOURSELF.md"
+                  >Anleitung</a
+                >
+                nennt jeden Befehl und jedes erwartete Ergebnis.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Lücke gefunden?</h3>
+              <p>
+                Bitte vertraulich melden:
+                <a
+                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/security/advisories/new"
+                  >Schwachstelle melden</a
+                >. Bestätigte Funde werden mit Nennung in den Errata
+                verzeichnet.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Quelle falsch zitiert?</h3>
+              <p>
+                Jede Quelle ist verlinkt. Stimmt eine Zuschreibung nicht, ist
+                das ein Fehler in EDEP:
+                <a
+                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/issues"
+                  >Issue eröffnen</a
+                >.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bottom">
+      <div class="wrap">
+        <p>
+          EDEP – E.D. Endpoint Profile · © 2026 Andre Zabel ·
+          <a
+            href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/LICENSE"
+            >MIT-Lizenz</a
+          >
+        </p>
+        <p>
+          Diese Seite lädt keine externen Schriften oder Skripte, setzt keine
+          Cookies und enthält kein Tracking. Gehostet auf GitHub Pages, dessen
+          Server technische Zugriffsdaten verarbeiten.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      document.querySelectorAll("button.copy").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var t = document
+            .getElementById(b.getAttribute("data-copy"))
+            .innerText.split("\n")
+            .filter(function (l) {
+              return l.trim().charAt(0) !== "#";
+            })
+            .join("\n");
+          navigator.clipboard.writeText(t).then(function () {
+            var o = b.textContent;
+            b.textContent = "Kopiert";
+            setTimeout(function () {
+              b.textContent = o;
+            }, 1500);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
