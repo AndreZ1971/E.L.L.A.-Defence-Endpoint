@@ -26,6 +26,7 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 - **EDEP-NET-07:** Sublayer mit höchstem Gewicht; hard permit in höherem Sublayer als Risiko benannt.
 - **EDEP-NET-02:** Stealth-Prüfung berücksichtigt den Richtlinienschlüssel `PrivateProfile`.
 - **EDEP-NET-04:** Ausnahme „Authenticated Bypass“ benannt und geprüft.
+- **EDEP-TEL-03:** verlangt zusätzlich `EnableActivityFeed = 0` (Erfassung abschalten, nicht nur den Upload), gemäß Microsoft-Empfehlung (Q-26).
 - **EDEP-TEL-01/-02:** Editionsgrenzen, Microsoft-Empfehlung und Dienst-SID-Typ belegt bzw. geprüft.
 
 ### Geändert

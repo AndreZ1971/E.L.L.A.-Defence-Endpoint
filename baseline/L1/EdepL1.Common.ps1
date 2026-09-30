@@ -38,6 +38,7 @@ $script:EdepRegistrySettings = @(
     @{ Id = 'EDEP-TEL-03'; Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo'; Name = 'DisabledByGroupPolicy';  Value = 1 }
     @{ Id = 'EDEP-TEL-03'; Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System';          Name = 'PublishUserActivities';  Value = 0 }
     @{ Id = 'EDEP-TEL-03'; Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System';          Name = 'UploadUserActivities';   Value = 0 }
+    @{ Id = 'EDEP-TEL-03'; Path = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\System';          Name = 'EnableActivityFeed';     Value = 0 }
 )
 
 # EDEP-TEL-02

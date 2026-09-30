@@ -58,8 +58,8 @@ $script:EdepAuditCatalog = [ordered]@{
     }
     'EDEP-TEL-03' = @{
         Title = 'Werbe-ID und Aktivitätsverlauf deaktiviert'; Category = 'Telemetrie'; Weight = 2
-        Why   = 'Werbe-ID und hochgeladener Aktivitätsverlauf ermöglichen Profilbildung.'
-        Fix   = 'Richtlinien AdvertisingInfo\DisabledByGroupPolicy=1, PublishUserActivities=0, UploadUserActivities=0.'
+        Why   = 'Werbe-ID und Aktivitätsverlauf ermöglichen Profilbildung. Microsoft empfiehlt selbst, den Verlauf abzuschalten, nicht nur seinen Upload.'
+        Fix   = 'Richtlinien AdvertisingInfo\DisabledByGroupPolicy=1 sowie System\EnableActivityFeed=0, PublishUserActivities=0, UploadUserActivities=0.'
     }
     'EDEP-TEL-04' = @{
         Title = 'Sicherheitsupdates erreichbar'; Category = 'Telemetrie'; Weight = 5
