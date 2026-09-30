@@ -31,6 +31,13 @@ Ergebnis: eine Punktzahl von 0 bis 100, Kategorien (ausgehender und eingehender 
 Programmkontrolle, Telemetrie, Protokollierung, Angriffsfläche) und für jeden offenen Punkt
 eine Erklärung mit konkreter Empfehlung, in der Konsole und als HTML-Bericht.
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/audit-beispiel-dunkel.png">
+  <img alt="EDEP-Audit-Bericht: 42 von 100 Punkten, Kategorien mit Fortschrittsbalken und Befunde mit Begründung und Empfehlung" src="docs/images/audit-beispiel-hell.png" width="720">
+</picture>
+
+<sub>Beispielbericht eines ungehärteten Windows Server 2025 (GitHub-Actions-Runner, mit Adminrechten), erzeugt in der CI.</sub>
+
 ## Nicht glauben, prüfen
 
 | Frage                                       | Antwort                                                                                                                                                 |
