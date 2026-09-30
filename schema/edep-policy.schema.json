@@ -1,0 +1,319 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/main/schema/edep-policy.schema.json",
+  "title": "EDEP Policy",
+  "description": "Maschinenlesbare Richtlinie des E.D. Endpoint Profile (EDEP) 0.1.0. Siehe SPEC.md, EDEP-POL-01.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "edep",
+    "level",
+    "mode",
+    "network",
+    "apps",
+    "telemetry",
+    "logging"
+  ],
+  "properties": {
+    "edep": {
+      "description": "Profilversion, gegen die diese Richtlinie geschrieben ist.",
+      "const": "0.1"
+    },
+    "level": {
+      "description": "Angestrebte Konformitätsstufe.",
+      "enum": ["L1", "L2", "L3"]
+    },
+    "mode": {
+      "description": "audit = nur protokollieren (nicht konform, EDEP-OPS-02), enforce = durchsetzen.",
+      "enum": ["audit", "enforce"]
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inbound_default", "outbound_default"],
+      "properties": {
+        "inbound_default": { "const": "block" },
+        "outbound_default": {
+          "description": "EDEP-NET-03 verlangt block; allow ist nur im Audit-Modus zulässig.",
+          "enum": ["block", "allow"]
+        },
+        "block_lolbins": {
+          "description": "EDEP-NET-04. Ausnahmen müssen in lolbin_exceptions begründet werden.",
+          "type": "boolean",
+          "default": true
+        },
+        "lolbin_exceptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "reason"],
+            "properties": {
+              "path": { "type": "string" },
+              "reason": { "type": "string", "minLength": 10 }
+            }
+          }
+        },
+        "dns": {
+          "description": "EDEP-NET-06.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "resolvers": {
+              "type": "array",
+              "items": { "type": "string", "description": "IPv4-/IPv6-Adresse" }
+            },
+            "block_direct_dns": { "type": "boolean", "default": true },
+            "log_queries": { "type": "boolean", "default": true }
+          }
+        },
+        "public_profile_block_inbound_services": {
+          "description": "EDEP-NET-05.",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "apps": {
+      "description": "Programme mit Netzwerkrecht. EDEP-ID-03: Identität ist Signatur oder Hash, nie nur Pfad.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/app" }
+    },
+    "services": {
+      "description": "Windows-Dienste mit Netzwerkrecht, adressiert über Dienstnamen/Dienst-SID (EDEP-ID-05).",
+      "type": "array",
+      "items": { "$ref": "#/$defs/service" }
+    },
+    "telemetry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allow_telemetry"],
+      "properties": {
+        "allow_telemetry": {
+          "description": "EDEP-TEL-01. 0 = Security (nur Enterprise/Education/Server wirksam), 1 = Required.",
+          "enum": [0, 1]
+        },
+        "block_services": {
+          "description": "EDEP-TEL-02.",
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["DiagTrack", "dmwappushservice"]
+        },
+        "disable_diagtrack_service": {
+          "description": "EDEP-TEL-05.",
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "logging": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "path": { "type": "string" },
+        "retain_days": { "type": "integer", "minimum": 1, "default": 90 },
+        "hash_chain": {
+          "description": "EDEP-LOG-05.",
+          "type": "boolean",
+          "default": true
+        },
+        "forward": {
+          "description": "EDEP-LOG-02. Nur mit ausdrücklicher Konfiguration; null = keine Weiterleitung.",
+          "type": ["object", "null"],
+          "default": null
+        }
+      }
+    },
+    "isolation": {
+      "description": "Nur L3. EDEP-ISO-01..04.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "triggers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/trigger" }
+        },
+        "allow_during_isolation": {
+          "description": "Nur loopback ist zulässig (EDEP-ISO-01).",
+          "type": "array",
+          "items": { "const": "loopback" }
+        },
+        "recovery": {
+          "description": "EDEP-ISO-04: nur lokale Admin-Bestätigung.",
+          "const": "local_admin"
+        }
+      }
+    },
+    "inference": {
+      "description": "Nur L3. EDEP-INF-01..05.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "role": {
+          "description": "EDEP-INF-02: Modelle dürfen nur beraten.",
+          "const": "advisory"
+        },
+        "model_path": { "type": "string" },
+        "max_memory_mb": { "type": "integer", "minimum": 64 },
+        "priority": { "enum": ["idle", "below_normal"] }
+      }
+    },
+    "maintenance": {
+      "description": "EDEP-OPS-03.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30,
+          "default": 30
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "mode": { "const": "enforce" } } },
+      "then": {
+        "properties": {
+          "network": {
+            "type": "object",
+            "properties": { "outbound_default": { "const": "block" } }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "level": { "const": "L3" } } },
+      "then": { "required": ["isolation"] }
+    }
+  ],
+  "$defs": {
+    "identity": {
+      "description": "Kryptografische Programmidentität (EDEP-ID-03). Mindestens signer oder sha256.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "signer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["subject"],
+          "properties": {
+            "subject": {
+              "description": "Subject des Authenticode-Signaturzertifikats, z. B. 'CN=Mozilla Corporation, O=Mozilla Corporation, L=San Francisco, S=California, C=US'.",
+              "type": "string"
+            },
+            "product": { "type": "string" }
+          }
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[A-Fa-f0-9]{64}$"
+        },
+        "path": {
+          "description": "Nur zusätzliche Einschränkung, niemals alleinige Identität.",
+          "type": "string"
+        }
+      },
+      "anyOf": [{ "required": ["signer"] }, { "required": ["sha256"] }]
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["direction", "protocol"],
+      "properties": {
+        "direction": { "enum": ["outbound", "inbound"] },
+        "protocol": { "enum": ["tcp", "udp", "icmp", "any"] },
+        "remote_ports": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 1, "maximum": 65535 }
+        },
+        "remote_addresses": {
+          "description": "IP, CIDR oder die Schlüsselwörter 'any', 'localsubnet'.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "profiles": {
+          "type": "array",
+          "items": { "enum": ["domain", "private", "public"] }
+        }
+      }
+    },
+    "app": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "identity", "rules"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "description": { "type": "string" },
+        "identity": { "$ref": "#/$defs/identity" },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/rule" },
+          "minItems": 1
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "rules"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/rule" },
+          "minItems": 1
+        }
+      }
+    },
+    "trigger": {
+      "description": "Nur deterministische Auslöser (EDEP-ISO-02). Modellbasierte Auslöser sind im Schema nicht darstellbar (EDEP-ISO-03).",
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "paths"],
+          "properties": {
+            "type": { "const": "canary" },
+            "paths": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "bytes", "window_seconds", "scope"],
+          "properties": {
+            "type": { "const": "volume" },
+            "bytes": { "type": "integer", "minimum": 1 },
+            "window_seconds": { "type": "integer", "minimum": 1 },
+            "scope": {
+              "enum": ["unknown_destination", "first_seen_destination", "any"]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": { "type": { "const": "tamper" } }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type"],
+          "properties": { "type": { "const": "manual" } }
+        }
+      ]
+    }
+  }
+}

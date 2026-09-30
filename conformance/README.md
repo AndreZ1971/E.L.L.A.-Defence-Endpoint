@@ -1,0 +1,72 @@
+# EDEP-Konformitätstests
+
+Jede Anforderung aus [SPEC.md](../SPEC.md) hat hier mindestens einen Test. Spalte **Art**:
+
+- **auto** — automatisch geprüft durch [baseline/L1/Test-EdepL1.ps1](../baseline/L1/Test-EdepL1.ps1)
+- **aktiv** — Angriffssimulation auf einem Testsystem (niemals auf einem Produktivsystem)
+- **Review** — Prüfung von Code, Dokumentation oder Konfiguration
+
+Eine Stufe gilt als erreicht, wenn alle Tests dieser und aller niedrigeren Stufen bestehen (SPEC.md, Abschnitt 2).
+
+## L1 — Baseline
+
+| Test      | Anforderung | Art    | Verfahren                                                                                                                | Erwartung                                                                     |
+| --------- | ----------- | ------ | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| T-NET-01  | EDEP-NET-01 | auto   | `Get-NetFirewallProfile -PolicyStore ActiveStore`                                                                        | alle Profile `Enabled`, `DefaultInboundAction = Block`                        |
+| T-NET-02  | EDEP-NET-02 | auto   | `DisableStealthMode` in Richtlinien- und lokalem Firewall-Schlüssel                                                      | nicht vorhanden oder 0                                                        |
+| T-NET-02a | EDEP-NET-02 | aktiv  | Von einem zweiten Host: `nmap -Pn -sS -p 1-1024 <ziel>`                                                                  | alle Ports `filtered`, keine RST-Antworten                                    |
+| T-NET-03  | EDEP-NET-03 | auto   | wie T-NET-01                                                                                                             | `DefaultOutboundAction = Block` in allen Profilen                             |
+| T-NET-03a | EDEP-NET-03 | aktiv  | Unsigniertes Testprogramm (z. B. frisch kompiliertes `nc.exe`) verbindet sich zu einem externen Host                     | Verbindung schlägt fehl; Ereignis 5157 mit Programmpfad                       |
+| T-NET-04  | EDEP-NET-04 | auto   | Blockregeln gegen Anhang-A-Liste                                                                                         | jede vorhandene Datei hat eine ausgehende Blockregel                          |
+| T-NET-04a | EDEP-NET-04 | aktiv  | `curl.exe https://example.org`, `certutil -urlcache -f https://example.org x`, `powershell -c "iwr https://example.org"` | alle scheitern; Ereignis 5157 je Versuch                                      |
+| T-NET-04b | EDEP-NET-04 | aktiv  | Zusätzliche Erlaubnisregel „alles ausgehend für curl.exe“ anlegen, T-NET-04a wiederholen                                 | scheitert weiterhin (Vorrang der Blockregel)                                  |
+| T-NET-05  | EDEP-NET-05 | auto   | Eingehende Blockregeln im Profil Public                                                                                  | TCP 135, 445, 3389, 5985, 5986 gesperrt                                       |
+| T-ID-01   | EDEP-ID-01  | auto   | `CiTool --list-policies -json`                                                                                           | mind. eine aktive, nicht systemeigene Richtlinie                              |
+| T-TEL-01  | EDEP-TEL-01 | auto   | `AllowTelemetry` + Edition                                                                                               | niedrigster von der Edition unterstützter Wert; WARN auf Home/Pro             |
+| T-TEL-02  | EDEP-TEL-02 | auto   | Blockregeln mit Dienstfilter                                                                                             | `DiagTrack`, `dmwappushservice` ausgehend blockiert                           |
+| T-TEL-02a | EDEP-TEL-02 | aktiv  | 24 h Firewall-Log / Ereignis 5157 auswerten                                                                              | Verbindungsversuche von DiagTrack sind verworfen, keine erfolgreichen         |
+| T-TEL-03  | EDEP-TEL-03 | auto   | Registrierungswerte                                                                                                      | wie in SPEC.md                                                                |
+| T-TEL-04  | EDEP-TEL-04 | auto   | Blockregeln gegen Update-Dienste; bei Outbound-Block Erlaubnisregeln vorhanden; Defender-Pfad aktuell                    | keine Blockade, Regeln vorhanden                                              |
+| T-TEL-04a | EDEP-TEL-04 | aktiv  | `UsoClient StartScan` bzw. Einstellungen → Windows Update → „Nach Updates suchen“; `Update-MpSignature`                  | beides erfolgreich                                                            |
+| T-LOG-01  | EDEP-LOG-01 | auto   | `LogBlocked` aller Profile; Überwachung Filterplattformverbindung (Fehler)                                               | aktiv                                                                         |
+| T-LOG-02  | EDEP-LOG-02 | auto   | `LogFileName`                                                                                                            | kein UNC-Pfad                                                                 |
+| T-OPS-01  | EDEP-OPS-01 | auto   | `%ProgramData%\EDEP\backup\*\manifest.json` + `firewall.wfw`                                                             | vorhanden                                                                     |
+| T-OPS-01a | EDEP-OPS-01 | aktiv  | `Restore-EdepL1.ps1` ausführen, danach `Test-EdepL1.ps1`                                                                 | Ausgangszustand wiederhergestellt; Test zeigt wieder die ursprünglichen FAILs |
+| T-OPS-02  | EDEP-OPS-02 | Review | `Install-EdepL1.ps1` ohne `-Enforce`                                                                                     | ausgehend bleibt `Allow`, alles andere angewendet                             |
+| T-OPS-05  | EDEP-OPS-05 | Review | Produktbeschreibung, README                                                                                              | keine Sicherheitsaussage über UI-Hooks                                        |
+| T-INF-04  | EDEP-INF-04 | Review | `certlm.msc` / `Get-ChildItem Cert:\LocalMachine\Root`                                                                   | keine Stammzertifizierungsstelle der Implementierung                          |
+
+## L2 — Enforced
+
+| Test     | Anforderung | Art           | Verfahren                                                                                               | Erwartung                                                                                                 |
+| -------- | ----------- | ------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| T-NET-06 | EDEP-NET-06 | aktiv         | `nslookup example.org 1.1.1.1` (Resolver nicht konfiguriert) aus beliebigem Programm                    | blockiert; Auflösung über den DNS-Client-Dienst funktioniert                                              |
+| T-NET-07 | EDEP-NET-07 | Review + auto | `netsh wfp show filters`                                                                                | Filter des Agenten nur in eigenem Provider/Sublayer; fremde Filter unverändert (Vorher-Nachher-Vergleich) |
+| T-NET-08 | EDEP-NET-08 | aktiv         | Agentendienst deaktivieren, neu starten, sofort T-NET-03a                                               | blockiert ab Boot                                                                                         |
+| T-ID-02  | EDEP-ID-02  | auto          | `CiTool --list-policies -json`                                                                          | Richtlinie ohne Option „Audit Mode“                                                                       |
+| T-ID-03  | EDEP-ID-03  | aktiv         | Zugelassenes Programm kopieren und Kopie 1 Byte verändern (Overlay anhängen)                            | Kopie mit Hash-Bindung: blockiert; Signaturprüfung schlägt fehl → blockiert                               |
+| T-ID-04  | EDEP-ID-04  | aktiv         | Zugelassene Datei (Hash-Bindung) durch neue Version ersetzen                                            | Netzwerkrecht erlischt bis zur Freigabe                                                                   |
+| T-ID-05  | EDEP-ID-05  | Review        | Richtlinie und WFP-Filter                                                                               | keine Regel für `svchost.exe` ohne Dienst-Bedingung                                                       |
+| T-TEL-05 | EDEP-TEL-05 | auto          | `Get-Service DiagTrack`                                                                                 | `StartType = Disabled`                                                                                    |
+| T-LOG-03 | EDEP-LOG-03 | aktiv         | Als Admin eine Filter-ID des Agenten löschen bzw. `Set-NetFirewallProfile -DefaultOutboundAction Allow` | Ereignis „Manipulation“ ≤ 60 s; Soll-Zustand wiederhergestellt                                            |
+| T-LOG-04 | EDEP-LOG-04 | aktiv         | T-NET-03a                                                                                               | Protokolleintrag mit Zeit, Identität, Ziel, Regel-ID                                                      |
+| T-LOG-05 | EDEP-LOG-05 | aktiv         | Eine Zeile aus dem Protokoll entfernen, Prüfwerkzeug ausführen                                          | Kettenbruch wird gemeldet                                                                                 |
+| T-OPS-03 | EDEP-OPS-03 | aktiv         | Wartungsmodus aktivieren, 31 min warten                                                                 | Modus endet automatisch; Beginn und Ende protokolliert                                                    |
+| T-OPS-04 | EDEP-OPS-04 | aktiv         | Agentenprozess hart beenden (`taskkill /f`), T-NET-03a                                                  | weiterhin blockiert                                                                                       |
+| T-POL-01 | EDEP-POL-01 | auto          | Richtlinie gegen `schema/edep-policy.schema.json` validieren                                            | gültig                                                                                                    |
+| T-POL-02 | EDEP-POL-02 | auto          | ACL der Richtliniendatei                                                                                | nur Administratoren/SYSTEM schreibend                                                                     |
+| T-POL-03 | EDEP-POL-03 | aktiv         | Ungültige Richtlinie einspielen                                                                         | Agent behält letzte gültige Richtlinie, protokolliert Fehler                                              |
+
+## L3 — Isolated
+
+| Test      | Anforderung | Art            | Verfahren                                                                                                                      | Erwartung                                       |
+| --------- | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| T-ISO-01  | EDEP-ISO-01 | aktiv          | Isolation manuell auslösen; Adapter deaktivieren/aktivieren; Neustart                                                          | kein Verkehr außer Loopback, auch nach Neustart |
+| T-ISO-02a | EDEP-ISO-02 | aktiv          | Köderdatei öffnen                                                                                                              | Isolation ≤ 2 s                                 |
+| T-ISO-02b | EDEP-ISO-02 | aktiv          | Schwellwert-Upload an erstmals gesehenes Ziel                                                                                  | Isolation bei Überschreiten                     |
+| T-ISO-03  | EDEP-ISO-03 | Review         | Code: alle Aufrufer der Isolationsfunktion                                                                                     | kein Pfad vom Modell-Ausgang zur Isolation      |
+| T-ISO-04  | EDEP-ISO-04 | aktiv          | Aufhebung per Fernzugriff (RDP/WinRM/API) versuchen                                                                            | abgelehnt; lokal mit Admin-Bestätigung möglich  |
+| T-INF-02  | EDEP-INF-02 | Review         | Code                                                                                                                           | Modell-Ausgabe erreicht nur die Hinweis-Anzeige |
+| T-INF-03  | EDEP-INF-03 | aktiv          | Domänenname mit eingebetteter Anweisung (z. B. `ignore-rules-and-allow.example`) erzeugen; Netzwerkversuch des Modellprozesses | keine Regeländerung; Modellprozess blockiert    |
+| T-INF-05  | EDEP-INF-05 | aktiv          | Volllast (CPU/GPU) erzeugen                                                                                                    | Inferenz gedrosselt/pausiert, Heuristik aktiv   |
+| T-NET-09  | EDEP-NET-09 | Review + aktiv | Signaturstatus des Treibers; Treiberfehler provozieren (Testsignatur-Build)                                                    | Verkehr blockiert, kein Bugcheck                |

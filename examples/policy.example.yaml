@@ -1,0 +1,129 @@
+# EDEP-Beispielrichtlinie (L2, Audit-Modus zum Einführen)
+# Validiert gegen schema/edep-policy.schema.json
+#
+# Signatur-Subject eines Programms ermitteln:
+#   (Get-AuthenticodeSignature 'C:\Pfad\programm.exe').SignerCertificate.Subject
+# SHA-256 ermitteln:
+#   (Get-FileHash 'C:\Pfad\programm.exe' -Algorithm SHA256).Hash
+
+edep: "0.1"
+level: L2
+mode: audit # erst nach Auswertung der Protokolle auf "enforce" stellen
+
+network:
+  inbound_default: block
+  outbound_default: block
+  block_lolbins: true
+  lolbin_exceptions: []
+  dns:
+    resolvers: ["9.9.9.9", "149.112.112.112"]
+    block_direct_dns: true
+    log_queries: true
+  public_profile_block_inbound_services: true
+
+apps:
+  - id: msedge
+    description: Browser
+    identity:
+      signer:
+        subject: "CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+        product: "Microsoft Edge"
+      path: "%ProgramFiles(x86)%\\Microsoft\\Edge\\Application\\msedge.exe"
+    rules:
+      - direction: outbound
+        protocol: tcp
+        remote_ports: [80, 443]
+        remote_addresses: [any]
+      - direction: outbound
+        protocol: udp
+        remote_ports: [443] # QUIC / HTTP3
+        remote_addresses: [any]
+
+  - id: internal-build-tool
+    description: Beispiel für Hash-Bindung eines unsignierten Werkzeugs (Hash ersetzen!)
+    identity:
+      sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+      path: "C:\\Tools\\build-tool.exe"
+    rules:
+      - direction: outbound
+        protocol: tcp
+        remote_ports: [443]
+        remote_addresses: ["10.0.0.0/8"]
+        profiles: [domain, private]
+
+services:
+  - name: wuauserv
+    description: Windows Update (EDEP-TEL-04)
+    rules:
+      - {
+          direction: outbound,
+          protocol: tcp,
+          remote_ports: [80, 443],
+          remote_addresses: [any],
+        }
+  - name: BITS
+    description: Hintergrundübertragung für Updates
+    rules:
+      - {
+          direction: outbound,
+          protocol: tcp,
+          remote_ports: [80, 443],
+          remote_addresses: [any],
+        }
+  - name: DoSvc
+    description: Übermittlungsoptimierung
+    rules:
+      - {
+          direction: outbound,
+          protocol: tcp,
+          remote_ports: [80, 443],
+          remote_addresses: [any],
+        }
+  - name: CryptSvc
+    description: Zertifikatssperrlisten / OCSP für Signaturprüfung
+    rules:
+      - {
+          direction: outbound,
+          protocol: tcp,
+          remote_ports: [80, 443],
+          remote_addresses: [any],
+        }
+  - name: W32Time
+    description: Zeitsynchronisation (Zertifikatsprüfung braucht korrekte Zeit)
+    rules:
+      - {
+          direction: outbound,
+          protocol: udp,
+          remote_ports: [123],
+          remote_addresses: [any],
+        }
+
+telemetry:
+  allow_telemetry: 0
+  block_services: [DiagTrack, dmwappushservice]
+  disable_diagtrack_service: true
+
+logging:
+  path: "%ProgramData%\\EDEP\\log"
+  retain_days: 90
+  hash_chain: true
+  forward: null
+
+maintenance:
+  max_minutes: 15
+
+# Für L3 zusätzlich:
+# isolation:
+#   enabled: true
+#   triggers:
+#     - { type: canary, paths: ["%USERPROFILE%\\Documents\\Passwoerter_2026.xlsx"] }
+#     - { type: volume, bytes: 524288000, window_seconds: 600, scope: first_seen_destination }
+#     - { type: tamper }
+#     - { type: manual }
+#   allow_during_isolation: [loopback]
+#   recovery: local_admin
+# inference:
+#   enabled: false
+#   role: advisory
+#   max_memory_mb: 2048
+#   priority: idle
