@@ -9,8 +9,8 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [ ] E-63/E-64: Vollständiger L1-Durchlauf auf frischer VM (Windows 11 Pro **und** Enterprise):
       Install `-Enforce`, `Test-EdepL1` 15/15, Wirkungstests aus VERIFY-YOURSELF 2.2,
       Umgehungstests T-BYP-01/-04/-05/-07, Restore. Protokoll unter `conformance/runs/<datum>-<edition>/`
-- [ ] E-16: Spaltenposition „Setting Value“ in `auditpol /backup` bestätigen
-- [ ] E-22: JSON-Feldname für „Platform Policy“ in `CiTool -lp -json` bestätigen
+- [x] E-16: Spaltenposition „Setting Value“ in `auditpol /backup` bestätigt (CI, 2026-09-30)
+- [x] E-22: JSON-Feldname `IsSystemPolicy` in `CiTool -lp -json` bestätigt (CI, 2026-09-30)
 - [ ] E-34: Herstellerbeleg (Policy CSP) für `PublishUserActivities`/`UploadUserActivities` verlinken
 - [ ] E-65: L2-Agent: Rust-Toolchain installieren, `cargo test`
 - [ ] GitHub: Private Vulnerability Reporting aktivieren (für SECURITY.md)
