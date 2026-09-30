@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  powershell:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax (Windows PowerShell 5.1)
+        shell: powershell
+        run: |
+          $failed = 0
+          Get-ChildItem -Recurse -Include *.ps1, *.psm1, *.psd1 | ForEach-Object {
+            $t = $null; $e = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$t, [ref]$e) | Out-Null
+            foreach ($x in $e) { Write-Host "::error file=$($_.FullName),line=$($x.Extent.StartLineNumber)::$($x.Message)"; $failed++ }
+          }
+          if ($failed) { exit 1 }
+
+      - name: UTF-8-BOM für PowerShell-Dateien
+        shell: powershell
+        run: |
+          $missing = Get-ChildItem -Recurse -Include *.ps1, *.psm1, *.psd1 | Where-Object {
+            $b = [IO.File]::ReadAllBytes($_.FullName)
+            -not ($b.Length -ge 3 -and $b[0] -eq 0xEF -and $b[1] -eq 0xBB -and $b[2] -eq 0xBF)
+          }
+          foreach ($f in $missing) { Write-Host "::error file=$($f.FullName)::Datei braucht UTF-8 mit BOM (Windows PowerShell 5.1)" }
+          if ($missing) { exit 1 }
+
+      - name: PSScriptAnalyzer
+        shell: powershell
+        run: |
+          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+          $r = Invoke-ScriptAnalyzer -Path baseline, tools -Recurse -Severity Error
+          $r | Format-Table -AutoSize | Out-String | Write-Host
+          if ($r) { exit 1 }
+
+      - name: Modulmanifest
+        shell: powershell
+        run: Test-ModuleManifest baseline/L1/EDEP.psd1
+
+      - name: Audit (Rauchtest, ändert nichts)
+        shell: powershell
+        run: |
+          Import-Module ./baseline/L1/EDEP.psd1
+          $r = Invoke-EdepAudit -OutputPath out -PassThru
+          if ($r.Findings.Count -lt 15) { throw "Zu wenige Befunde: $($r.Findings.Count)" }
+          if (-not (Test-Path $r.HtmlPath)) { throw 'HTML-Bericht fehlt' }
+
+      - name: Konformitätsprüfung L1 (Rauchtest, erwartet FAIL auf ungehärtetem Runner)
+        shell: powershell
+        run: |
+          & ./baseline/L1/Test-EdepL1.ps1 -Json | Out-File out/edep-l1-report.json -Encoding utf8
+          $j = Get-Content out/edep-l1-report.json -Raw | ConvertFrom-Json
+          if ($j.results.Count -ne 15) { throw "Erwartet 15 Prüfungen, erhalten $($j.results.Count)" }
+          # Exit-Code 1 von Test-EdepL1 ist hier erwartet (Runner ist nicht gehärtet).
+          exit 0
+
+      - name: Modul bauen
+        shell: powershell
+        run: ./tools/Build-EdepModule.ps1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: edep-audit-runner
+          path: out/
+
+  schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save ajv@8 yaml@2
+      - name: Beispielrichtlinie validieren
+        run: node tools/validate-policy.mjs examples/policy.example.yaml

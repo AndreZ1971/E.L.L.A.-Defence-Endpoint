@@ -51,6 +51,13 @@ function Write-Step([string]$Text) { Write-Host "==> $Text" -ForegroundColor Cya
 
 foreach ($p in $AllowProgram) {
     if (-not (Test-Path -LiteralPath $p)) { throw "AllowProgram nicht gefunden: $p" }
+    # EDEP-NET-10: Eine Freigabe für einen von Benutzern änderbaren Pfad wäre eine Hintertür (Umgehung B-04).
+    $why = @(Get-EdepWritableByNonAdmin $p)
+    if ($why.Count) {
+        # Als Administrator ist jede ACL lesbar; "UNBEKANNT" wird daher ebenfalls abgelehnt.
+        throw ("AllowProgram '$p' ist für Nicht-Administratoren änderbar und darf nicht freigegeben werden (EDEP-NET-10):`n  " +
+            ($why -join "`n  ") + "`nProgramm systemweit (z. B. unter C:\Program Files) installieren und erneut versuchen.")
+    }
 }
 
 if ($Enforce -and $AllowProgram.Count -eq 0) {

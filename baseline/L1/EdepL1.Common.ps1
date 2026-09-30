@@ -12,12 +12,25 @@ $script:AuditFilteringPlatformConnection = '{0CCE9226-69AE-11D9-BED3-50505450303
 # Gruppe "Kernnetzwerk" (DNS-Client, DHCP, ICMPv6/NDP) — sprachunabhängige Ressourcen-ID.
 $script:CoreNetworkingGroup = '@FirewallAPI.dll,-25000'
 
-# Firewall-Profile -> Registrierungsschlüssel (Private heißt intern StandardProfile).
+# Firewall-Profile -> lokale Registrierungsschlüssel (Private heißt intern StandardProfile).
 $script:FirewallProfileKeys = [ordered]@{
     Domain  = 'DomainProfile'
     Private = 'StandardProfile'
     Public  = 'PublicProfile'
 }
+# Im Richtlinienpfad kommen für Private beide Namen vor (MS-GPFAS 2.2.3.2, SPEC Q-06).
+$script:FirewallPolicyProfileKeys = @('DomainProfile', 'PrivateProfile', 'StandardProfile', 'PublicProfile')
+
+# EDEP-LOG-06: Erkennung der Umgehung B-01 (BITS-Jobs).
+$script:BitsClientLog = 'Microsoft-Windows-Bits-Client/Operational'
+
+# EDEP-NET-10: Diese Konten dürfen Programme mit Netzfreigabe ändern.
+# SYSTEM, Administratoren, TrustedInstaller.
+$script:EdepTrustedWriterSids = @(
+    'S-1-5-18'
+    'S-1-5-32-544'
+    'S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464'
+)
 
 # EDEP-TEL-01 / EDEP-TEL-03
 $script:EdepRegistrySettings = @(
@@ -93,6 +106,58 @@ function Invoke-EdepNative([scriptblock]$Block) {
     # Hier zählt nur $LASTEXITCODE; stderr wird verworfen.
     $ErrorActionPreference = 'Continue'
     & $Block 2>$null
+}
+
+function Get-EdepServiceSidType([string]$Name) {
+    # Dienstbezogene Firewall-Regeln wirken nur bei RESTRICTED/UNRESTRICTED (SPEC Q-08).
+    $out = (Invoke-EdepNative { sc.exe qsidtype $Name }) -join ' '
+    if ($out -match 'SERVICE_SID_TYPE:\s*(\w+)') { return $Matches[1] }
+    $null
+}
+
+function Get-EdepWritableByNonAdmin([string]$Path) {
+    # EDEP-NET-10: Liefert die Gründe, warum Nicht-Administratoren die Datei oder einen
+    # übergeordneten Ordner ändern könnten. Leere Liste = nur Admin/SYSTEM/TrustedInstaller.
+    # Datei:          WriteData(2), AppendData(4), Delete(65536), ChangePermissions(262144), TakeOwnership(524288)
+    # direkter Ordner: CreateFiles(2, DLL-Sideloading), DeleteSubdirectoriesAndFiles(64), Delete, ChangePermissions, TakeOwnership
+    # höhere Ordner:   DeleteSubdirectoriesAndFiles, Delete, ChangePermissions, TakeOwnership (Umbenennen/Ersetzen des Pfads)
+    # "Ordner erstellen" (4) auf Ordnern ist unkritisch, z. B. für Authenticated Users auf C:\.
+    $masks = @(
+        (2 -bor 4 -bor 65536 -bor 262144 -bor 524288)
+        (2 -bor 64 -bor 65536 -bor 262144 -bor 524288)
+    )
+    $upperMask = 64 -bor 65536 -bor 262144 -bor 524288
+    $reasons = @()
+    $item = [Environment]::ExpandEnvironmentVariables($Path)
+    $level = 0
+    while ($item) {
+        $mask = if ($level -lt $masks.Count) { $masks[$level] } else { $upperMask }
+        if (Test-Path -LiteralPath $item) {
+            try {
+                $acl = Get-Acl -LiteralPath $item
+                $ownerSid = try { ([Security.Principal.NTAccount]$acl.Owner).Translate([Security.Principal.SecurityIdentifier]).Value } catch { $null }
+                if ($ownerSid -and $EdepTrustedWriterSids -notcontains $ownerSid) {
+                    $reasons += "$item gehört $($acl.Owner)"
+                }
+                foreach ($ace in $acl.Access) {
+                    if ($ace.AccessControlType -ne 'Allow') { continue }
+                    if ($ace.PropagationFlags -band [Security.AccessControl.PropagationFlags]::InheritOnly) { continue }
+                    if (([int]$ace.FileSystemRights -band $mask) -eq 0) { continue }
+                    $sid = try { $ace.IdentityReference.Translate([Security.Principal.SecurityIdentifier]).Value } catch { $null }
+                    if ($sid -and $EdepTrustedWriterSids -notcontains $sid) {
+                        $reasons += "$item schreibbar für $($ace.IdentityReference)"
+                    }
+                }
+            }
+            # Nicht lesbar ist nicht unsicher (z. B. WindowsApps ohne Adminrechte): gesondert markieren.
+            catch { $reasons += "UNBEKANNT: $item ACL nicht lesbar" }
+        }
+        $parent = Split-Path -Path $item -Parent
+        if (-not $parent -or $parent -eq $item) { break }
+        $item = $parent
+        $level++
+    }
+    $reasons | Select-Object -Unique
 }
 
 function ConvertTo-EdepComparablePath([string]$Path) {

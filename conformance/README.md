@@ -13,23 +13,26 @@ Eine Stufe gilt als erreicht, wenn alle Tests dieser und aller niedrigeren Stufe
 | Test      | Anforderung | Art    | Verfahren                                                                                                                | Erwartung                                                                     |
 | --------- | ----------- | ------ | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
 | T-NET-01  | EDEP-NET-01 | auto   | `Get-NetFirewallProfile -PolicyStore ActiveStore`                                                                        | alle Profile `Enabled`, `DefaultInboundAction = Block`                        |
-| T-NET-02  | EDEP-NET-02 | auto   | `DisableStealthMode` in Richtlinien- und lokalem Firewall-Schlüssel                                                      | nicht vorhanden oder 0                                                        |
+| T-NET-02 | EDEP-NET-02 | auto | `DisableStealthMode` in allen Richtlinienschlüsseln (`DomainProfile`, `PrivateProfile`, `StandardProfile`, `PublicProfile`) und lokalen Firewall-Schlüsseln | nicht vorhanden oder 0 |
 | T-NET-02a | EDEP-NET-02 | aktiv  | Von einem zweiten Host: `nmap -Pn -sS -p 1-1024 <ziel>`                                                                  | alle Ports `filtered`, keine RST-Antworten                                    |
 | T-NET-03  | EDEP-NET-03 | auto   | wie T-NET-01                                                                                                             | `DefaultOutboundAction = Block` in allen Profilen                             |
 | T-NET-03a | EDEP-NET-03 | aktiv  | Unsigniertes Testprogramm (z. B. frisch kompiliertes `nc.exe`) verbindet sich zu einem externen Host                     | Verbindung schlägt fehl; Ereignis 5157 mit Programmpfad                       |
-| T-NET-04  | EDEP-NET-04 | auto   | Blockregeln gegen Anhang-A-Liste                                                                                         | jede vorhandene Datei hat eine ausgehende Blockregel                          |
+| T-NET-04 | EDEP-NET-04 | auto | Blockregeln gegen Anhang-A-Liste; ausgehende Regeln mit `OverrideBlockRules` | jede vorhandene Datei hat eine ausgehende Blockregel; keine Authenticated-Bypass-Regel |
 | T-NET-04a | EDEP-NET-04 | aktiv  | `curl.exe https://example.org`, `certutil -urlcache -f https://example.org x`, `powershell -c "iwr https://example.org"` | alle scheitern; Ereignis 5157 je Versuch                                      |
 | T-NET-04b | EDEP-NET-04 | aktiv  | Zusätzliche Erlaubnisregel „alles ausgehend für curl.exe“ anlegen, T-NET-04a wiederholen                                 | scheitert weiterhin (Vorrang der Blockregel)                                  |
 | T-NET-05  | EDEP-NET-05 | auto   | Eingehende Blockregeln im Profil Public                                                                                  | TCP 135, 445, 3389, 5985, 5986 gesperrt                                       |
+| T-NET-10 | EDEP-NET-10 | auto | ACL jeder Datei mit ausgehender Erlaubnisregel und ihrer Ordner (`Get-Acl`) | nur SYSTEM, Administratoren, TrustedInstaller dürfen ändern |
+| T-NET-10a | EDEP-NET-10 | aktiv | `Install-EdepL1.ps1 -AllowProgram <Pfad unter %LOCALAPPDATA%>` | Abbruch mit Verweis auf EDEP-NET-10 |
 | T-ID-01   | EDEP-ID-01  | auto   | `CiTool --list-policies -json`                                                                                           | mind. eine aktive, nicht systemeigene Richtlinie                              |
 | T-TEL-01  | EDEP-TEL-01 | auto   | `AllowTelemetry` + Edition                                                                                               | niedrigster von der Edition unterstützter Wert; WARN auf Home/Pro             |
-| T-TEL-02  | EDEP-TEL-02 | auto   | Blockregeln mit Dienstfilter                                                                                             | `DiagTrack`, `dmwappushservice` ausgehend blockiert                           |
+| T-TEL-02 | EDEP-TEL-02 | auto | Blockregeln mit Dienstfilter; `sc.exe qsidtype` | `DiagTrack`, `dmwappushservice` ausgehend blockiert, SID-Typ RESTRICTED/UNRESTRICTED |
 | T-TEL-02a | EDEP-TEL-02 | aktiv  | 24 h Firewall-Log / Ereignis 5157 auswerten                                                                              | Verbindungsversuche von DiagTrack sind verworfen, keine erfolgreichen         |
 | T-TEL-03  | EDEP-TEL-03 | auto   | Registrierungswerte                                                                                                      | wie in SPEC.md                                                                |
 | T-TEL-04  | EDEP-TEL-04 | auto   | Blockregeln gegen Update-Dienste; bei Outbound-Block Erlaubnisregeln vorhanden; Defender-Pfad aktuell                    | keine Blockade, Regeln vorhanden                                              |
 | T-TEL-04a | EDEP-TEL-04 | aktiv  | `UsoClient StartScan` bzw. Einstellungen → Windows Update → „Nach Updates suchen“; `Update-MpSignature`                  | beides erfolgreich                                                            |
 | T-LOG-01  | EDEP-LOG-01 | auto   | `LogBlocked` aller Profile; Überwachung Filterplattformverbindung (Fehler)                                               | aktiv                                                                         |
 | T-LOG-02  | EDEP-LOG-02 | auto   | `LogFileName`                                                                                                            | kein UNC-Pfad                                                                 |
+| T-LOG-06 | EDEP-LOG-06 | auto | `Get-WinEvent -ListLog Microsoft-Windows-Bits-Client/Operational` | `IsEnabled = True` |
 | T-OPS-01  | EDEP-OPS-01 | auto   | `%ProgramData%\EDEP\backup\*\manifest.json` + `firewall.wfw`                                                             | vorhanden                                                                     |
 | T-OPS-01a | EDEP-OPS-01 | aktiv  | `Restore-EdepL1.ps1` ausführen, danach `Test-EdepL1.ps1`                                                                 | Ausgangszustand wiederhergestellt; Test zeigt wieder die ursprünglichen FAILs |
 | T-OPS-02  | EDEP-OPS-02 | Review | `Install-EdepL1.ps1` ohne `-Enforce`                                                                                     | ausgehend bleibt `Allow`, alles andere angewendet                             |
@@ -42,7 +45,7 @@ Eine Stufe gilt als erreicht, wenn alle Tests dieser und aller niedrigeren Stufe
 | -------- | ----------- | ------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | T-NET-06 | EDEP-NET-06 | aktiv         | `nslookup example.org 1.1.1.1` (Resolver nicht konfiguriert) aus beliebigem Programm                    | blockiert; Auflösung über den DNS-Client-Dienst funktioniert                                              |
 | T-NET-07 | EDEP-NET-07 | Review + auto | `netsh wfp show filters`                                                                                | Filter des Agenten nur in eigenem Provider/Sublayer; fremde Filter unverändert (Vorher-Nachher-Vergleich) |
-| T-NET-08 | EDEP-NET-08 | aktiv         | Agentendienst deaktivieren, neu starten, sofort T-NET-03a                                               | blockiert ab Boot                                                                                         |
+| T-NET-08 | EDEP-NET-08 | aktiv + Review | `netsh wfp show filters`; Agentendienst deaktivieren, neu starten, sofort T-NET-03a | je Ebene ein Filter mit BOOTTIME und ein getrennter mit PERSISTENT, keiner mit beiden; Provider mit Dienstname; blockiert ab Boot |
 | T-ID-02  | EDEP-ID-02  | auto          | `CiTool --list-policies -json`                                                                          | Richtlinie ohne Option „Audit Mode“                                                                       |
 | T-ID-03  | EDEP-ID-03  | aktiv         | Zugelassenes Programm kopieren und Kopie 1 Byte verändern (Overlay anhängen)                            | Kopie mit Hash-Bindung: blockiert; Signaturprüfung schlägt fehl → blockiert                               |
 | T-ID-04  | EDEP-ID-04  | aktiv         | Zugelassene Datei (Hash-Bindung) durch neue Version ersetzen                                            | Netzwerkrecht erlischt bis zur Freigabe                                                                   |
@@ -70,3 +73,19 @@ Eine Stufe gilt als erreicht, wenn alle Tests dieser und aller niedrigeren Stufe
 | T-INF-03  | EDEP-INF-03 | aktiv          | Domänenname mit eingebetteter Anweisung (z. B. `ignore-rules-and-allow.example`) erzeugen; Netzwerkversuch des Modellprozesses | keine Regeländerung; Modellprozess blockiert    |
 | T-INF-05  | EDEP-INF-05 | aktiv          | Volllast (CPU/GPU) erzeugen                                                                                                    | Inferenz gedrosselt/pausiert, Heuristik aktiv   |
 | T-NET-09  | EDEP-NET-09 | Review + aktiv | Signaturstatus des Treibers; Treiberfehler provozieren (Testsignatur-Build)                                                    | Verkehr blockiert, kein Bugcheck                |
+
+## Umgehungstests (SPEC 3.4)
+
+Diese Tests belegen das **tatsächliche** Verhalten bei bekannten Umgehungen. „Erwartung“ ist
+das, was EDEP auf der jeweiligen Stufe leistet, nicht das Wunschergebnis. Ausführung nur auf
+einem Testsystem mit einem eigenen Zielserver (z. B. `python -m http.server` auf einem zweiten Host).
+
+| Test | Umgehung | Stufe | Verfahren (als normaler Benutzer) | Erwartung |
+|---|---|---|---|---|
+| T-BYP-01 | B-01 BITS | L1 | `Start-BitsTransfer -Source http://<ziel>/x -Destination $env:TEMP\x` | **Übertragung gelingt** (bekannte Lücke). Ereignis 3 und 59 in `Bits-Client/Operational` mit Benutzer und URL |
+| T-BYP-02 | B-02 DNS | L1 | `Resolve-DnsName ((1..20 \| % {'{0:x2}' -f $_}) -join '').<eigene-domain>` | Anfrage erreicht den autoritativen Server der eigenen Domain (bekannte Lücke); auf L2 nur über konfigurierte Resolver |
+| T-BYP-03 | B-03 erlaubtes Programm | L1 | Erlaubten Browser per Kommandozeile mit Ziel-URL starten | **Verbindung gelingt** (Grenze jeder programmbasierten Firewall) |
+| T-BYP-04 | B-04 ersetzbarer Pfad | L1 | Freigabe für ein Programm unter `%LOCALAPPDATA%` versuchen | Install bricht ab (NET-10); ein vorhandener Fall wird von T-NET-10 als FAIL gemeldet |
+| T-BYP-05 | B-05 Authenticated Bypass | L1 | Als Admin ausgehende Regel mit `-OverrideBlockRules $true` anlegen, dann T-NET-04 | T-NET-04 meldet FAIL |
+| T-BYP-06 | B-06 fremder Sublayer | L2 | Als Admin Sublayer mit Gewicht 0xFFFF und hard permit anlegen | Manipulationsereignis (LOG-03) ≤ 60 s |
+| T-BYP-07 | B-07 umbenannte LOLBin | L1 | `copy C:\Windows\System32\curl.exe $env:TEMP\x.exe; & $env:TEMP\x.exe https://example.org` | Audit-Modus: **gelingt**. Enforce-Modus: blockiert, Ereignis 5157 |

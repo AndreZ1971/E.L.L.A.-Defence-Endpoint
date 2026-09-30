@@ -22,7 +22,8 @@ auf L3 optional (EDEP-NET-09).
 - Ein Kernel-Treiber braucht EV-Zertifikat und Microsoft-Signierung, verlängert jeden
   Release-Zyklus und kann bei einem Fehler das System anhalten.
 - Microsoft bewegt Sicherheitsprodukte seit dem CrowdStrike-Vorfall (Juli 2024) aktiv
-  aus dem Kernel heraus. Ein neuer Standard sollte nicht gegen diese Richtung gebaut werden.
+  aus dem Kernel heraus (Windows Resiliency Initiative, SPEC Q-14). Ein neuer Standard sollte
+  nicht gegen diese Richtung gebaut werden.
 
 ## DD-02 — Das Sprachmodell berät, es setzt nicht durch
 
@@ -79,7 +80,7 @@ beim Verbindungsaufbau bzw. Prozessstart.
   Frage ist, **welches Programm** die Verbindung aufbaut.
 - Windows, Authenticode und App Control arbeiten mit SHA-256. Ein eigenes Hashverfahren
   bringt keinen Sicherheitsgewinn, aber Inkompatibilität.
-- WFP wertet ALE-Filter einmal pro Verbindung aus, nicht pro Paket. Eine Latenzangabe
+- WFP wertet ALE-Filter beim ersten Paket eines Flusses aus, nicht für jedes Paket (SPEC Q-03). Eine Latenzangabe
   gehört erst nach Messung in eine Beschreibung.
 
 ## DD-06 — App Control for Business statt eigener Prozess-Whitelist
@@ -139,3 +140,31 @@ Standards beschädigen. Der echte Unterschied von EDEP ist ein anderer: Ausgehen
 Verkehr ist standardmäßig verboten, die Programmidentität wird durchgesetzt, alles
 funktioniert ohne Cloud, der Nutzer behält die Hoheit über die Telemetrie, und alles
 ist als offene, prüfbare Norm formuliert.
+
+## DD-11 — Programmidentität mit Bordmitteln prüfen, bevor ein Agent sie nachbaut
+
+**Befund (2026-09-30):** Die Windows-Firewall kann Regeln an App-Control-AppID-Tags binden
+(`New-NetFirewallRule -PolicyAppId`, Intune „Policy App ID“). Die Tags vergibt eine
+App-Control-Richtlinie anhand von Signatur oder Hash (SPEC Q-23).
+
+**Entscheidung:** Vor der Implementierung von `wfp::apply` im L2-Agenten wird geprüft, ob
+EDEP-ID-03 vollständig mit AppID-Tagging und Firewall-Regeln erfüllbar ist. Wenn ja, wird
+das der Referenzweg für L2 (P1 „Bordmittel zuerst“), und der Agent beschränkt sich auf
+Richtlinienverwaltung, Manipulationserkennung und Protokoll.
+
+**Offene Prüfpunkte:** Verhalten bei Updates signierter Programme; Wechselwirkung mit
+Dienst-SIDs; Verfügbarkeit auf Windows 11 Pro ohne MDM; Leistung bei vielen Tags.
+
+## DD-12 — Bewusste Abweichungen von Microsoft-Empfehlungen
+
+EDEP weicht an drei Stellen von Microsofts eigener Empfehlung ab. Das ist Absicht und
+wird hier offen geführt, damit niemand es als Versehen „entdecken“ muss:
+
+| Thema | Microsoft empfiehlt | EDEP verlangt | Begründung | Preis |
+|---|---|---|---|---|
+| Ausgehender Verkehr | „allow outbound“ für die meisten Umgebungen; Block nur „for certain highly secure environments“ (Q-05) | Block (NET-03) | Ohne Outbound-Block ist Datenabfluss für jeden Prozess offen; das ist der Kern von EDEP | Jede Anwendung braucht eine Freigabe |
+| Diagnosedaten | mindestens „Required“, wenn man sich auf Windows Update verlässt (Q-07) | niedrigste Stufe der Edition (TEL-01) | Datensparsamkeit | Microsoft erhält keine Daten zu Update-Fehlern (nur Enterprise/Education/Server, auf Pro bleibt „Required“) |
+| Telemetrie-Endpunkt `settings-win` | nicht sperren (Q-07) | DiagTrack vollständig sperren (TEL-02) | Ein Telemetriedienst soll gar nicht nach Hause telefonieren | Microsoft kann Telemetrieeinstellungen nicht mehr fernsteuern |
+
+Wer EDEP einsetzt, übernimmt diese Abwägungen bewusst. Betreiberdokumentation und
+Kundenkommunikation **müssen** sie nennen.

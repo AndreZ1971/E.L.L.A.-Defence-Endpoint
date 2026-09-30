@@ -1,5 +1,13 @@
 .claude/
 CLAUDE.md
 
-# Lokale Prüfprotokolle (Test-EdepL1.ps1 -Json)
+# Build-Ausgabe (tools/Build-EdepModule.ps1)
+out/
+node_modules/
+
+# Lokale Prüfprotokolle und Berichte
 edep-*-report.json
+edep-audit-*.html
+
+# Interne Geschäftsunterlagen (nicht öffentlich)
+_intern/

@@ -20,7 +20,8 @@ Kernel-Treiber (DD-01).
  │       │                                                    │
  │  FilterCompiler ── Richtlinie → WFP-Filter                 │
  │       │   eigener Provider + Sublayer (NET-07)             │
- │       │   Default-Block: PERSISTENT | BOOTTIME (NET-08)    │
+ │       │   Default-Block: je 1x BOOTTIME + 1x PERSISTENT    │
+ │       │   (getrennte Filter, nie kombiniert; NET-08)       │
  │       │   Erlaubnis: ALE_AUTH_CONNECT_V4/V6 mit            │
  │       │   ALE_APP_ID bzw. Dienst-SID (ID-05)               │
  │       │                                                    │
@@ -47,10 +48,24 @@ Kernel-Treiber (DD-01).
   _Restrisiko:_ Zwischen Prüfung und Ausführung kann eine Datei getauscht werden
   (TOCTOU). Das schließt App Control im erzwingenden Modus (ID-02). Deshalb ist ID-02
   auf L2 Pflicht.
-- **Gewichte:** Sublayer-Gewicht über den Standard-Sublayern der Windows-Firewall. Die
-  Blockfilter des Agenten sind damit nicht durch Firewall-Erlaubnisregeln aufhebbar.
+- **Gewichte und Arbitrierung** ([Filter Arbitration](https://learn.microsoft.com/en-us/windows/win32/fwp/filter-arbitration)):
+  WFP wertet alle Sublayer aus. Ein normaler Block-Filter ist ein _hard block_ und kann
+  in keinem anderen Sublayer aufgehoben werden. Ein _hard permit_ in einem **höher**
+  priorisierten Sublayer setzt sich aber durch. Deshalb bekommt der EDEP-Sublayer das
+  höchste Gewicht (0xFFFF), und TamperWatch meldet jeden fremden Sublayer mit gleichem
+  oder höherem Gewicht (NET-07, Umgehung B-06).
+- **Boot-Time und persistent getrennt:** `FWPM_FILTER_FLAG_BOOTTIME` und
+  `FWPM_FILTER_FLAG_PERSISTENT` sind laut [FWPM_FILTER0](https://learn.microsoft.com/en-us/windows/win32/api/fwpmtypes/ns-fwpmtypes-fwpm_filter0)
+  nicht kombinierbar. Der Plan enthält je Ebene einen Boot-Time- und einen persistenten
+  Filter; der Übergang beim BFE-Start ist atomar ([WFP Operation](https://learn.microsoft.com/en-us/windows/win32/fwp/basic-operation)).
+- **Provider an Dienst gebunden:** Der Provider trägt den Dienstnamen des Agenten, der
+  Dienst hat den Starttyp _Automatisch_. Andernfalls deaktiviert die BFE die Filter des
+  Providers beim Start (FWPM_FILTER0, Flag `FWPM_FILTER_FLAG_DISABLED`).
 - **Fail-closed:** Die Default-Block-Filter sind persistent. Stirbt der Dienst, gilt
   weiterhin „alles blockiert außer freigegeben“ (OPS-04).
+- **Alternative ohne eigenen Agenten prüfen:** Windows-Firewall-Regeln können an
+  App-Control-AppID-Tags gebunden werden (`New-NetFirewallRule -PolicyAppId`). Das wäre
+  Programmidentität mit Bordmitteln (DD-11). Vor dem Bau von `wfp::apply` evaluieren.
 - **Sprache:** Rust (`windows`-Crate) oder C++. Keine Laufzeit mit eigener
   Netzwerkkomponente im Dienstprozess.
 - **Kein Netzwerkzugriff des Agenten selbst.** Der Agent hat keine Erlaubnisregel.

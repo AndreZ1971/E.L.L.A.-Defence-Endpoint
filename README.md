@@ -14,6 +14,33 @@ gedacht.
 
 > **Status:** Entwurf 0.1.0. Die Spezifikation ist noch nicht versiegelt.
 
+## Kostenloses Audit: Wie offen ist dein Windows?
+
+Windows lässt ausgehenden Verkehr standardmäßig für jedes Programm zu, auch mit Defender.
+Das Audit zeigt in einer Minute, was davon auf deinem Rechner zutrifft. Es **ändert nichts**
+und läuft auch ohne Adminrechte.
+
+```powershell
+# Im Ordner baseline\L1 (für das vollständige Ergebnis als Administrator)
+.\Invoke-EdepAudit.ps1 -Open
+```
+
+Ergebnis: eine Punktzahl von 0 bis 100, Kategorien (ausgehender und eingehender Verkehr,
+Programmkontrolle, Telemetrie, Protokollierung, Angriffsfläche) und für jeden offenen Punkt
+eine Erklärung mit konkreter Empfehlung, in der Konsole und als HTML-Bericht.
+
+## Nicht glauben, prüfen
+
+| Frage                                       | Antwort                                                                                                                                                 |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stimmt das, was hier steht?                 | Jede technische Aussage hat eine Quelle oder einen Messwert: [Nachweisregister](docs/EVIDENCE.md). Was noch nicht geprüft ist, steht dort offen als ⏳. |
+| Woher stammen die Fakten?                   | 24 verlinkte Quellen, überwiegend Microsoft Learn und MITRE ATT&CK: [SPEC, Anhang B](SPEC.md#anhang-b--quellen)                                         |
+| Was kann EDEP **nicht**?                    | Restrisiken und sieben bekannte Umgehungen, jede mit Test: [SPEC 3.3/3.4](SPEC.md#34-bekannte-umgehungen-normativ)                                      |
+| Wo weicht EDEP von Microsoft ab, und warum? | [DD-12](docs/DESIGN-DECISIONS.md)                                                                                                                       |
+| Wie prüfe ich es selbst?                    | In 5 Minuten ohne Risiko, in 30 Minuten in einer VM: [Selbst prüfen](docs/VERIFY-YOURSELF.md)                                                           |
+| Welche Fehler gab es schon?                 | [Errata](docs/EVIDENCE.md#errata)                                                                                                                       |
+| Ich habe eine Lücke gefunden.               | [SECURITY.md](SECURITY.md)                                                                                                                              |
+
 ## Stufen
 
 | Stufe           | Umsetzung                                                                            | Eigener Code                  |
@@ -56,16 +83,18 @@ Gruppenrichtlinie oder Intune verteilt, überschreibt diese die lokalen Einstell
 
 ## Inhalt
 
-| Pfad                                                             | Inhalt                                                                |
-| ---------------------------------------------------------------- | --------------------------------------------------------------------- |
-| [SPEC.md](SPEC.md)                                               | Normative Spezifikation: Bedrohungsmodell, Anforderungen, Stufen      |
-| [conformance/](conformance/README.md)                            | Konformitätstests je Anforderung                                      |
-| [baseline/L1/](baseline/L1/)                                     | Anwenden, Prüfen und Wiederherstellen für L1                          |
-| [schema/edep-policy.schema.json](schema/edep-policy.schema.json) | Richtliniensprache (JSON Schema)                                      |
-| [examples/policy.example.yaml](examples/policy.example.yaml)     | Beispielrichtlinie                                                    |
-| [docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md)             | Warum EDEP so gebaut ist, und was vom ersten Konzept korrigiert wurde |
-| [docs/L2-AGENT-ARCHITECTURE.md](docs/L2-AGENT-ARCHITECTURE.md)   | Referenzarchitektur für den L2-Agenten                                |
-| [docs/archive/](docs/archive/)                                   | Ursprüngliche Konzeptpapiere (nicht mehr gültig)                      |
+| Pfad                                                             | Inhalt                                                                  |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [SPEC.md](SPEC.md)                                               | Normative Spezifikation: Bedrohungsmodell, Anforderungen, Stufen        |
+| [conformance/](conformance/README.md)                            | Konformitätstests je Anforderung                                        |
+| [baseline/L1/](baseline/L1/)                                     | Audit sowie Anwenden, Prüfen und Wiederherstellen für L1 (Modul `EDEP`) |
+| [tools/](tools/)                                                 | Modul bauen, signieren, Richtlinien validieren                          |
+| [schema/edep-policy.schema.json](schema/edep-policy.schema.json) | Richtliniensprache (JSON Schema)                                        |
+| [examples/policy.example.yaml](examples/policy.example.yaml)     | Beispielrichtlinie                                                      |
+| [docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md)             | Warum EDEP so gebaut ist, und was vom ersten Konzept korrigiert wurde   |
+| [docs/L2-AGENT-ARCHITECTURE.md](docs/L2-AGENT-ARCHITECTURE.md)   | Referenzarchitektur für den L2-Agenten                                  |
+| [docs/ROADMAP.md](docs/ROADMAP.md)                               | Meilensteine                                                            |
+| [docs/archive/](docs/archive/)                                   | Ursprüngliche Konzeptpapiere (nicht mehr gültig)                        |
 
 ## Was EDEP nicht leistet
 
