@@ -19,10 +19,17 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 - DD-11 (Programmidentität per App-Control-AppID-Tags prüfen), DD-12 (bewusste Abweichungen von Microsoft)
 - CI: Syntax, BOM, PSScriptAnalyzer, Rauchtests, Schema-Validierung mit Negativtests
 - Roadmap
+- Testplan für den VM-Durchlauf (`docs/TESTPLAN-L1.md`), Protokollvorlage und erstes Protokoll (`conformance/runs/`), Fingerabdruck-Sammler
+- Einheitentests `tools/Test-EdepUnits.ps1` (nachgebaute ACL, Regelerkennung, Mutationstest), in der CI
+- Quellen Q-27 und Q-28 (Windows-Update-Fehlercodes); Nachweise E-66 bis E-71
 - Projektseite auf GitHub Pages (https://andrez1971.github.io/E.L.L.A.-Defence-Endpoint/), Deutsch/Englisch, ohne externe Ressourcen; jede Zahl wird vor dem Veröffentlichen gegen das Repository geprüft (`tools/check-site.py`)
 
 ### Korrigiert
 
+- **`Install-EdepL1.ps1`:** brach im ersten Schritt ab (`auditpol`: „Falscher Parameter“), weil `/file:(Join-Path …)` in Windows PowerShell 5.1 in zwei Argumente zerfällt. Argument in Anführungszeichen; neue CI-Sperre gegen dieses Muster. Entdeckt im ersten Durchlauf (Windows-Sandbox).
+- **EDEP-NET-10:** `Delete` an der Laufwerkswurzel wird nicht mehr als Gefahr gewertet (Falsch-Positiv; der Installer hätte `-AllowProgram` abgelehnt).
+- **EDEP-NET-03:** prüft zusätzlich die Wirkung: Eine uneingeschränkte ausgehende Erlaubnisregel hebt die Standardsperre auf und lässt NET-03 fehlschlagen. Neue Umgehung B-08.
+- Testplan: falsche Erwartungen korrigiert (TEL-01, NET-10, OPS-01), Eigenschaften der Windows-Sandbox gemessen und dokumentiert.
 - **EDEP-NET-08:** Boot-Time- und persistente Filter sind getrennte Sätze; die Flags sind laut
   Microsoft nicht kombinierbar. Provider muss an einen auto-startenden Dienst gebunden sein.
 - **EDEP-NET-07:** Sublayer mit höchstem Gewicht; hard permit in höherem Sublayer als Risiko benannt.

@@ -47,8 +47,8 @@ language; `-Language en` or `-Language de` forces it.
 | Question                                         | Answer                                                                                                                                           |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Is what's written here true?                     | Every technical claim has a source or a measurement: [evidence register](docs/EVIDENCE.md). Anything not yet verified is openly marked ⏳ there. |
-| Where do the facts come from?                    | 26 linked sources, mostly Microsoft Learn and MITRE ATT&CK: [SPEC, Annex B](SPEC.md#anhang-b--quellen)                                           |
-| What can EDEP **not** do?                        | Residual risks and seven known bypasses, each with a test: [SPEC 3.3/3.4](SPEC.md#34-bekannte-umgehungen-normativ)                               |
+| Where do the facts come from?                    | 28 linked sources, mostly Microsoft Learn and MITRE ATT&CK: [SPEC, Annex B](SPEC.md#anhang-b--quellen)                                           |
+| What can EDEP **not** do?                        | Residual risks and eight known bypasses, each with a test: [SPEC 3.3/3.4](SPEC.md#34-bekannte-umgehungen-normativ)                               |
 | Where does EDEP deviate from Microsoft, and why? | [DD-12](docs/DESIGN-DECISIONS.md)                                                                                                                |
 | How do I check it myself?                        | In 5 minutes without risk, in 30 minutes in a VM: [verify yourself](docs/VERIFY-YOURSELF.md)                                                     |
 | Which mistakes were already found?               | [Errata](docs/EVIDENCE.md#errata)                                                                                                                |
@@ -88,6 +88,7 @@ In **PowerShell as administrator** in the folder `baseline\L1`:
 Windows core networking, update services, Defender and the programs listed under `-AllowProgram`.
 Store apps keep their own Windows rules. PowerShell, `curl.exe`, `certutil` and the other
 Annex A tools are blocked outbound, including for `Install-Module` and `winget` scripts.
+The installer and `Restore-EdepL1` ask before every step (installer: five, restore: four prompts, confirm each with `y`).
 `-AllowProgram` refuses paths that non-admins can modify (EDEP-NET-10).
 
 Install and restore messages are currently German only.

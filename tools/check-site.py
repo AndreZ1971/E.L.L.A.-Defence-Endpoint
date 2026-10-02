@@ -36,8 +36,18 @@ expected = {
 }
 
 errors = 0
+fix = "--fix" in sys.argv  # nur lokal, nach Prüfung der Änderung; die CI läuft ohne --fix
 for page in ["site/index.html", "site/en/index.html"]:
     html = read(page)
+    if fix:
+        def _sync(m):
+            key = m.group(2)
+            return m.group(1) + str(expected[key]) if key in expected else m.group(0)
+        fixed = re.sub(r'(data-check="([a-z0-9-]+)"\s*>\s*)\d+', _sync, html)
+        if fixed != html:
+            (root / page).write_text(fixed, encoding="utf-8", newline="\n")
+            print(f"angepasst: {page}")
+            html = fixed
     found = re.findall(r'data-check="([a-z0-9-]+)"\s*>\s*(\d+)', html)
     keys = {k for k, _ in found}
     for key in expected:

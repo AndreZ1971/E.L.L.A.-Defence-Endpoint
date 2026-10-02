@@ -12,7 +12,7 @@ Abweichungen nicht anpassen, sondern führen.
 | Windows-Edition (`winver`)         |                                                           |
 | Build (`[Environment]::OSVersion`) |                                                           |
 | Defender-Plattformversion          |                                                           |
-| Virtualisierung                    | Hyper-V, Generation 2, vCPU / RAM / Platte:               |
+| Umgebung | Hyper-V-VM (Generation, vCPU / RAM / Platte) · Windows-Sandbox (Konfigurationsdatei) · andere: |
 | Sprache                            |                                                           |
 | Getesteter Commit                  |                                                           |
 | Hash-Liste der Skripte             | `hashes.txt`                                              |

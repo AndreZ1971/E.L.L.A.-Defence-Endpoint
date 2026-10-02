@@ -46,8 +46,8 @@ richtet sich nach der Windows-Anzeigesprache; `-Language de` oder `-Language en`
 | Frage                                       | Antwort                                                                                                                                                 |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Stimmt das, was hier steht?                 | Jede technische Aussage hat eine Quelle oder einen Messwert: [Nachweisregister](docs/EVIDENCE.md). Was noch nicht geprüft ist, steht dort offen als ⏳. |
-| Woher stammen die Fakten?                   | 26 verlinkte Quellen, überwiegend Microsoft Learn und MITRE ATT&CK: [SPEC, Anhang B](SPEC.md#anhang-b--quellen)                                         |
-| Was kann EDEP **nicht**?                    | Restrisiken und sieben bekannte Umgehungen, jede mit Test: [SPEC 3.3/3.4](SPEC.md#34-bekannte-umgehungen-normativ)                                      |
+| Woher stammen die Fakten?                   | 28 verlinkte Quellen, überwiegend Microsoft Learn und MITRE ATT&CK: [SPEC, Anhang B](SPEC.md#anhang-b--quellen)                                         |
+| Was kann EDEP **nicht**?                    | Restrisiken und acht bekannte Umgehungen, jede mit Test: [SPEC 3.3/3.4](SPEC.md#34-bekannte-umgehungen-normativ)                                      |
 | Wo weicht EDEP von Microsoft ab, und warum? | [DD-12](docs/DESIGN-DECISIONS.md)                                                                                                                       |
 | Wie prüfe ich es selbst?                    | In 5 Minuten ohne Risiko, in 30 Minuten in einer VM: [Selbst prüfen](docs/VERIFY-YOURSELF.md)                                                           |
 | Welche Fehler gab es schon?                 | [Errata](docs/EVIDENCE.md#errata)                                                                                                                       |
@@ -88,6 +88,7 @@ Netzzugang: Windows-Kernnetzwerk, Update-Dienste, Defender und die unter `-Allow
 genannten Programme. Store-Apps behalten ihre eigenen Windows-Regeln. PowerShell,
 `curl.exe`, `certutil` und andere Anhang-A-Werkzeuge sind ausgehend gesperrt, auch für
 `Install-Module` und `winget`-Skripte.
+Installer und `Restore-EdepL1` fragen vor jedem Schritt nach (Installer: fünf, `Restore`: vier Rückfragen, jeweils mit `y` bestätigen).
 
 Die Blocklisten stützen sich zum Teil auf Programmpfade. Wird eine Richtlinie per
 Gruppenrichtlinie oder Intune verteilt, überschreibt diese die lokalen Einstellungen.
