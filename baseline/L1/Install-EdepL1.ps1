@@ -87,7 +87,7 @@ if ($PSCmdlet.ShouldProcess($backupPath, 'Aktuellen Zustand sichern')) {
     & netsh.exe advfirewall export (Join-Path $backupPath 'firewall.wfw') | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'Firewall-Export fehlgeschlagen.' }
 
-    & auditpol.exe /backup /file:(Join-Path $backupPath 'auditpol.csv') | Out-Null
+    & auditpol.exe /backup "/file:$(Join-Path $backupPath 'auditpol.csv')" | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'Sicherung der Überwachungsrichtlinie fehlgeschlagen.' }
 
     $registryBackup = foreach ($s in $EdepRegistrySettings) {

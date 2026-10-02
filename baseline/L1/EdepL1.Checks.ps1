@@ -44,7 +44,16 @@ function Get-EdepL1CheckResult {
     $allowCount = (Get-NetFirewallRule -PolicyStore ActiveStore -Direction Outbound -Action Allow -Enabled True -ErrorAction SilentlyContinue | Measure-Object).Count
     $bad = $profiles | Where-Object { [string]$_.DefaultOutboundAction -ne 'Block' }
     if ($bad) { Add-Result 'EDEP-NET-03' 'FAIL' 'net03.fail' @(($bad.Name -join ', ')) }
-    else { Add-Result 'EDEP-NET-03' 'PASS' 'net03.pass' @($allowCount) }
+    else {
+        # Die Einstellung allein genügt nicht: Eine uneingeschränkte Erlaubnisregel hebt die Sperre auf (Abweichung 8).
+        $openRules = @(Get-EdepUnrestrictedOutboundAllowRule)
+        if ($openRules.Count) {
+            $names = ($openRules | Select-Object -First 3) -join ', '
+            if ($openRules.Count -gt 3) { $names += Get-EdepText 'more' @($openRules.Count - 3) }
+            Add-Result 'EDEP-NET-03' 'FAIL' 'net03.open' @($names)
+        }
+        else { Add-Result 'EDEP-NET-03' 'PASS' 'net03.pass' @($allowCount) }
+    }
 
     # Ausgehende Blockregeln einmal einsammeln (Programm- und Dienstfilter).
     $outBlock = @(Get-NetFirewallRule -PolicyStore ActiveStore -Direction Outbound -Action Block -Enabled True -ErrorAction SilentlyContinue)

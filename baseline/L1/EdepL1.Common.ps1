@@ -136,6 +136,9 @@ function Get-EdepWritableByNonAdmin([string]$Path) {
     $level = 0
     while ($item) {
         $mask = if ($level -lt $masks.Count) { $masks[$level] } else { $upperMask }
+        # Die Laufwerkswurzel lässt sich weder löschen noch umbenennen: Delete (65536) dort ist ohne Bedeutung.
+        # Sandbox-Image: Authentifizierte Benutzer haben Modify auf C:\ (nur dieser Ordner), Messung 2026-10-02.
+        if (-not (Split-Path -Path $item -Parent)) { $mask = $mask -band (-bnot 65536) }
         if (Test-Path -LiteralPath $item) {
             try {
                 $acl = Get-Acl -LiteralPath $item
@@ -162,6 +165,42 @@ function Get-EdepWritableByNonAdmin([string]$Path) {
         $level++
     }
     $reasons | Select-Object -Unique
+}
+
+function Test-EdepRuleUnrestricted($Rule) {
+    # EDEP-NET-03: Eine aktive ausgehende Erlaubnisregel ohne jede Einschränkung hebt die Standardsperre auf.
+    # Messung 2026-10-02: Die Regel "Container: allow outbound" des Sandbox-Images (Programm, Dienst, Paket, Besitzer,
+    # Protokoll, Port und Adresse alle "Any") ließ ein unbekanntes Programm trotz "ausgehend Block" hinaus.
+    # $Rule ist ein flaches Objekt, damit sich die Logik ohne Firewall testen lässt.
+    # Store-App-Regeln sehen im Anwendungsfilter ebenfalls uneingeschränkt aus, tragen aber PackageFamilyName/Owner.
+    $open = { param($v) $t = ([string]$v).Trim(); ($t -eq '') -or ($t -eq 'Any') }
+    (& $open $Rule.Program) -and (& $open $Rule.Service) -and (& $open $Rule.Package) -and
+    (& $open $Rule.PackageFamilyName) -and (& $open $Rule.PolicyAppId) -and (& $open $Rule.Owner) -and
+    (& $open $Rule.LocalUser) -and (& $open $Rule.RemotePort) -and (& $open $Rule.RemoteAddress) -and
+    (([string]$Rule.Protocol).Trim() -in 'Any', 'TCP', '')
+}
+
+function Get-EdepUnrestrictedOutboundAllowRule {
+    foreach ($r in @(Get-NetFirewallRule -PolicyStore ActiveStore -Direction Outbound -Action Allow -Enabled True -ErrorAction SilentlyContinue)) {
+        $a = $r | Get-NetFirewallApplicationFilter -ErrorAction SilentlyContinue
+        $p = $r | Get-NetFirewallPortFilter -ErrorAction SilentlyContinue
+        $s = $r | Get-NetFirewallServiceFilter -ErrorAction SilentlyContinue
+        $d = $r | Get-NetFirewallAddressFilter -ErrorAction SilentlyContinue
+        $u = $r | Get-NetFirewallSecurityFilter -ErrorAction SilentlyContinue
+        $flat = [pscustomobject]@{
+            Program           = [string]$a.Program
+            Package           = [string]$a.Package
+            PackageFamilyName = [string]$r.PackageFamilyName
+            PolicyAppId       = [string]$r.PolicyAppId
+            Owner             = [string]$r.Owner
+            LocalUser         = [string]$u.LocalUser
+            Service           = [string]$s.Service
+            Protocol          = [string]$p.Protocol
+            RemotePort        = ($p.RemotePort -join ',')
+            RemoteAddress     = ($d.RemoteAddress -join ',')
+        }
+        if (Test-EdepRuleUnrestricted $flat) { $r.DisplayName }
+    }
 }
 
 function ConvertTo-EdepComparablePath([string]$Path) {

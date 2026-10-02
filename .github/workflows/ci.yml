@@ -31,6 +31,18 @@ jobs:
           foreach ($f in $missing) { Write-Host "::error file=$($f.FullName)::Datei braucht UTF-8 mit BOM (Windows PowerShell 5.1)" }
           if ($missing) { exit 1 }
 
+      - name: Einheitentests (Prüflogik, nachgebaute ACL, Regelerkennung)
+        shell: powershell
+        run: ./tools/Test-EdepUnits.ps1
+
+      - name: Native Argumente (kein /x:(...) ohne Anführungszeichen)
+        shell: powershell
+        run: |
+          # Windows PowerShell 5.1 zerlegt /file:(Ausdruck) in zwei Argumente (Fehler 0x57 bei auditpol).
+          $bad = Get-ChildItem -Recurse -Include *.ps1, *.psm1 baseline, tools | Select-String -Pattern '\s/[A-Za-z]+:\('
+          $bad | ForEach-Object { Write-Host "::error file=$($_.Path),line=$($_.LineNumber)::Argument /x:( ... ) in Anführungszeichen setzen" }
+          if ($bad) { exit 1 }
+
       - name: PSScriptAnalyzer
         shell: powershell
         run: |

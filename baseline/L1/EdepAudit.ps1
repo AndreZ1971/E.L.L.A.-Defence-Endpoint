@@ -8,10 +8,10 @@
 $script:EdepAuditCatalog = [ordered]@{
     'EDEP-NET-03' = @{ Category = 'cat.out'; Weight = 10
         de = @{ Title = 'Ausgehender Verkehr standardmäßig blockiert'
-                Why   = 'Ist ausgehender Verkehr standardmäßig erlaubt, kann jedes Programm, auch Schadcode, ungehindert Daten senden und Befehle nachladen. Windows lässt ausgehend standardmäßig alles zu, auch mit Defender.'
+                Why   = 'Ist ausgehender Verkehr standardmäßig erlaubt, kann jedes Programm, auch Schadcode, ungehindert Daten senden und Befehle nachladen. Windows lässt ausgehend standardmäßig alles zu, auch mit Defender. Auch eine einzelne uneingeschränkte Erlaubnisregel hebt eine Standardsperre wieder auf.'
                 Fix   = 'Ausgehende Standardaktion auf Block setzen und nur benötigte Programme freigeben (Install-EdepL1.ps1 -Enforce -AllowProgram ...). Vorher im Audit-Modus das Firewall-Log auswerten.' }
         en = @{ Title = 'Outbound traffic blocked by default'
-                Why   = 'If outbound traffic is allowed by default, every program, including malware, can send data and download payloads unhindered. Windows allows all outbound traffic by default, even with Defender.'
+                Why   = 'If outbound traffic is allowed by default, every program, including malware, can send data and download payloads unhindered. Windows allows all outbound traffic by default, even with Defender. A single unrestricted allow rule also defeats a default block.'
                 Fix   = 'Set the default outbound action to Block and allow only required programs (Install-EdepL1.ps1 -Enforce -AllowProgram ...). Review the firewall log in audit mode first.' } }
     'EDEP-NET-04' = @{ Category = 'cat.out'; Weight = 8
         de = @{ Title = 'Windows-Bordwerkzeuge (LOLBins) ausgehend gesperrt'
