@@ -100,8 +100,9 @@ user's token and without a service SID ([E-73, E-84](docs/EVIDENCE.md)). `Test-E
 
 With **`-AllowWindowsUpdate`** the installer instead creates rules "program `svchost.exe`, TCP 80/443, only to the
 update domains" (dynamic keywords of the Windows firewall; domain list with source and date in
-`EdepL1.Common.ps1`). Measured: update search and BITS to Microsoft succeed, `svchost.exe` reaches nothing else
-([E-88](docs/EVIDENCE.md)). **Costs and limits:**
+`EdepL1.Common.ps1`). Measured: the **update search** succeeds (after one failed attempt, also after a restart without cache),
+`svchost.exe` reaches nothing else ([E-88](docs/EVIDENCE.md)). **BITS to Microsoft is not reliable** (some CDN targets
+are not learned, E-89). **Costs and limits:**
 - Defender's **network protection** must be running; the installer sets it to audit mode if it was off, and
   `Restore` sets it back. This does not work with third-party antivirus (unmeasured).
 - The firewall learns the addresses from observed DNS answers and discards them on restart. **The first

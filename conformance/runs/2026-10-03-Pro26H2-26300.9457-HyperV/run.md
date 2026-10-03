@@ -222,6 +222,17 @@ Alle Messungen auf der Pro-VM mit `Install-EdepL1 -Enforce … -AllowWindowsUpda
 
 **Ergebnis:** Die Domainfreigabe (`-AllowWindowsUpdate`) ist für die **Update-Suche** und **BITS zu Microsoft** gemessen, für **Defender-Signaturupdates nicht**: `Update-MpSignature` scheitert weiter, der Signaturstand änderte sich nicht. Offen bleiben: ein weiterer Hostname hinter `146.75.122.172:80`, das Race beim ersten Versuch, Defender-Komponenten, die als eigene Programme verbinden (`MDCoreSvc`, `WdNisSvc`), die eigentliche Updateinstallation und die Messung der Suche nach einem Neustart **mit leerem Cache**. Ein Neustart des Defender-Dienstes während der Tests wurde beobachtet (E-6).
 
+**Nachtrag: Suche und BITS nach einem Neustart mit zurückgesetztem Cache (21:02 bis 21:04, `transcript-e89g.txt`, `transcript-e89h.txt`):**
+
+| Nr. | Messwert (wörtlich) | Einordnung |
+|---|---|---|
+| E-8 | Nach dem Neustart (21:02:45): `Schlüsselwörter: 9, mit gelernten Adressen: 0`, ausgehend `Block`, Netzwerkschutz `2`, Plattform/Engine `4.18.26080.4 / 1.1.26090.9` (unverändert) | wie beschrieben |
+| E-9 | Cache zurückgesetzt: **`Suche 1: FEHLER 0x80072EFD (4 s)`, `Suche 2: ERFOLG (13 s)`, `Suche 3: ERFOLG (4 s)`** | Die Suche gelingt **ab dem zweiten Versuch**, jetzt ohne Cache-Effekt (E-1 war nicht belastbar) |
+| E-10 | `BITS Microsoft 1: FEHLER`, `BITS Microsoft 2: FEHLER` (Ziel `ctldl.windowsupdate.com`); `BITS example.org: FEHLER` | BITS zu Microsoft scheitert hier zweimal (in den früheren Tests ging der zweite Versuch) |
+| E-11 | Abgewiesen: `[BITS] → 146.75.122.172:80` (2×), `[wuauserv] → 23.193.116.211:80` (2×), `.184:80`, `.194:80`, `135.233.95.144:443`. Danach `mit gelernten Adressen: 3` | `146.75.122.172:80` ist dieselbe Adresse, die in den Defender-Tests als unbekanntes Ziel auffiel; hier gehört sie zu `ctldl.windowsupdate.com`, einem Namen, den `*.windowsupdate.com` abdeckt, und wurde **nicht gelernt**. Warum (Vermutung: CNAME-Kette eines anderen CDN-Betreibers), ist ungemessen. |
+
+**Ergebnis nach diesen Messungen:** Die Domainfreigabe macht die Update-**Suche** unter Enforce nach dem **ersten Fehlversuch** nutzbar (auch nach einem Neustart, ohne Cache). **BITS zu Microsoft und Defender-Signaturen sind nicht zuverlässig**, weil einzelne CDN-Ziele (`146.75.122.172`) trotz passendem Namen nicht gelernt werden. Die Option ist damit **teilweise wirksam**.
+
 ## Abweichungen und Auslassungen
 
 | Nr. | Was weicht ab oder fehlt                                                                                                                                                                                                                                                                                                                               | Vermutete Ursache / Befund                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Folge                                                                                                                                                    |
