@@ -25,6 +25,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] E-86 gemessen (Enterprise 25H2): Die Dienstregel gegen `DiagTrack` blockiert nicht; TEL-02 meldet WARN ([Messprotokoll](../conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-E86/run.md))
 - [ ] E-86 weiter: Wirkung auf Pro, bei Telemetrie-Level 0, für `dmwappushservice`; eine Programmregel oder das Abschalten des Dienstes als Ersatz prüfen
 - [ ] Zuordnung offen: Kompendium-Edition bei Veröffentlichung erneut prüfen
+- [ ] Signierter Release `0.1.0-draft.3` (SHA256SUMS, SSH-Signatur, signierter Tag; Anleitung in [SIGNING.md](SIGNING.md)); Authenticode-Signatur der Skripte (SYS.2.2.3.A22) bleibt offen, es fehlt ein anerkanntes Zertifikat
 - [ ] Kontakt zum BSI erst nach vollständiger Zuordnung und signiertem Release; eine Unterstützung durch das BSI ist nicht zugesagt
 - [ ] Neustart-Vorfall (E-76) mit sauber protokolliertem Ablauf (Uhrzeiten, Art des Neustarts, Eingriffe vorher) klären
 - [ ] Windows 11 Home und Windows Server prüfen

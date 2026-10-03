@@ -1,2 +1,6 @@
 * text=auto
 *.ps1 text eol=crlf
+# Pruefsummen und Signatur duerfen nie umgewandelt werden (die Signatur gilt fuer genau diese Bytes)
+SHA256SUMS -text
+SHA256SUMS.sig -text
+allowed_signers -text
