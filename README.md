@@ -101,7 +101,7 @@ dann **EDEP-TEL-04 = FAIL** (14/15).
 Mit **`-AllowWindowsUpdate`** legt der Installer stattdessen Regeln „Programm `svchost.exe`, TCP 80/443, nur zu
 den Update-Domains“ an (Dynamic Keywords der Windows-Firewall, Domainliste mit Quelle und Stand in
 `EdepL1.Common.ps1`). Gemessen: Die **Update-Suche** gelingt (nach einem Fehlversuch, auch nach einem Neustart ohne Cache), `svchost.exe`
-erreicht sonst nichts ([E-88](docs/EVIDENCE.md)). **BITS zu Microsoft ist nicht zuverlässig** (einzelne CDN-Ziele werden nicht gelernt, E-89). **Kosten und Grenzen:**
+erreicht sonst nichts ([E-88](docs/EVIDENCE.md)). **BITS zu Microsoft** gelingt ab dem zweiten Versuch, **Defender-Signaturupdates** nur mit Wiederholungen: Die Firewall lernt die Adressen mit einigen Sekunden Verzögerung aus der DNS-Antwort, ein sofortiger erster Versuch wird abgewiesen (E-12 bis E-14, E-89). **Kosten und Grenzen:**
 - Der **Netzwerkschutz von Defender** muss laufen; der Installer stellt ihn auf den Audit-Modus, falls er aus war, und
   `Restore` stellt ihn zurück. Mit fremdem Virenschutz geht das nicht (ungemessen).
 - Die Firewall lernt die Adressen aus beobachteten DNS-Antworten und verwirft sie beim Neustart. **Die ersten
