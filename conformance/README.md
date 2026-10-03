@@ -8,6 +8,35 @@ Jede Anforderung aus [SPEC.md](../SPEC.md) hat hier mindestens einen Test. Spalt
 
 Eine Stufe gilt als erreicht, wenn alle Tests dieser und aller niedrigeren Stufen bestehen (SPEC.md, Abschnitt 2).
 
+## Automatischer Gesamtlauf: `Test-EdepConformance.ps1`
+
+Ein Aufruf für Dritte. Ändert nichts am System.
+
+```powershell
+.\conformance\Test-EdepConformance.ps1            # Integrität, 15 L1-Prüfungen, Audit; Protokoll als JSON
+.\conformance\Test-EdepConformance.ps1 -Probe     # zusätzlich: Update-Erreichbarkeit messen und Einheitentests ausführen
+```
+
+Als Administrator ausführen; ohne Adminrechte sind einige Prüfungen „UNKNOWN“. Das Protokoll
+`edep-conformance-<Rechner>-<Datum>.json` enthält:
+
+| Feld | Inhalt |
+|---|---|
+| `environment` | Rechner, Edition, Build, PowerShell, Adminrechte, ob eine VM erkannt wurde |
+| `integrity` | `checksums` (SHA256SUMS gegen die Dateien) und `signature` (SSH-Signatur, siehe [SIGNING.md](../docs/SIGNING.md)); Status PASS, WARN (nur Zeilenenden), FAIL oder SKIPPED |
+| `l1` | die 15 Prüfungen mit Status und Detail (Anforderung, Testkennung, Art `auto`) |
+| `unitTests` | nur mit `-Probe`: bestanden, fehlgeschlagen |
+| `audit` | Punktzahl, Stufe und Zähler des Audits |
+| `notRun` | die Tests dieser Stufe, die **nicht** laufen (Art `aktiv` und `Review`, Umgehungstests T-BYP) |
+| `verdict` | Exit-Code und Text |
+
+**Exit-Code:** 0 = alle automatisch geprüften L1-Anforderungen erfüllt und Integrität bestätigt; 1 = mindestens eine
+Abweichung; 2 = Ergebnis unvollständig (UNKNOWN, Integrität nicht prüfbar oder nur Zeilenenden abweichend).
+
+**Grenzen:** Das Protokoll hält fest, was gemessen wurde. Es ist **kein Konformitätsnachweis**: Die Angriffssimulationen
+(`aktiv`) und Prüfungen (`Review`) unter `notRun` laufen nicht, sie gehören in eine Test-VM ([TESTPLAN-L1.md](../docs/TESTPLAN-L1.md)).
+Die Prüfsummen gelten für den **ZIP-Stand eines Tags**; ein Klon unter Windows liefert wegen der Zeilenenden WARN.
+
 ## L1 — Baseline
 
 | Test      | Anforderung | Art    | Verfahren                                                                                                                | Erwartung                                                                     |

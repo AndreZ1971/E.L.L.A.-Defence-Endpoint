@@ -9,6 +9,20 @@ Windows 11 Enterprise als Evaluierungsversion oder Windows 11 Pro.
 
 ---
 
+## Stufe 0: ein Aufruf für alles Lesende
+
+Wer nur einen Befehl will: [Test-EdepConformance.ps1](../conformance/Test-EdepConformance.ps1) prüft die Integrität des Standes
+([SIGNING.md](SIGNING.md)), die 15 L1-Anforderungen und das Audit und schreibt ein Protokoll als JSON. Es ändert nichts am System
+und ist **kein Konformitätsnachweis** (die Tests „aktiv“ und „Review“ laufen nicht, sie stehen im Protokoll unter `notRun`).
+Einzelheiten und Exit-Codes: [conformance/README.md](../conformance/README.md).
+
+```powershell
+# ZIP des Tags von GitHub laden, entpacken, als Administrator:
+.\conformance\Test-EdepConformance.ps1 -Probe
+```
+
+---
+
 ## Stufe 1: fünf Minuten, ohne Risiko
 
 Auf jedem Windows-Rechner, ohne Adminrechte. Es wird nichts verändert.

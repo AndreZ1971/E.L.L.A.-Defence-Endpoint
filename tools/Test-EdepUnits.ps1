@@ -15,6 +15,7 @@ $ErrorActionPreference = 'Stop'
 $l1 = Join-Path (Split-Path $PSScriptRoot -Parent) 'baseline\L1'
 . (Join-Path $l1 'EdepStrings.ps1')
 . (Join-Path $l1 'EdepL1.Common.ps1')
+. (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) 'conformance') 'EdepConformance.Common.ps1')
 Set-EdepLanguage de
 
 $script:failed = 0
@@ -172,6 +173,46 @@ Assert-That 'LOG-01: Profil mit 4096 KB wird gemeldet, 16384 und 32767 nicht' ((
 Assert-That 'LOG-01: genau 16384 KB gilt als ausreichend' (@(Get-EdepSmallLogProfile @($logProfiles[0])).Count -eq 0)
 Assert-That 'LOG-01: keine Profile ergibt keine Meldung' (@(Get-EdepSmallLogProfile @()).Count -eq 0)
 Assert-That 'LOG-01: Text nennt die Profile' ((Get-EdepText 'log01.smalllog' @('Private')) -match 'Private')
+
+# ---------------------------------------------------------------------------
+# Test-EdepConformance: Prüfsummen, Auswertung, Liste der nicht ausgeführten Tests
+# ---------------------------------------------------------------------------
+$sumTmp = Join-Path ([IO.Path]::GetTempPath()) "edep-sums-test-$PID"
+New-Item -ItemType Directory -Path (Join-Path $sumTmp 'sub dir') -Force | Out-Null
+$enc = [Text.UTF8Encoding]::new($false)
+[IO.File]::WriteAllBytes((Join-Path $sumTmp 'a.txt'), $enc.GetBytes("eins`n"))
+[IO.File]::WriteAllBytes((Join-Path $sumTmp 'sub dir\b c.ps1'), $enc.GetBytes("zwei`r`n"))
+$hA = Get-EdepSha256Hex ([IO.File]::ReadAllBytes((Join-Path $sumTmp 'a.txt')))
+$hB = Get-EdepSha256Hex ([IO.File]::ReadAllBytes((Join-Path $sumTmp 'sub dir\b c.ps1')))
+$sumLines = @("$hA  a.txt", "$hB  sub dir/b c.ps1", '', 'kaputte zeile')
+$entries = @(ConvertFrom-EdepSums $sumLines)
+Assert-That 'Prüfsummen: zwei gültige Zeilen, eine ungültige, Leerzeile ignoriert' ((@($entries | Where-Object Valid).Count -eq 2) -and (@($entries | Where-Object { -not $_.Valid }).Count -eq 1))
+Assert-That 'Prüfsummen: Pfad mit Leerzeichen bleibt erhalten' (($entries | Where-Object Valid)[1].Path -eq 'sub dir/b c.ps1')
+$res = Test-EdepSumsAgainstFiles -Entries @($entries | Where-Object Valid) -Root $sumTmp
+Assert-That 'Prüfsummen: unveränderte Dateien bestehen, Status PASS' (($res.Ok -eq 2) -and ((Get-EdepIntegrityStatus $res) -eq 'PASS'))
+[IO.File]::WriteAllBytes((Join-Path $sumTmp 'a.txt'), $enc.GetBytes("eins`r`n"))
+$res = Test-EdepSumsAgainstFiles -Entries @($entries | Where-Object Valid) -Root $sumTmp
+Assert-That 'Prüfsummen: nur Zeilenenden geändert ergibt WARN, nicht FAIL' (($res.LineEndings -contains 'a.txt') -and ((Get-EdepIntegrityStatus $res) -eq 'WARN'))
+[IO.File]::WriteAllBytes((Join-Path $sumTmp 'a.txt'), $enc.GetBytes("etwas anderes`n"))
+$res = Test-EdepSumsAgainstFiles -Entries @($entries | Where-Object Valid) -Root $sumTmp
+Assert-That 'Prüfsummen: geänderter Inhalt ergibt FAIL' (($res.Mismatch -contains 'a.txt') -and ((Get-EdepIntegrityStatus $res) -eq 'FAIL'))
+Remove-Item (Join-Path $sumTmp 'a.txt') -Force
+$res = Test-EdepSumsAgainstFiles -Entries @($entries | Where-Object Valid) -Root $sumTmp
+Assert-That 'Prüfsummen: fehlende Datei ergibt FAIL' (($res.Missing -contains 'a.txt') -and ((Get-EdepIntegrityStatus $res) -eq 'FAIL'))
+Assert-That 'Prüfsummen: ungültige Zeile in der Liste ergibt FAIL' ((Get-EdepIntegrityStatus (Test-EdepSumsAgainstFiles -Entries $entries -Root $sumTmp)) -eq 'FAIL')
+Remove-Item $sumTmp -Recurse -Force -ErrorAction SilentlyContinue
+$okL1 = @([pscustomobject]@{ Status = 'PASS' }, [pscustomobject]@{ Status = 'WARN' })
+Assert-That 'Exit-Code: alles erfüllt und Integrität PASS ergibt 0' ((Get-EdepConformanceExitCode $okL1 'PASS' 'PASS') -eq 0)
+Assert-That 'Exit-Code: ein FAIL ergibt 1' ((Get-EdepConformanceExitCode @([pscustomobject]@{ Status = 'FAIL' }) 'PASS' 'PASS') -eq 1)
+Assert-That 'Exit-Code: Integrität FAIL ergibt 1' ((Get-EdepConformanceExitCode $okL1 'FAIL' 'SKIPPED') -eq 1)
+Assert-That 'Exit-Code: fehlgeschlagene Signatur ergibt 1' ((Get-EdepConformanceExitCode $okL1 'PASS' 'FAIL') -eq 1)
+Assert-That 'Exit-Code: UNKNOWN ergibt 2' ((Get-EdepConformanceExitCode @([pscustomobject]@{ Status = 'UNKNOWN' }) 'PASS' 'PASS') -eq 2)
+Assert-That 'Exit-Code: Integrität nicht prüfbar (SKIPPED) ergibt 2, nie 0' ((Get-EdepConformanceExitCode $okL1 'SKIPPED' 'SKIPPED') -eq 2)
+Assert-That 'Exit-Code: nur Zeilenenden (WARN) ergibt 2' ((Get-EdepConformanceExitCode $okL1 'WARN' 'PASS') -eq 2)
+$manual = @(Get-EdepManualTest -ReadmePath (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) 'conformance') 'README.md'))
+Assert-That 'Nicht ausgeführte Tests: Angriffssimulation T-NET-04a (aktiv) und T-OPS-05 (Review) werden gelistet' ((@($manual | Where-Object { $_.Test -eq 'T-NET-04a' -and $_.Art -eq 'aktiv' }).Count -eq 1) -and (@($manual | Where-Object { $_.Test -eq 'T-OPS-05' -and $_.Art -eq 'Review' }).Count -eq 1))
+Assert-That 'Nicht ausgeführte Tests: automatische Tests (T-NET-01) und L2-Tests (T-NET-06) fehlen' ((@($manual | Where-Object { $_.Test -in 'T-NET-01', 'T-NET-06' }).Count -eq 0) -and ($manual.Count -ge 5))
+Assert-That 'Nicht ausgeführte Tests: Umgehungstest T-BYP-01 (L1) wird gelistet, T-BYP-06 (L2) nicht' ((@($manual | Where-Object { $_.Test -eq 'T-BYP-01' }).Count -eq 1) -and (@($manual | Where-Object { $_.Test -eq 'T-BYP-06' }).Count -eq 0))
 
 Write-Host ''
 if ($script:failed) { Write-Host "$script:failed Test(s) fehlgeschlagen." -ForegroundColor Red; exit 1 }

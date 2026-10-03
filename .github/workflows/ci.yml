@@ -88,6 +88,19 @@ jobs:
           # Exit-Code 1 von Test-EdepL1 ist hier erwartet (Runner ist nicht gehärtet).
           exit 0
 
+      - name: Konformitätsskript (Rauchtest, ändert nichts)
+        shell: powershell
+        run: |
+          # Exit-Code 1 oder 2 ist hier erwartet (Runner ist nicht gehärtet, Checkout ist ein Klon mit anderen Zeilenenden).
+          & ./conformance/Test-EdepConformance.ps1 -OutputPath out
+          $f = Get-ChildItem out -Filter 'edep-conformance-*.json' | Select-Object -First 1
+          if (-not $f) { throw 'Protokoll fehlt' }
+          $j = Get-Content $f.FullName -Raw | ConvertFrom-Json
+          if ($j.l1.results.Count -ne 15) { throw "Erwartet 15 Prüfungen, erhalten $($j.l1.results.Count)" }
+          if ($j.notRun.Count -lt 5) { throw "Zu wenige nicht ausgeführte Tests: $($j.notRun.Count)" }
+          if ($j.schemaVersion -ne 1) { throw 'Schemaversion unerwartet' }
+          exit 0
+
       - name: Modul bauen
         shell: powershell
         run: ./tools/Build-EdepModule.ps1
