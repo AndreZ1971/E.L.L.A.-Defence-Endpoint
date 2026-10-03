@@ -1,0 +1,103 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003224046
+Benutzername: DESKTOP-QKILAOK\test
+RunAs-Benutzer: DESKTOP-QKILAOK\test
+Konfigurationsname: 
+Computer: DESKTOP-QKILAOK (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 1324
+PSVersion: 5.1.26100.9549
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9549
+BuildVersion: 10.0.26100.9549
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+22:40:46  === Ausgangslage ===
+Edition: EnterpriseEval
+AllowTelemetry (Richtlinie):  (leer = nicht gesetzt)
+EDEP-Regeln: 0 (erwartet 0)
+22:40:46  === PHASE 1: ohne EDEP ===
+22:40:46  --- Phase 1 : DiagTrack neu starten, Appraiser anstoßen ---
+22:40:50  DiagTrack Status: Running, PID 5472
+PS>TerminatingError(Start-ScheduledTask): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Das System kann die angegebene Datei nicht finden.
+."
+22:40:50  Appraiser nicht startbar: Das System kann die angegebene Datei nicht finden.
+22:41:21  30 s: erlaubt (5156) 0, blockiert (5157) 0
+22:41:51  60 s: erlaubt (5156) 0, blockiert (5157) 0
+22:42:21  90 s: erlaubt (5156) 0, blockiert (5157) 0
+22:42:51  120 s: erlaubt (5156) 2, blockiert (5157) 0
+22:43:21  150 s: erlaubt (5156) 2, blockiert (5157) 0
+22:43:51  180 s: erlaubt (5156) 2, blockiert (5157) 0
+22:44:21  210 s: erlaubt (5156) 2, blockiert (5157) 0
+22:44:51  240 s: erlaubt (5156) 2, blockiert (5157) 0
+
+Count Name                    
+----- ----                    
+    1 5156, 40.79.167.9:443   
+    1 5156, 52.168.117.171:443
+22:44:51  --- Phase 1 : Ende ---
+22:44:51  === PHASE 2: mit EDEP (Audit-Modus, Dienstregel) ===
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-211947
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261003-224451
+==> Firewall-Profile: eingehend Block, ausgehend Allow, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Setze Telemetrie-Richtlinien
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+
+EDEP L1 angewendet (Modus: AUDIT).
+Sicherung:      C:\ProgramData\EDEP\backup\20261003-224451
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261003-224451'
+
+Audit-Modus: EDEP-NET-03 ist noch nicht erfüllt. Firewall-Log auswerten, dann mit -Enforce erneut ausführen.
+Dienstregel(n) für DiagTrack: EDEP L1 - Telemetrie DiagTrack (EDEP-TEL-02)
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  19 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 13/15 erfüllt
+22:45:01  --- Phase 2 : DiagTrack neu starten, Appraiser anstoßen ---
+22:45:04  DiagTrack Status: Running, PID 452
+PS>TerminatingError(Start-ScheduledTask): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Das System kann die angegebene Datei nicht finden.
+."
+22:45:04  Appraiser nicht startbar: Das System kann die angegebene Datei nicht finden.
+22:45:35  30 s: erlaubt (5156) 0, blockiert (5157) 0
+22:46:05  60 s: erlaubt (5156) 0, blockiert (5157) 0
+22:46:35  90 s: erlaubt (5156) 0, blockiert (5157) 0
+22:47:05  120 s: erlaubt (5156) 0, blockiert (5157) 0
+22:47:35  150 s: erlaubt (5156) 1, blockiert (5157) 0
+22:48:05  180 s: erlaubt (5156) 1, blockiert (5157) 0
+22:48:35  210 s: erlaubt (5156) 1, blockiert (5157) 0
+22:49:05  240 s: erlaubt (5156) 1, blockiert (5157) 0
+
+Count Name                    
+----- ----                    
+    1 5156, 51.132.193.109:443
+22:49:05  --- Phase 2 : Ende ---
+22:49:05  === Rücknahme ===
+Sicherung vom 2026-10-03T21:19:47.9916758+02:00 (DESKTOP-QKILAOK)
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+Vergleich mit vorher.json (leer = identisch):
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003224907
+**********************

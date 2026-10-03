@@ -154,7 +154,9 @@ function Get-EdepL1CheckResult {
     $noSid = @($present | Where-Object { (Get-EdepServiceSidType $_) -notin 'RESTRICTED', 'UNRESTRICTED' })
     if ($missing.Count) { Add-Result 'EDEP-TEL-02' 'FAIL' 'tel02.missing' @(($missing -join ', ')) }
     elseif ($noSid.Count) { Add-Result 'EDEP-TEL-02' 'FAIL' 'tel02.nosid' @(($noSid -join ', ')) }
-    else { Add-Result 'EDEP-TEL-02' 'PASS' 'tel02.pass' @(($present -join ', ')) }
+    # Regeln und SID-Typ sind in Ordnung, aber die Wirkung ist für DiagTrack nicht belegt: In Lauf 3 (Enterprise) verband
+    # DiagTrack trotz Regel (E-86). Deshalb WARN statt PASS, solange die Wirkung nicht nachgewiesen ist.
+    else { Add-Result 'EDEP-TEL-02' 'WARN' 'tel02.warn' @(($present -join ', ')) }
 
     # --- EDEP-TEL-03 -------------------------------------------------------
     $wrong = @($EdepRegistrySettings | Where-Object { $_.Id -eq 'EDEP-TEL-03' } | Where-Object {

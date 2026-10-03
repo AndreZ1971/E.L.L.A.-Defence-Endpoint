@@ -22,7 +22,9 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] Lauf 3 (Enterprise 25H2, veröffentlichter Tag `0.1.0-draft.2`, 2026-10-03): Audit 14/15, Enforce 15/15, Restore und sauberer Neustart herstellen den Ausgangszustand; Updates mit `-AllowWindowsUpdate` nicht zuverlässig (erster Block 0 von 9, später Suche ab Versuch 2); Edge-Antwort blieb aus. Protokoll unter `conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-Lauf3/`
 - [x] Entscheidung 2026-10-03: Die Suche nach einer Umgehung der Update-Sperre ist beendet; Enforce wird nur mit definiertem Update-Weg empfohlen (DD-13)
 - [x] Entwurf der Zuordnung zu BSI-Grundschutz (Edition 2023: SYS.2.2.3, SYS.2.1, OPS.1.1.3, OPS.1.1.5) nach dem Originaltext, mit Hashes der gelesenen PDFs: [BSI-MAPPING.md](BSI-MAPPING.md)
-- [ ] Zuordnung offen: Wirkung der DiagTrack-Dienstregel unter Windows 11 messen (E-86); Kompendium-Edition bei Veröffentlichung erneut prüfen
+- [x] E-86 gemessen (Enterprise 25H2): Die Dienstregel gegen `DiagTrack` blockiert nicht; TEL-02 meldet WARN ([Messprotokoll](../conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-E86/run.md))
+- [ ] E-86 weiter: Wirkung auf Pro, bei Telemetrie-Level 0, für `dmwappushservice`; eine Programmregel oder das Abschalten des Dienstes als Ersatz prüfen
+- [ ] Zuordnung offen: Kompendium-Edition bei Veröffentlichung erneut prüfen
 - [ ] Kontakt zum BSI erst nach vollständiger Zuordnung und signiertem Release; eine Unterstützung durch das BSI ist nicht zugesagt
 - [ ] Neustart-Vorfall (E-76) mit sauber protokolliertem Ablauf (Uhrzeiten, Art des Neustarts, Eingriffe vorher) klären
 - [ ] Windows 11 Home und Windows Server prüfen
