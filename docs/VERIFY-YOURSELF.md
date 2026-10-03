@@ -58,14 +58,14 @@ PowerShell **als Administrator**, Snapshot vorher anlegen.
 
 ```powershell
 cd baseline\L1
-.\Install-EdepL1.ps1 -DeployAppControlAudit -Enforce `
+.\Install-EdepL1.ps1 -DeployAppControlAudit -Enforce -AllowWindowsUpdate `
     -AllowProgram "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
 .\Test-EdepL1.ps1
 ```
 
 **Erwartung:** `EDEP 0.1.0 L1 — … — 15/15 erfüllt` (gemessen auf Enterprise 25H2). Auf Home/Pro ist
 EDEP-TEL-01 `WARN`, weil „Diagnostic data off“ dort nicht existiert (SPEC Q-07); WARN zählt als
-erfüllt. **15/15 sagt nichts darüber, ob Updates erreichbar sind** (siehe Zeile „Updates gehen“).
+erfüllt. Ohne `-AllowWindowsUpdate` meldet EDEP-TEL-04 unter Enforce FAIL (14/15); mit der Option WARN („Wirkung nicht gemessen“), und `.\Test-EdepL1.ps1 -ProbeUpdates` misst sie.
 
 ### 2.2 Wirkung nachweisen, nicht nur Konfiguration
 
@@ -75,7 +75,7 @@ erfüllt. **15/15 sagt nichts darüber, ob Updates erreichbar sind** (siehe Zeil
 | LOLBin blockiert                     | `curl.exe -m 5 https://example.org`                                                                             | Fehler/Timeout                       |
 | Protokolliert                        | `Get-WinEvent -FilterHashtable @{LogName='Security'; Id=5157} -MaxEvents 5 \| Format-List TimeCreated, Message` | Einträge mit `x.exe` bzw. `curl.exe` |
 | Erlaubtes Programm geht              | Edge öffnen, beliebige Seite                                                                                    | lädt                                 |
-| Updates gehen                        | Einstellungen → Windows Update → Nach Updates suchen; `Update-MpSignature`                                      | **Gemessen: scheitert** (`0x8024402F`/`0x80072EFD`), obwohl TEL-04 PASS meldet ([E-74](EVIDENCE.md)). Gelingt es bei dir, bitte melden |
+| Updates gehen                        | Einstellungen → Windows Update → Nach Updates suchen; `Update-MpSignature`                                      | **Ohne `-AllowWindowsUpdate`: scheitert** (`0x8024402F`/`0x80072EFD`, [E-74](EVIDENCE.md)). **Mit der Option:** gelingt nach höchstens drei Versuchen ([E-88](EVIDENCE.md)); Abweichungen bitte melden |
 | Telemetrie blockiert                 | `Get-NetFirewallRule -Group EDEP-L1 \| ? DisplayName -like '*Telemetrie*' \| Get-NetFirewallServiceFilter`      | `DiagTrack`, `dmwappushservice`      |
 | Hintertür per Benutzerpfad abgelehnt | `.\Install-EdepL1.ps1 -AllowProgram "$env:LOCALAPPDATA\Programs\…\app.exe" -WhatIf`                             | Abbruch mit EDEP-NET-10              |
 

@@ -169,6 +169,43 @@ Ziel: die Ursache klären, warum die Erlaubnisregel „Dienst `wuauserv`“ die 
 - **Zwei neue Beobachtungen:** (a) `MpDefenderCoreService.exe` wird unter Enforce dauerhaft abgewiesen (10 Abweisungen nach `20.52.64.206:443` in 8 Minuten); die Defender-Freigabe nennt nur `MsMpEng.exe`, `MpCmdRun.exe` und `smartscreen.exe`. Ob das den Signaturupdate betrifft, ist nicht gemessen. (b) Da `DiagTrack` ohne Dienst-SID verbindet, würde die Sperrregel für den Dienst (TEL-02) im **Audit-Modus** (ausgehend `Allow`) dort nicht greifen. Das ist **nicht gemessen**; TEL-02 prüft nur den SID-Typ.
 - **Methodik:** `netsh wfp capture start` kehrt nicht zurück; der Mitschnitt muss als eigener Prozess gestartet werden. Der erste Mitschnitt enthielt deshalb keine Suche (abgebrochen mit `Strg+C`), der zweite lief sauber.
 
+## Lösungsversuch: Freigabe nach Domainnamen (Dynamic Keywords), Nachtrag 20:12 bis 20:16
+
+Frage: Lässt sich die Update-Erreichbarkeit unter Enforce enger herstellen als mit einer Programmregel für `svchost.exe` auf Port 80/443? Versuch: Für die Update-Domains laut [Microsofts Liste](https://learn.microsoft.com/en-us/windows/deployment/windows-autopatch/prepare/windows-autopatch-configure-network) je ein Schlüsselwort (`New-NetFirewallDynamicKeywordAddress -AutoResolve $true`) und eine Erlaubnisregel „Programm `svchost.exe`, TCP 80/443, `-RemoteDynamicKeywordAddresses`“. Voraussetzungen laut [Microsoft Learn](https://learn.microsoft.com/windows/security/operating-system-security/network-security/windows-firewall/dynamic-keywords): Defender läuft, **Netzwerkschutz an** (für den Test mit `Set-MpPreference -EnableNetworkProtection Enabled` eingeschaltet, danach zurückgesetzt), DoH aus. Domains: `*.update.microsoft.com`, `*.windowsupdate.com`, `*.windowsupdate.microsoft.com`, `*.delivery.mp.microsoft.com`, `*.dl.delivery.mp.microsoft.com`, `*.prod.do.dsp.mp.microsoft.com`, `*.download.microsoft.com`, `emdl.ws.microsoft.com`, `tsfe.trafficshaping.dsp.mp.microsoft.com`. Cache vor jeder Phase zurückgesetzt, Transcripts `transcript-fqdn.txt` und `transcript-fqdn2.txt`.
+
+**Erster Versuch (20:13):** Suche 1 `FEHLER 0x80072EFD`, BITS (Microsoft) und BITS (`example.org`) FEHLER, Suche 2 nach 24 s **ERFOLG**. Ohne Kontrolle nicht belastbar.
+
+**Zweiter Versuch mit Kontrolle (20:14 bis 20:16):**
+
+| Nr. | Messwert (wörtlich) | Ergebnis |
+|---|---|---|
+| F-1 | **Kontrolle ohne Domainregeln:** `Suche 1: FEHLER 0x80072EFD (2 s)`, `Suche 2: FEHLER 0x80072EFD (2 s)` (17 s später), `BITS Microsoft 1: FEHLER`, `BITS Microsoft 2: FEHLER`. Abgewiesen u. a. `[wuauserv] → 135.232.92.137:443`, `[BITS] → 2.16.206.5:80` und `2.16.206.27:80` | alles scheitert |
+| F-2 | **Mit Domainregeln:** `Suche 1: FEHLER`, `Suche 2: FEHLER`, **`Suche 3: ERFOLG (23 s)`**; **`BITS Microsoft 1: ERFOLG (2 s)`**, **`BITS Microsoft 2: ERFOLG (2 s)`** | gelingt nach den ersten Versuchen |
+| F-3 | **Gegenprobe:** `BITS example.org: FEHLER Die Serververbindung konnte nicht hergestellt werden.` | bleibt eng |
+| F-4 | Schlüsselwort-Objekt nach den Versuchen: `*.delivery.mp.microsoft.com` mit `Addresses : 20.165.94.54`; `emdl.ws.microsoft.com` noch ohne Adresse. Die Regel zeigt als `RemoteAddress` nur `Any` (die aufgelösten Adressen stehen im Schlüsselwort-Objekt, nicht an der Regel). | Adressen werden aus beobachteten DNS-Antworten gelernt |
+| F-5 | Abgewiesen in der Phase mit Domainregeln (gesamte Phase, also auch die frühen Versuche): `[WdNisSvc] → 4.209.164.61:443`, `[WpnService] → 172.211.123.248:443`, `[wuauserv] → 135.233.95.144:443`, `135.232.92.137:443`, `23.193.116.211:80`, `23.193.116.208:80`, `[DiagTrack] → 4.150.223.98:443` | Defender-Ziele fehlen; die `wuauserv`-Ziele stammen vermutlich aus den frühen Versuchen (nicht getrennt ausgewertet) |
+
+**Ergebnis und Grenzen:**
+- **Gemessen:** Mit Domainregeln und aktivem Netzwerkschutz gelingen die Update-Suche (ab dem dritten Versuch) und BITS zu Microsoft; `example.org` bleibt gesperrt. Die ersten Versuche scheitern (die Adressen werden erst aus beobachteten DNS-Antworten gelernt, Microsoft beschreibt das als Race).
+- **Nicht gemessen:** Verhalten nach einem Neustart (die gelernten Adressen werden laut Microsoft verworfen), die eigentliche Installation von Updates, Dauerbetrieb, Defender-Signaturupdate, fremder Virenschutz (die Voraussetzung „Defender läuft“ gilt dann nicht), DoH, Proxy.
+- **Kosten:** Abhängigkeit von Defender und Netzwerkschutz, eine zu pflegende Domainliste, Verzögerung der ersten Verbindung.
+
+## Umsetzung `-AllowWindowsUpdate`, Nachtest (Nachtrag, 20:22 bis 20:28)
+
+Umsetzung der Domainfreigabe als Option im Installer (Netzwerkschutz im **Audit-Modus**), Skripte mit SHA-256 in die VM kopiert und geprüft (11 Dateien `OK`). Transcripts `transcript-awu.txt` und `transcript-awu2.txt`.
+
+| Nr. | Messwert (wörtlich) | Ergebnis |
+|---|---|---|
+| U-1 | `Install-EdepL1.ps1 -Enforce -DeployAppControlAudit -AllowWindowsUpdate -AllowProgram …msedge.exe`: „Lege Update-Domainregeln an (9 Domains, Stand 2026-10-03)“; Fingerabdruck: `Netzwerkschutz=2, Schlüsselwörter=9, Update-Regeln=9, ausgehend=Block, EDEP-Regeln=42` (vorher `0, 0, 0, Allow, 0`) | OK |
+| U-2 | `Test-EdepL1.ps1`: `15/15`, **`WARN EDEP-TEL-04 Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen`** | OK |
+| U-3 | Wirkung (Cache zurückgesetzt): `Suche 1: ERFOLG (12 s)`, `Suche 2: ERFOLG (26 s)`, `Suche 3: ERFOLG (4 s)`; `BITS Microsoft 1: FEHLER`, `BITS Microsoft 2: ERFOLG (2 s)`; **`BITS example.org: FEHLER`**; `Test-EdepL1 -ProbeUpdates`: `WARN` (Zwischenspeicher möglich), `15/15` | OK (erster BITS-Versuch scheitert, Race) |
+| U-4 | Zweiter Install-Lauf: `Netzwerkschutz=2, Schlüsselwörter=9, Update-Regeln=9, ausgehend=Block, EDEP-Regeln=42` | idempotent |
+| U-5 | Erste Rücknahme: `ausgehend=Allow`, 0 Schlüsselwörter, 0 Regeln, 0 EDEP-Regeln, aber **`Netzwerkschutz=2` statt `0`**; der Vergleich zeigt genau diese Zeile | **ABW** (Fehler im ersten Entwurf von `Restore`, behoben) |
+| U-6 | Nach der Korrektur (Wert der ältesten Sicherung mit `networkProtectionChanged`), Zustand wie in U-5: `Restore-EdepL1.ps1` ergibt `Netzwerkschutz=0` | OK |
+| U-7 | Frischer Durchlauf: Install (`2, 9, 9, Block, 42`), Restore: `Netzwerkschutz=0, Schlüsselwörter=0, Update-Regeln=0, ausgehend=Allow, EDEP-Regeln=0`; Vergleich mit der Rücknahme aus U-6 leer | OK |
+
+**Grenzen:** Neustart-Verhalten, Installation von Updates, Defender-Signaturupdate, fremder Virenschutz und Dauerbetrieb sind **nicht gemessen** (E-89). Der Test lief nur im Audit-Modus des Netzwerkschutzes (der Block-Modus war im Vorversuch ebenfalls erfolgreich).
+
 ## Abweichungen und Auslassungen
 
 | Nr. | Was weicht ab oder fehlt                                                                                                                                                                                                                                                                                                                               | Vermutete Ursache / Befund                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Folge                                                                                                                                                    |

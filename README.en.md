@@ -80,7 +80,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\Test-EdepL1.ps1
 
 # 4. After reviewing the firewall log: block outbound by default
-.\Install-EdepL1.ps1 -Enforce -DeployAppControlAudit `
+.\Install-EdepL1.ps1 -Enforce -DeployAppControlAudit -AllowWindowsUpdate `
     -AllowProgram "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
 
 # Undo (restores the state before the first application)
@@ -92,15 +92,28 @@ Windows core networking, the programs listed under `-AllowProgram` and programs 
 Windows rules (Store apps). PowerShell, `curl.exe`, `certutil` and the other Annex A tools are
 blocked outbound, including for `Install-Module` and `winget` scripts.
 
-**Known limit (measured, [run 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [run 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md)):**
-under `-Enforce`, **Windows Update, Defender signature updates and BITS were not reachable** on
-Windows 11 Enterprise 25H2 and Pro 26H2, although `Test-EdepL1` reports 15/15. The allow rules for these
-services do not take effect there ([E-73, E-74](docs/EVIDENCE.md)). Use enforce mode only with a
-maintenance window and keep `Restore-EdepL1.ps1` ready. After a restore, verify the state with
-`Test-EdepL1.ps1`.
+**Updates under `-Enforce` (measured, [run 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [run 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md)):**
+without further measures, **Windows Update, Defender signature updates and BITS are not reachable** under
+`-Enforce`. Allow rules with `-Service` do not take effect, because these services connect with the calling
+user's token and without a service SID ([E-73, E-84](docs/EVIDENCE.md)). `Test-EdepL1` then reports
+**EDEP-TEL-04 = FAIL** (14/15).
+
+With **`-AllowWindowsUpdate`** the installer instead creates rules "program `svchost.exe`, TCP 80/443, only to the
+update domains" (dynamic keywords of the Windows firewall; domain list with source and date in
+`EdepL1.Common.ps1`). Measured: update search and BITS to Microsoft succeed, `svchost.exe` reaches nothing else
+([E-88](docs/EVIDENCE.md)). **Costs and limits:**
+- Defender's **network protection** must be running; the installer sets it to audit mode if it was off, and
+  `Restore` sets it back. This does not work with third-party antivirus (unmeasured).
+- The firewall learns the addresses from observed DNS answers and discards them on restart. **The first
+  connections may fail** (measured: one BITS attempt), later ones succeed.
+- Unmeasured: behaviour after a restart, installing updates, Defender signatures (`WdNisSvc`, `MDCoreSvc` are still
+  rejected), long-term operation ([E-89](docs/EVIDENCE.md)).
+- Use enforce mode only with a maintenance window and keep `Restore-EdepL1.ps1` ready. After a restore, verify the
+  state with `Test-EdepL1.ps1`.
 
 The installer and `Restore-EdepL1` ask before every step (installer: five, six with
-`-DeployAppControlAudit`; restore: four plus one per App Control policy). Confirm with the letter
+`-DeployAppControlAudit`, one more with `-AllowWindowsUpdate`; restore: four plus one each for App Control policies,
+keywords and network protection, where present). Confirm with the letter
 shown: on German Windows **`J`** (or `A` for all), on English `y`. For scripts use `-Confirm:$false`.
 `-AllowProgram` refuses paths that non-admins can modify (EDEP-NET-10).
 

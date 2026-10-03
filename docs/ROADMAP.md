@@ -12,7 +12,9 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] Lauf 1 (Hyper-V-VM, Windows 11 Enterprise 25H2, 2026-10-03): vollständiger Durchlauf Phase A bis F, 15/15 im Enforce-Modus. Befunde: Updates, Defender-Signaturen und BITS unter Enforce nicht erreichbar (Dienstregeln greifen nicht), `Install` nicht idempotent bei App Control, Rücknahme einmal wirkungslos (nicht reproduziert). Protokoll unter `conformance/runs/`
 - [x] TEL-04 prüft die Wirkung (`-ProbeUpdates`), in der VM nachgemessen (Nachtest in Lauf 1)
 - [x] Ursache der Dienstregeln eingegrenzt: Der Update-Client verbindet mit dem Token des aufrufenden Benutzers ohne Dienst-SID (Mitschnitt, E-84); SYSTEM-initiierte Scans und BITS offen
-- [ ] Lösung für die Erreichbarkeit von Updates unter Enforce entwerfen und messen (Dienstregel greift nicht; Programmregel für `svchost.exe` ist breit; Freigabe nach Domainnamen prüfen)
+- [x] Freigabe nach Domainnamen (Programm `svchost.exe` + Dynamic Keywords) in der VM gemessen: Suche und BITS zu Microsoft gelingen, `example.org` bleibt gesperrt (E-88); setzt Netzwerkschutz voraus
+- [x] Domainfreigabe als Option `-AllowWindowsUpdate` umgesetzt und in der VM nachgemessen (Audit-Modus, Idempotenz, Rücknahme; E-88, E-90)
+- [ ] Domainfreigabe weiter messen: nach Neustart, mit Updateinstallation, Defender-Signaturen (`WdNisSvc`, `MDCoreSvc`), fremder Virenschutz, DoH (E-89)
 - [ ] Wirkung der Sperrregel für `DiagTrack` (TEL-02) im Audit-Modus messen, `MpDefenderCoreService.exe` in die Defender-Freigabe aufnehmen und prüfen (E-85, E-86)
 - [x] `Install-EdepL1` idempotent bei App Control, `Restore-EdepL1` still bei bereits entfernten Richtlinien (Nachtest in Lauf 1)
 - [x] Lauf 2 auf Windows 11 Pro 26H2 (Build 26300, korrigierter Stand, nicht committet), 2026-10-03: 15/15 mit TEL-01/TEL-04 WARN, Edge unter Enforce lädt, Updates und BITS auch dort blockiert, Neustart-Vorfall erneut einmal. Protokoll unter `conformance/runs/`

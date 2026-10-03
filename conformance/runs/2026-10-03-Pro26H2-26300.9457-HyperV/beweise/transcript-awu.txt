@@ -1,0 +1,120 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003202209
+Benutzername: test\test1
+RunAs-Benutzer: test\test1
+Konfigurationsname: 
+Computer: TEST (Microsoft Windows NT 10.0.26300.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 11392
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+20:22:09  Hashes der 11 Dateien stimmen
+20:22:11  Fingerabdruck vorher: Netzwerkschutz=0, Schlüsselwörter=0, Update-Regeln=0, ausgehend=Allow, EDEP-Regeln=0
+20:22:11  === 1) Enforce mit -AllowWindowsUpdate ===
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-132020
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261003-202211
+==> Firewall-Profile: eingehend Block, ausgehend Block, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Lege Update-Domainregeln an (9 Domains, Stand 2026-10-03)
+==> Setze Telemetrie-Richtlinien
+WARNUNG: Edition 'Professional': AllowTelemetry=0 wirkt wie 1 (Required). Das ist die niedrigste Stufe, die diese Edition zulässt (EDEP-TEL-01).
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: ENFORCE).
+Sicherung:      C:\ProgramData\EDEP\backup\20261003-202211
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261003-202211'
+20:22:15  Fingerabdruck nach-install: Netzwerkschutz=2, Schlüsselwörter=9, Update-Regeln=9, ausgehend=Block, EDEP-Regeln=42
+--- Test-EdepL1 ---
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 140 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  19 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+WARN    EDEP-TEL-01  AllowTelemetry=0, wirksam auf 'Professional': 1 (Required) — niedrigste Stufe dieser Edition
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen (mit -ProbeUpdates messen)
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-132020
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 15/15 erfüllt
+20:22:28  === 2) Wirkung (Cache zurückgesetzt) ===
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+20:22:47  Suche 1: ERFOLG (12 s)
+20:23:12  Suche 2: ERFOLG (26 s)
+20:23:17  Suche 3: ERFOLG (4 s)
+20:23:19  BITS Microsoft 1: FEHLER Die Serververbindung konnte nicht hergestellt werden.
+ (2 s)
+20:23:21  BITS Microsoft 2: ERFOLG (2 s)
+20:23:24  BITS example.org (Gegenprobe, erwartet FEHLER): FEHLER Die Serververbindung konnte nicht hergestellt werden.
+ (2 s)
+--- Test-EdepL1 -ProbeUpdates ---
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 140 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  19 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+WARN    EDEP-TEL-01  AllowTelemetry=0, wirksam auf 'Professional': 1 (Required) — niedrigste Stufe dieser Edition
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+
+WARN    EDEP-TEL-04  Update-Suche gelungen; sie kann aus dem Zwischenspeicher stammen und beweist keine dauerhafte Erreichbarkeit
+WARN    EDEP-TEL-04  Update-Suche gelungen; sie kann aus dem Zwischenspeicher stammen und beweist keine dauerhafte Erreichbarkeit
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-132020
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 15/15 erfüllt
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 15/15 erfüllt
+20:24:04  === 3) Idempotenz: zweiter Install-Lauf ===
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-132020
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261003-202405
+==> Firewall-Profile: eingehend Block, ausgehend Block, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Lege Update-Domainregeln an (9 Domains, Stand 2026-10-03)
+==> Setze Telemetrie-Richtlinien
+WARNUNG: Edition 'Professional': AllowTelemetry=0 wirkt wie 1 (Required). Das ist die niedrigste Stufe, die diese Edition zulässt (EDEP-TEL-01).
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: ENFORCE).
+Sicherung:      C:\ProgramData\EDEP\backup\20261003-202405
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261003-202405'
+20:24:13  Fingerabdruck nach-2-install: Netzwerkschutz=2, Schlüsselwörter=9, Update-Regeln=9, ausgehend=Block, EDEP-Regeln=42
+20:24:13  === 4) Rücknahme ===
+Sicherung vom 2026-10-03T13:20:20.6679314+02:00 (TEST)
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+20:24:46  Fingerabdruck nachher: Netzwerkschutz=2, Schlüsselwörter=0, Update-Regeln=0, ausgehend=Allow, EDEP-Regeln=0
+
+InputObject   :                      "netzwerkschutz":  2
+SideIndicator : =>
+
+
+InputObject   :                      "netzwerkschutz":  0
+SideIndicator : <=
+
+20:24:46  Vergleich vorher/nachher oben (keine Zeilen = identisch)
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003202446
+**********************

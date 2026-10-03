@@ -168,3 +168,29 @@ wird hier offen geführt, damit niemand es als Versehen „entdecken“ muss:
 
 Wer EDEP einsetzt, übernimmt diese Abwägungen bewusst. Betreiberdokumentation und
 Kundenkommunikation **müssen** sie nennen.
+
+## DD-13 — Update-Erreichbarkeit unter „ausgehend Block“: Domainregeln als Option
+
+**Problem.** Unter `-Enforce` waren Windows Update, Defender-Signaturen und BITS nicht erreichbar (gemessen auf drei
+Umgebungen, E-74). Die Dienstregeln aus dem ersten Konzept (Erlaubnis nach Dienst-SID) greifen nicht, weil
+`wuauserv` und BITS bei Aufträgen aus dem Benutzerprozess mit dem **Token des Benutzers und ohne Dienst-SID**
+verbinden (Mitschnitt, E-84).
+
+**Entscheidung.** `Install-EdepL1.ps1 -AllowWindowsUpdate` legt Regeln „Programm `svchost.exe`, TCP 80/443, nur zu
+den Update-Domains“ an (Dynamic Keywords der Windows-Firewall). Die Option ist **standardmäßig aus**. Der
+Netzwerkschutz von Defender, den die Funktion voraussetzt, wird auf den **Audit-Modus** gestellt (nur wenn er aus
+war) und beim Restore zurückgestellt. EDEP-TEL-04 meldet unter Enforce ohne diese Regeln **FAIL**.
+
+**Verworfen.**
+- *Programmregel `svchost.exe` auf Port 80/443 ohne Domain:* wirksam, aber jeder Dienst in `svchost.exe` erreicht
+  dann jedes Ziel auf diesen Ports.
+- *Dienstregeln:* greifen nicht (E-84).
+- *Option immer an:* Sie würde den Netzwerkschutz stillschweigend einschalten und L1 von Defender abhängig machen.
+- *Wartungsmodus mit manuell geöffneter Regel:* hätte die Rücknahme zur Pflicht gemacht, die in 2 von 5 Versuchen
+  versagt hat (E-76).
+
+**Folgen und Grenzen.** Die Firewall lernt die Adressen aus beobachteten DNS-Antworten und verwirft sie beim Neustart;
+erste Verbindungen können scheitern. Es gilt die Microsoft-Voraussetzung (Defender läuft, Netzwerkschutz an, DoH
+aus, [Microsoft Learn](https://learn.microsoft.com/windows/security/operating-system-security/network-security/windows-firewall/dynamic-keywords)).
+Die Domainliste stammt aus Microsofts Liste für Unternehmensnetze (Stand 2026-10-03) und ist nicht auf Vollständigkeit
+für jedes System geprüft. Ungemessen: Neustart, Updateinstallation, Defender-Signaturen, fremder Virenschutz (E-89).

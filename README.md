@@ -47,7 +47,7 @@ richtet sich nach der Windows-Anzeigesprache; `-Language de` oder `-Language en`
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Stimmt das, was hier steht?                 | Jede technische Aussage hat eine Quelle oder einen Messwert: [Nachweisregister](docs/EVIDENCE.md). Was noch nicht geprüft ist, steht dort offen als ⏳. |
 | Woher stammen die Fakten?                   | 28 verlinkte Quellen, überwiegend Microsoft Learn und MITRE ATT&CK: [SPEC, Anhang B](SPEC.md#anhang-b--quellen)                                         |
-| Was kann EDEP **nicht**?                    | Restrisiken und acht bekannte Umgehungen, jede mit Test: [SPEC 3.3/3.4](SPEC.md#34-bekannte-umgehungen-normativ)                                      |
+| Was kann EDEP **nicht**?                    | Restrisiken und acht bekannte Umgehungen, jede mit Test: [SPEC 3.3/3.4](SPEC.md#34-bekannte-umgehungen-normativ)                                        |
 | Wo weicht EDEP von Microsoft ab, und warum? | [DD-12](docs/DESIGN-DECISIONS.md)                                                                                                                       |
 | Wie prüfe ich es selbst?                    | In 5 Minuten ohne Risiko, in 30 Minuten in einer VM: [Selbst prüfen](docs/VERIFY-YOURSELF.md)                                                           |
 | Welche Fehler gab es schon?                 | [Errata](docs/EVIDENCE.md#errata)                                                                                                                       |
@@ -79,7 +79,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\Test-EdepL1.ps1
 
 # 4. Nach Auswertung des Firewall-Logs: ausgehend standardmäßig blockieren
-.\Install-EdepL1.ps1 -Enforce -DeployAppControlAudit `
+.\Install-EdepL1.ps1 -Enforce -DeployAppControlAudit -AllowWindowsUpdate `
     -AllowProgram "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
 
 # Rückgängig (stellt den Zustand vor der ersten Anwendung her)
@@ -92,15 +92,28 @@ Programme mit eigenen Windows-Regeln (Store-Apps). PowerShell, `curl.exe`, `cert
 andere Anhang-A-Werkzeuge sind ausgehend gesperrt, auch für `Install-Module` und
 `winget`-Skripte.
 
-**Bekannte Grenze (gemessen, [Lauf 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [Lauf 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md)):**
-Unter `-Enforce` waren auf Windows 11 Enterprise 25H2 und Pro 26H2 **Windows Update, Defender-Signaturupdates
-und BITS nicht erreichbar**, obwohl `Test-EdepL1` 15/15 meldet. Die Erlaubnisregeln für diese
-Dienste greifen dort nicht ([E-73, E-74](docs/EVIDENCE.md)). Den Enforce-Modus deshalb nur
-mit einem Wartungsfenster einsetzen und `Restore-EdepL1.ps1` bereithalten. Nach einer
-Wiederherstellung den Zustand mit `Test-EdepL1.ps1` prüfen.
+**Updates unter `-Enforce` (gemessen, [Lauf 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [Lauf 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md)):**
+Ohne weitere Maßnahme sind unter `-Enforce` **Windows Update, Defender-Signaturupdates und BITS nicht
+erreichbar**. Die Erlaubnisregeln mit `-Service` greifen nicht, weil diese Dienste mit dem Token des
+aufrufenden Benutzers und ohne Dienst-SID verbinden ([E-73, E-84](docs/EVIDENCE.md)). `Test-EdepL1` meldet
+dann **EDEP-TEL-04 = FAIL** (14/15).
+
+Mit **`-AllowWindowsUpdate`** legt der Installer stattdessen Regeln „Programm `svchost.exe`, TCP 80/443, nur zu
+den Update-Domains“ an (Dynamic Keywords der Windows-Firewall, Domainliste mit Quelle und Stand in
+`EdepL1.Common.ps1`). Gemessen: Update-Suche und BITS zu Microsoft gelingen, `svchost.exe` erreicht sonst nichts
+([E-88](docs/EVIDENCE.md)). **Kosten und Grenzen:**
+- Der **Netzwerkschutz von Defender** muss laufen; der Installer stellt ihn auf den Audit-Modus, falls er aus war, und
+  `Restore` stellt ihn zurück. Mit fremdem Virenschutz geht das nicht (ungemessen).
+- Die Firewall lernt die Adressen aus beobachteten DNS-Antworten und verwirft sie beim Neustart. **Die ersten
+  Verbindungen können scheitern** (gemessen: ein BITS-Versuch), spätere gelingen.
+- Ungemessen: Verhalten nach einem Neustart, Installation von Updates, Defender-Signaturen (`WdNisSvc`, `MDCoreSvc`
+  werden weiter abgewiesen), Dauerbetrieb ([E-89](docs/EVIDENCE.md)).
+- Den Enforce-Modus nur mit einem Wartungsfenster einsetzen und `Restore-EdepL1.ps1` bereithalten. Nach einer
+  Wiederherstellung den Zustand mit `Test-EdepL1.ps1` prüfen.
 
 Installer und `Restore-EdepL1` fragen vor jedem Schritt nach (Installer: fünf, mit
-`-DeployAppControlAudit` sechs; `Restore`: vier plus eine je App-Control-Richtlinie). Bestätigt wird
+`-DeployAppControlAudit` sechs, mit `-AllowWindowsUpdate` eine weitere; `Restore`: vier plus je eine für App-Control-Richtlinien,
+Schlüsselwörter und Netzwerkschutz, soweit vorhanden). Bestätigt wird
 mit dem angezeigten Buchstaben: auf deutschem Windows **`J`** (oder `A` für alle), auf englischem
 `y`. Für Skripte: `-Confirm:$false`.
 
