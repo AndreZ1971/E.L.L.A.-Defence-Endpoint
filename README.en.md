@@ -92,7 +92,9 @@ Windows core networking, the programs listed under `-AllowProgram` and programs 
 Windows rules (Store apps). PowerShell, `curl.exe`, `certutil` and the other Annex A tools are
 blocked outbound, including for `Install-Module` and `winget` scripts.
 
-**Updates under `-Enforce` (measured, [run 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [run 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md)):**
+**Updates under `-Enforce` (measured, [run 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [run 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md), [run 3](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-Lauf3/run.md)):**
+**In short: use enforce mode only if updates have their own defined path (WSUS, Intune, proxy). For single machines without one, audit mode, the LOLBin and telemetry blocks and App Control (audit) are the evidenced core.** The `-AllowWindowsUpdate` option improves things but is **not reliable** (see below).
+
 without further measures, **Windows Update, Defender signature updates and BITS are not reachable** under
 `-Enforce`. Allow rules with `-Service` do not take effect, because these services connect with the calling
 user's token and without a service SID ([E-73, E-84](docs/EVIDENCE.md)). `Test-EdepL1` then reports
@@ -100,8 +102,8 @@ user's token and without a service SID ([E-73, E-84](docs/EVIDENCE.md)). `Test-E
 
 With **`-AllowWindowsUpdate`** the installer instead creates rules "program `svchost.exe`, TCP 80/443, only to the
 update domains" (dynamic keywords of the Windows firewall; domain list with source and date in
-`EdepL1.Common.ps1`). Measured: the **update search** succeeds (after one failed attempt, also after a restart without cache),
-`svchost.exe` reaches nothing else ([E-88](docs/EVIDENCE.md)). **BITS to Microsoft** succeeds from the second attempt, **Defender signature updates** only with
+`EdepL1.Common.ps1`). Measured: on Pro the **update search** succeeded from the second attempt (also after a restart without cache),
+`svchost.exe` reaches nothing else ([E-88](docs/EVIDENCE.md)). **On Enterprise (run 3) all nine attempts failed in the first measurement block** (search, BITS, `Update-MpSignature`); eleven minutes later the search succeeded from the second attempt; the cause is unknown. **So it can also fail completely.** **BITS to Microsoft** succeeds from the second attempt, **Defender signature updates** only with
 repeated attempts: the firewall learns the addresses from the DNS answer with a delay of a few seconds, an immediate first
 attempt is rejected (E-12 to E-14, E-89). **Costs and limits:**
 - Defender's **network protection** must be running; the installer sets it to audit mode if it was off, and

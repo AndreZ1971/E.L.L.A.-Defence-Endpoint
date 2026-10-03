@@ -1,0 +1,62 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003213909
+Benutzername: DESKTOP-QKILAOK\test
+RunAs-Benutzer: DESKTOP-QKILAOK\test
+Konfigurationsname: 
+Computer: DESKTOP-QKILAOK (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 13036
+PSVersion: 5.1.26100.9549
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9549
+BuildVersion: 10.0.26100.9549
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+21:39:09  === PHASE E: Restore ===
+Sicherung vom 2026-10-03T21:19:47.9916758+02:00 (DESKTOP-QKILAOK)
+WhatIf: Ausführen des Vorgangs "Import aus C:\ProgramData\EDEP\backup\20261003-211947\firewall.wfw" für das Ziel "Windows-Firewall".
+WhatIf: Ausführen des Vorgangs "Wiederherstellen aus C:\ProgramData\EDEP\backup\20261003-211947\auditpol.csv" für das Ziel "Überwachungsrichtlinie".
+WhatIf: Ausführen des Vorgangs "Vorherige Werte wiederherstellen" für das Ziel "Telemetrie-Richtlinien".
+WhatIf: Ausführen des Vorgangs "Starttyp Automatic" für das Ziel "DiagTrack".
+WhatIf: Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {a017028e-6c8f-47a4-a0ad-c1306d8ad257}".
+WhatIf: Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {b33679d1-d010-4b0c-850f-bba68e32dc48}".
+WhatIf: Ausführen des Vorgangs "Entfernen" für das Ziel "Update-Domain-Schlüsselwörter".
+WhatIf: Ausführen des Vorgangs "Zurück auf Disabled" für das Ziel "Netzwerkschutz".
+
+WhatIf: Es wurde nichts geändert.
+21:39:09  Restore ausführen
+Sicherung vom 2026-10-03T21:19:47.9916758+02:00 (DESKTOP-QKILAOK)
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+R-E3 (leer = identisch zu vorher):
+--- Test-EdepL1 nach Restore (erwartet 6/15 wie vorher) ---
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  16 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 7/15 erfüllt
+Netzwerkschutz: 0 (vorher 0)
+Schlüsselwörter: 0 (erwartet 0)
+EDEP-Regeln: 0 (erwartet 0)
+R-A4 curl: 200
+21:39:14  Neustart in 20 s (Restart-Computer, normal)
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003213914
+**********************

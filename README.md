@@ -92,7 +92,9 @@ Programme mit eigenen Windows-Regeln (Store-Apps). PowerShell, `curl.exe`, `cert
 andere Anhang-A-Werkzeuge sind ausgehend gesperrt, auch für `Install-Module` und
 `winget`-Skripte.
 
-**Updates unter `-Enforce` (gemessen, [Lauf 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [Lauf 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md)):**
+**Updates unter `-Enforce` (gemessen, [Lauf 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [Lauf 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md), [Lauf 3](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-Lauf3/run.md)):**
+**Kurzfassung: Den Enforce-Modus nur einsetzen, wenn die Updates einen eigenen, definierten Weg haben (WSUS, Intune, Proxy). Für Einzelrechner ohne solchen Weg sind Audit-Modus, LOLBin- und Telemetrie-Sperre sowie App Control (Audit) der belegte Kern.** Die Option `-AllowWindowsUpdate` verbessert die Lage, ist aber **nicht zuverlässig** (siehe unten).
+
 Ohne weitere Maßnahme sind unter `-Enforce` **Windows Update, Defender-Signaturupdates und BITS nicht
 erreichbar**. Die Erlaubnisregeln mit `-Service` greifen nicht, weil diese Dienste mit dem Token des
 aufrufenden Benutzers und ohne Dienst-SID verbinden ([E-73, E-84](docs/EVIDENCE.md)). `Test-EdepL1` meldet
@@ -100,8 +102,8 @@ dann **EDEP-TEL-04 = FAIL** (14/15).
 
 Mit **`-AllowWindowsUpdate`** legt der Installer stattdessen Regeln „Programm `svchost.exe`, TCP 80/443, nur zu
 den Update-Domains“ an (Dynamic Keywords der Windows-Firewall, Domainliste mit Quelle und Stand in
-`EdepL1.Common.ps1`). Gemessen: Die **Update-Suche** gelingt (nach einem Fehlversuch, auch nach einem Neustart ohne Cache), `svchost.exe`
-erreicht sonst nichts ([E-88](docs/EVIDENCE.md)). **BITS zu Microsoft** gelingt ab dem zweiten Versuch, **Defender-Signaturupdates** nur mit Wiederholungen: Die Firewall lernt die Adressen mit einigen Sekunden Verzögerung aus der DNS-Antwort, ein sofortiger erster Versuch wird abgewiesen (E-12 bis E-14, E-89). **Kosten und Grenzen:**
+`EdepL1.Common.ps1`). Gemessen: Auf Pro gelang die **Update-Suche** ab dem zweiten Versuch (auch nach einem Neustart ohne Cache), `svchost.exe`
+erreicht sonst nichts ([E-88](docs/EVIDENCE.md)). **Auf Enterprise (Lauf 3) scheiterten im ersten Messblock alle neun Versuche** (Suche, BITS, `Update-MpSignature`), elf Minuten später gelang die Suche ab dem zweiten Versuch; die Ursache ist unbekannt. **Es kann also auch ganz ausbleiben.** **BITS zu Microsoft** gelingt ab dem zweiten Versuch, **Defender-Signaturupdates** nur mit Wiederholungen: Die Firewall lernt die Adressen mit einigen Sekunden Verzögerung aus der DNS-Antwort, ein sofortiger erster Versuch wird abgewiesen (E-12 bis E-14, E-89). **Kosten und Grenzen:**
 - Der **Netzwerkschutz von Defender** muss laufen; der Installer stellt ihn auf den Audit-Modus, falls er aus war, und
   `Restore` stellt ihn zurück. Mit fremdem Virenschutz geht das nicht (ungemessen).
 - Die Firewall lernt die Adressen aus beobachteten DNS-Antworten und verwirft sie beim Neustart. **Die ersten

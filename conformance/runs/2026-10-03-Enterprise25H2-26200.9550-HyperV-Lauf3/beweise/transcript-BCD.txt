@@ -1,0 +1,182 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003211946
+Benutzername: DESKTOP-QKILAOK\test
+RunAs-Benutzer: DESKTOP-QKILAOK\test
+Konfigurationsname: 
+Computer: DESKTOP-QKILAOK (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 13036
+PSVersion: 5.1.26100.9549
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9549
+BuildVersion: 10.0.26100.9549
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+21:19:46  === PHASE B: Audit-Modus ===
+WhatIf: Ausführen des Vorgangs "Aktuellen Zustand sichern" für das Ziel "C:\ProgramData\EDEP\backup\20261003-211946".
+WhatIf: Ausführen des Vorgangs "Aktivieren, Inbound=Block, Outbound=Allow, LogBlocked" für das Ziel "Alle Firewall-Profile".
+WhatIf: Ausführen des Vorgangs "Neu anlegen" für das Ziel "Regelgruppe EDEP-L1".
+WhatIf: Ausführen des Vorgangs "Setzen" für das Ziel "Telemetrie-Richtlinien (HKLM\SOFTWARE\Policies)".
+WhatIf: Ausführen des Vorgangs "Filterplattformverbindung: Fehler protokollieren" für das Ziel "Überwachungsrichtlinie".
+WhatIf: Ausführen des Vorgangs "Richtlinie DefaultWindows_Audit aktivieren" für das Ziel "App Control for Business".
+
+WhatIf: Es wurde nichts geändert.
+R-B2 (leer = identisch):
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261003-211947
+==> Firewall-Profile: eingehend Block, ausgehend Allow, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Setze Telemetrie-Richtlinien
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: AUDIT).
+Sicherung:      C:\ProgramData\EDEP\backup\20261003-211947
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261003-211947'
+
+Audit-Modus: EDEP-NET-03 ist noch nicht erfüllt. Firewall-Log auswerten, dann mit -Enforce erneut ausführen.
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  19 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 14/15 erfüllt
+R-B5 curl: 000
+R-B6 x.exe: 200
+21:20:28  R-B7: 5157 für curl.exe / x.exe
+
+TimeCreated         Anwendung                                                         
+-----------         ---------                                                         
+03.10.2026 21:19:58 	Anwendungsname:	\device\harddiskvolume3\windows\system32\curl.exe
+03.10.2026 21:19:58 	Anwendungsname:	\device\harddiskvolume3\windows\system32\curl.exe
+21:20:29  === PHASE C: Enforce mit -AllowWindowsUpdate ===
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-211947
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261003-212029
+==> Firewall-Profile: eingehend Block, ausgehend Block, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Lege Update-Domainregeln an (9 Domains, Stand 2026-10-03)
+==> Setze Telemetrie-Richtlinien
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: ENFORCE).
+Sicherung:      C:\ProgramData\EDEP\backup\20261003-212029
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261003-212029'
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 149 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  20 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen (mit -ProbeUpdates messen)
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 15/15 erfüllt
+R-C3 x.exe: 000
+R-C4 curl: 000
+21:21:32  R-C5: 5157 für curl.exe / x.exe
+
+TimeCreated         Anwendung                                                                   
+-----------         ---------                                                                   
+03.10.2026 21:21:02 	Anwendungsname:	\device\harddiskvolume3\windows\system32\curl.exe          
+03.10.2026 21:21:02 	Anwendungsname:	\device\harddiskvolume3\windows\system32\curl.exe          
+03.10.2026 21:21:02 	Anwendungsname:	\device\harddiskvolume3\users\test\appdata\local\temp\x.exe
+03.10.2026 21:21:02 	Anwendungsname:	\device\harddiskvolume3\users\test\appdata\local\temp\x.exe
+R-C8: dmwappushservice, DiagTrack
+21:21:33  R-C9 (erwartet Abbruch mit EDEP-NET-10):
+PS C:\edep-run3\E.L.L.A.-Defence-Endpoint-0.1.0-draft.2\baseline\L1> TerminatingError(): "AllowProgram 'C:\Users\test\AppData\Local\edep-test.exe' ist für Nicht-Administratoren änderbar und darf nicht freigegeben werden (EDEP-NET-10):
+  C:\Users\test\AppData\Local\edep-test.exe schreibbar für DESKTOP-QKILAOK\test
+  C:\Users\test\AppData\Local gehört DESKTOP-QKILAOK\test
+  C:\Users\test\AppData\Local schreibbar für DESKTOP-QKILAOK\test
+  C:\Users\test\AppData gehört DESKTOP-QKILAOK\test
+  C:\Users\test\AppData schreibbar für DESKTOP-QKILAOK\test
+  C:\Users\test schreibbar für DESKTOP-QKILAOK\test
+Programm systemweit (z. B. unter C:\Program Files) installieren und erneut versuchen."
+AllowProgram 'C:\Users\test\AppData\Local\edep-test.exe' ist für Nicht-Administratoren änderbar und darf nicht freigegeben werden (EDEP-NET-10):
+21:21:33  R-C7: Update-Suche, Cache zurückgesetzt
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+21:21:52  Suche 1: FEHLER 0x80072EFD (12 s)
+21:21:59  Suche 2: FEHLER 0x80072EFD (2 s)
+21:22:05  Suche 3: FEHLER 0x80072EFD (2 s)
+21:22:08  BITS Microsoft 1: FEHLER (3 s)
+21:22:15  BITS Microsoft 2: FEHLER (2 s)
+21:22:21  BITS Microsoft 3: FEHLER (2 s)
+PS C:\edep-run3\E.L.L.A.-Defence-Endpoint-0.1.0-draft.2\baseline\L1> TerminatingError(Update-MpSignature): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Das Viren- und Spywaredefinitionsupdate wurde mit Fehlern abgeschlossen.."
+21:22:21  Update-MpSignature 1 : HRESULT 0x80072efd,Update-MpSignature
+PS C:\edep-run3\E.L.L.A.-Defence-Endpoint-0.1.0-draft.2\baseline\L1> TerminatingError(Update-MpSignature): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Das Viren- und Spywaredefinitionsupdate wurde mit Fehlern abgeschlossen.."
+21:22:28  Update-MpSignature 2 : HRESULT 0x80072efd,Update-MpSignature
+PS C:\edep-run3\E.L.L.A.-Defence-Endpoint-0.1.0-draft.2\baseline\L1> TerminatingError(Update-MpSignature): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Das Viren- und Spywaredefinitionsupdate wurde mit Fehlern abgeschlossen.."
+21:22:34  Update-MpSignature 3 : HRESULT 0x80072efd,Update-MpSignature
+--- Test-EdepL1 -ProbeUpdates ---
+PS C:\edep-run3\E.L.L.A.-Defence-Endpoint-0.1.0-draft.2\baseline\L1> TerminatingError(): "Ausnahme von HRESULT: 0x80072EFD"
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 149 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  20 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+
+FAIL    EDEP-TEL-04  Update-Suche scheitert (0x80072EFD): Updates sind unter der ausgehenden Sperre nicht erreichbar
+FAIL    EDEP-TEL-04  Update-Suche scheitert (0x80072EFD): Updates sind unter der ausgehenden Sperre nicht erreichbar
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 14/15 erfüllt
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 14/15 erfüllt
+21:23:21  === PHASE D ===
+21:23:23  BITS D1 B-01: example.org (SPEC: gelingt; gemessen: blockiert): FEHLER (2 s)
+R-D4: Regel angelegt
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 150 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+FAIL    EDEP-NET-04  Ausgehende Authenticated-Bypass-Regeln heben Blockaden auf: EDEP-Test-B05
+FAIL    EDEP-NET-04  Ausgehende Authenticated-Bypass-Regeln heben Blockaden auf: EDEP-Test-B05
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  21 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen (mit -ProbeUpdates messen)
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 14/15 erfüllt
+Reste (muss leer sein): 0
+21:24:05  R-C6 / R-D2: Edge gestartet (unter Enforce), bitte prüfen, ob die Seite lädt
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003212405
+**********************

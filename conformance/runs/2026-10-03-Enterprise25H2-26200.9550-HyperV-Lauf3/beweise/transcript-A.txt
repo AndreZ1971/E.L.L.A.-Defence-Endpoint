@@ -1,0 +1,112 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003211726
+Benutzername: DESKTOP-QKILAOK\test
+RunAs-Benutzer: DESKTOP-QKILAOK\test
+Konfigurationsname: 
+Computer: DESKTOP-QKILAOK (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 13036
+PSVersion: 5.1.26100.9549
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9549
+BuildVersion: 10.0.26100.9549
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+=== V4: Update-Pause über die Registrierung ===
+
+
+PauseUpdatesExpiryTime     : 2026-10-10T19:17:26Z
+PauseFeatureUpdatesEndTime : 2026-10-10T19:17:26Z
+PauseQualityUpdatesEndTime : 2026-10-10T19:17:26Z
+=== Umgebung ===
+
+Major  Minor  Build  Revision
+-----  -----  -----  --------
+10     0      26200  0
+
+
+DisplayVersion : 25H2
+EditionID      : EnterpriseEval
+UBR            : 9550
+
+
+AMProductVersion          : 4.18.26080.4
+AMEngineVersion           : 1.1.26080.3
+AntivirusSignatureVersion : 1.459.536.0
+AntivirusEnabled          : True
+RealTimeProtectionEnabled : True
+Netzwerkschutz: 0
+=== Phase A ===
+
+EDEP-Audit DESKTOP-QKILAOK — 41/100 (Stufe D)
+Offen: 13  Teilweise: 0  Erfüllt: 9  Nicht prüfbar: 0
+
+FAIL     Ausgehender Verkehr standardmäßig blockiert
+         Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL     Windows-Bordwerkzeuge (LOLBins) ausgehend gesperrt
+         21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL     App Control for Business aktiv
+         Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL     SMB/RDP/WinRM/RPC in öffentlichen Netzen gesperrt
+         Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+FAIL     Telemetrie-Dienste ausgehend gesperrt
+         Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL     Defender Network Protection aktiv
+         Deaktiviert
+FAIL     Blockierte Verbindungen werden protokolliert
+         LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+FAIL     LLMNR deaktiviert
+         Aktiv (Windows-Standard)
+FAIL     Defender-ASR-Regeln im Blockiermodus
+         Keine ASR-Regel aktiv
+FAIL     Telemetrie auf niedrigster Stufe
+         Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL     NetBIOS über TCP/IP deaktiviert
+         Auf 2 von 2 Schnittstellen aktiv oder per DHCP gesteuert
+FAIL     Werbe-ID und Aktivitätsverlauf deaktiviert
+         Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed
+FAIL     PowerShell-Skriptblockprotokollierung aktiv
+         Nicht aktiv
+INFO     EDEP-Sicherung vorhanden
+         Keine EDEP-Sicherung unter C:\ProgramData\EDEP\backup
+INFO     Aus dem Netz erreichbare Dienste
+         20 lauschende TCP-Endpunkte: lsass (49664); services (49670); spoolsv (49668); svchost (135); svchost (49666); svchost (49667); svchost (49669); svchost (5040); svchost (7680); System (139,445); wininit (49665)
+PASS     Firewall aktiv, eingehend blockiert
+PASS     Freigegebene Programme nur durch Admins änderbar
+PASS     Sicherheitsupdates erreichbar
+PASS     SMBv1-Client nicht aktiv
+PASS     Remotedesktop aus oder mit NLA
+PASS     Stealth-Modus aktiv
+PASS     BITS-Übertragungen werden protokolliert
+PASS     PowerShell 2.0 entfernt
+PASS     Firewall-Log bleibt lokal
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  16 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+FAIL    EDEP-OPS-01  Keine EDEP-Sicherung unter C:\ProgramData\EDEP\backup
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 6/15 erfüllt
+Fingerabdruck geschrieben: C:\edep-run3\vorher.json
+R-A4: 200
+R-A5: 200
+R-A6: BITS gelungen
+R-A7: Edge gestartet, bitte prüfen, ob die Seite lädt
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003211744
+**********************

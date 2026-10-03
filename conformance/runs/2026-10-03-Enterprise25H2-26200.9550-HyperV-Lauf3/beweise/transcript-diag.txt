@@ -1,0 +1,104 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003213334
+Benutzername: DESKTOP-QKILAOK\test
+RunAs-Benutzer: DESKTOP-QKILAOK\test
+Konfigurationsname: 
+Computer: DESKTOP-QKILAOK (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 13036
+PSVersion: 5.1.26100.9549
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9549
+BuildVersion: 10.0.26100.9549
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+21:33:34  --- Netzwerkschutz / Defender ---
+EnableNetworkProtection = 2
+
+
+AMServiceEnabled          : True
+AMRunningMode             : Normal
+NISEnabled                : True
+RealTimeProtectionEnabled : True
+AMProductVersion          : 4.18.26080.4
+AMEngineVersion           : 1.1.26080.3
+AntivirusSignatureVersion : 1.459.536.0
+
+Name       Status
+----       ------
+BFE       Running
+bits      Running
+Dnscache  Running
+mpssvc    Running
+WdNisSvc  Running
+WinDefend Running
+wuauserv  Running
+21:33:34  --- DNS / DoH ---
+
+InterfaceAlias ServerAddresses
+-------------- ---------------
+Ethernet       {172.28.224.1}
+DoH-Server: 12
+EnableAutoDoh:
+21:33:35  --- Schlüsselwörter (vor Versuch) ---
+
+Keyword                                  Adressen Liste         
+-------                                  -------- -----         
+*.windowsupdate.microsoft.com                   1               
+emdl.ws.microsoft.com                           1               
+*.delivery.mp.microsoft.com                     1               
+*.windowsupdate.com                             1               
+tsfe.trafficshaping.dsp.mp.microsoft.com        1               
+*.download.microsoft.com                        1               
+*.update.microsoft.com                          1 135.233.95.144
+*.prod.do.dsp.mp.microsoft.com                  1 72.145.35.111 
+*.dl.delivery.mp.microsoft.com                  1
+21:33:35  --- Update-Domainregeln ---
+
+DisplayName                                                                    Enabled Action Direction Profile
+-----------                                                                    ------- ------ --------- -------
+EDEP L1 - Update-Domain *.update.microsoft.com (EDEP-TEL-04)                      True  Allow  Outbound     Any
+EDEP L1 - Update-Domain *.windowsupdate.com (EDEP-TEL-04)                         True  Allow  Outbound     Any
+EDEP L1 - Update-Domain *.windowsupdate.microsoft.com (EDEP-TEL-04)               True  Allow  Outbound     Any
+EDEP L1 - Update-Domain *.delivery.mp.microsoft.com (EDEP-TEL-04)                 True  Allow  Outbound     Any
+EDEP L1 - Update-Domain *.dl.delivery.mp.microsoft.com (EDEP-TEL-04)              True  Allow  Outbound     Any
+EDEP L1 - Update-Domain *.prod.do.dsp.mp.microsoft.com (EDEP-TEL-04)              True  Allow  Outbound     Any
+EDEP L1 - Update-Domain *.download.microsoft.com (EDEP-TEL-04)                    True  Allow  Outbound     Any
+EDEP L1 - Update-Domain emdl.ws.microsoft.com (EDEP-TEL-04)                       True  Allow  Outbound     Any
+EDEP L1 - Update-Domain tsfe.trafficshaping.dsp.mp.microsoft.com (EDEP-TEL-04)    True  Allow  Outbound     Any
+21:33:35  --- Namensauflösung ---
+download.windowsupdate.com -> 146.75.118.172
+fe2cr.update.microsoft.com -> 134.33.185.99, 132.196.74.208
+ctldl.windowsupdate.com -> 146.75.122.172
+21:33:35  --- Versuche (je 3, 5 s Abstand) ---
+21:33:37  Suche 1 : FEHLER 0x80072EFD
+21:33:55  Suche 2 : ERFOLG
+21:34:04  Suche 3 : ERFOLG
+21:34:09  --- Schlüsselwörter (nach Versuch) ---
+
+Keyword                                  Adressen Liste                                                   
+-------                                  -------- -----                                                   
+*.windowsupdate.microsoft.com                   1                                                         
+emdl.ws.microsoft.com                           1                                                         
+*.delivery.mp.microsoft.com                     1 74.179.77.164                                           
+*.windowsupdate.com                             1                                                         
+tsfe.trafficshaping.dsp.mp.microsoft.com        1                                                         
+*.download.microsoft.com                        1                                                         
+*.update.microsoft.com                          1 20.165.94.63,132.196.74.208,134.33.185.99,135.233.95.144
+*.prod.do.dsp.mp.microsoft.com                  1 72.145.35.111                                           
+*.dl.delivery.mp.microsoft.com                  1
+21:34:09  --- 5157 seit Beginn (Anwendung, Ziel) ---
+
+Count Name                            
+----- ----                            
+    2 svchost.exe, 146.75.118.172:80  
+    2 svchost.exe, 172.211.123.248:443
+    1 svchost.exe, 20.165.94.63:443
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003213429
+**********************
