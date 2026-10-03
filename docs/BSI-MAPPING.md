@@ -6,7 +6,7 @@ Diese Datei ordnet EDEP-Anforderungen den Anforderungen des IT-Grundschutz-Kompe
 
 ## Quellen und Stand
 
-Gelesen wurden die Einzel-PDFs der **Edition 2023** (Stand der PDFs 01.06.2023), geladen am 2026-10-03 von `https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/IT-GS-Kompendium_Einzel_PDFs_2023/`. Ob es eine neuere Edition gibt, wurde **nicht geklärt**; vor einer Veröffentlichung gegen die aktuelle Edition prüfen. Die PDFs liegen nicht im Repository (Rechte beim BSI); wer nachprüfen will, lädt sie selbst und vergleicht die Hashes.
+Gelesen wurden die Einzel-PDFs der **Edition 2023** (Stand der PDFs 01.06.2023), geladen am 2026-10-03 von `https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/IT-GS-Kompendium_Einzel_PDFs_2023/`. Die Download-Seite des BSI für die Bausteine listete am 2026-10-03 **nur die Edition 2023**; Einzel-PDFs mit Namen für 2024 bis 2026 gibt es unter den üblichen Adressen nicht (HTTP 404). Vor einer Veröffentlichung erneut prüfen. Die PDFs liegen nicht im Repository (Rechte beim BSI); wer nachprüfen will, lädt sie selbst und vergleicht die Hashes.
 
 | Baustein                                 | Datei                                                                      | SHA-256 (geladen 2026-10-03)                                       |
 | ---------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------ |
@@ -70,7 +70,7 @@ Die Anforderungen A5 bis A14 (Änderungsmanagement, Test, Dokumentation) liegen 
 
 ## NET.3.2 Firewall
 
-**Nicht ausgewertet.** Der Baustein richtet sich nach Abschnitt 1.3 an „jede im Informationsverbund eingesetzte Firewall“ (typisch der Übergang zu einem Fremdnetz). Ob und wie er auf die Host-Firewall eines Clients anzuwenden ist, wurde nicht geklärt. Eine Zuordnung unterbleibt, bis das geprüft ist.
+**Nicht anwendbar auf L1.** Nach Abschnitt 1.3 gilt der Baustein für „jede im Informationsverbund eingesetzte Firewall“ und enthält Anforderungen für „**netzbasierte** Firewalls“, etwa am Übergang zum Internet oder zwischen Netzen mit unterschiedlichem Schutzbedarf; er baut auf NET.1.1 auf. **Eine Anwendungserkennung oder -filterung ist ausdrücklich nicht Gegenstand** des Bausteins. EDEP L1 konfiguriert die Host-Firewall eines Clients und filtert nach Programmen; beides liegt außerhalb. Die Anforderung an einen lokalen Paketfilter steht in SYS.2.1.A31 (oben).
 
 ## BSI-Projekt SiSyPHuS Win10
 
@@ -82,7 +82,7 @@ SiSyPHuS ist eine vom BSI beauftragte Studie (Auftragnehmer ERNW) zu **Windows 1
 | Empfehlung zur Konfiguration der Protokollierung in Windows 10 (`Empfehlung_zur_Konfiguration_der_Protokollierung_Win_10.pdf`) | AP10 | Version 1.0, 2020 | `68e759906bc31b2ef033e572cdfe95e1fed301a6b281de413538b550217136e9` |
 | Konfigurationsempfehlungen zur Härtung von Windows 10 (`Konfigurationsempfehlungen_zur_Haertung_von_Windows_10.pdf`) | AP11 | Windows 10 LTSC 2019 | `d582378c747503776a61abeb5c4becd6aaaadf65c7a4e4dd94d80d2526ad2f67` |
 
-Die Dateien stammen aus `https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Cyber-Sicherheit/SiSyPHus/`. Nicht gelesen: AP12 (Gruppenrichtliniensätze), die Endpunktliste (Tabelle zu 21H2) und die älteren Telemetrie-Analysen.
+Die Dateien stammen aus `https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Cyber-Sicherheit/SiSyPHus/`. Bewusst nicht gelesen: AP12 (Gruppenrichtliniensätze; EDEP setzt lokale Richtlinien und liefert keine Gruppenrichtlinienobjekte), die Endpunktliste zu 21H2 (EDEP blockiert über Dienst und Programm, nicht über Adresslisten, DD-08) und die älteren Telemetrie-Analysen.
 
 | SiSyPHuS | Inhalt (verkürzt, sinngemäß) | EDEP | Beziehung | Anmerkung und Beleg |
 | --- | --- | --- | --- | --- |
