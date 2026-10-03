@@ -93,7 +93,7 @@ Windows rules (Store apps). PowerShell, `curl.exe`, `certutil` and the other Ann
 blocked outbound, including for `Install-Module` and `winget` scripts.
 
 **Updates under `-Enforce` (measured, [run 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [run 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md), [run 3](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-Lauf3/run.md)):**
-**In short: use enforce mode only if updates have their own defined path (WSUS, Intune, proxy). For single machines without one, audit mode, the LOLBin and telemetry blocks and App Control (audit) are the evidenced core.** The `-AllowWindowsUpdate` option improves things but is **not reliable** (see below).
+**In short: use enforce mode only if updates have their own defined path (WSUS, Intune, proxy; operating model in [SPEC 3.5](SPEC.md)). For single machines without one, audit mode, the LOLBin and telemetry blocks and App Control (audit) are the evidenced core.** The `-AllowWindowsUpdate` option improves things but is **not reliable** (see below).
 
 without further measures, **Windows Update, Defender signature updates and BITS are not reachable** under
 `-Enforce`. Allow rules with `-Service` do not take effect, because these services connect with the calling

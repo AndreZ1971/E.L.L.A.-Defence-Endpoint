@@ -330,3 +330,8 @@ if (-not $Enforce) {
     Write-Host ''
     Write-Host 'Audit-Modus: EDEP-NET-03 ist noch nicht erfüllt. Firewall-Log auswerten, dann mit -Enforce erneut ausführen.' -ForegroundColor Yellow
 }
+else {
+    Write-Host ''
+    Write-Host 'Enforce-Modus: Updates sind nur mit einem festgelegten Update-Weg erreichbar (WSUS/Intune/Proxy oder Wartungsfenster, SPEC 3.5).' -ForegroundColor Yellow
+    if (-not $AllowWindowsUpdate) { Write-Host 'Ohne -AllowWindowsUpdate sind Windows Update und Defender-Signaturen gesperrt; die Option ist nicht zuverlässig (DD-13).' -ForegroundColor Yellow }
+}

@@ -123,6 +123,33 @@ behaupten, eine dieser Umgehungen zu verhindern, wenn ihr Test das nicht belegt.
 | **B-07** | **Umbenannte oder kopierte LOLBins** (z. B. `curl.exe` als `%TEMP%\x.exe`) treffen keine pfadbasierte Blockregel.                                                                       | L1 im Audit-Modus | Im Enforce-Modus greift die Standard-Blockade (NET-03); die LOLBin-Regeln sind zusätzliche Tiefe. | Keiner im Enforce-Modus.                                                     |
 | **B-08** | **Uneingeschränkte ausgehende Erlaubnisregel.** Eine aktive Regel ohne Programm-, Dienst-, Paket-, Port- und Adressbindung hebt `ausgehend: Block` auf. Gemessen in der Windows-Sandbox (`Container: allow outbound`, vom Image bei jedem Start neu angelegt), 2026-10-02. | L1, L2 | NET-03 prüft die Wirkung (keine uneingeschränkte Regel); T-NET-03b, T-BYP-08. | Anlegen erfordert Adminrechte (R1). Eine **eingeschränkte, aber breite** Regel (z. B. alle Ziele auf Port 443 für jedes Programm) wird **nicht** erkannt. |
 
+### 3.5 Betriebsmodell: Aktualisierungen unter ausgehender Sperre (normativ für Enforce)
+
+Eine Sperre aller nicht freigegebenen ausgehenden Verbindungen (EDEP-NET-03) und die Pflicht, sicherheitsrelevante
+Aktualisierungen einzuspielen (EDEP-TEL-04), stehen im Konflikt. Gemessen ist, dass der mitgelieferte L1 diesen Konflikt
+auf Windows nicht zuverlässig löst ([DD-13](docs/DESIGN-DECISIONS.md), [E-84, E-88, E-89](docs/EVIDENCE.md), [Lauf 3](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-Lauf3/run.md)).
+Deshalb **MUSS** der Betreiber, der den Enforce-Modus einsetzt, **vorher einen der folgenden Wege festlegen und dokumentieren**:
+
+| Weg | Beschreibung | Stand der Messung |
+| --- | --- | --- |
+| **A. Zentraler Update-Server** | Die Clients beziehen Aktualisierungen von einem internen Update-Server (WSUS, Intune/Endpoint Manager, Update-Proxy). Der Betreiber legt für dessen Adresse und Port eine eigene Erlaubnisregel an. | Nicht Teil des mitgelieferten L1, **nicht gemessen** |
+| **B. Wartungsfenster** | Der Betreiber nimmt den Enforce-Modus für die Dauer der Aktualisierung zurück (`Restore-EdepL1` oder Audit-Modus), spielt die Aktualisierungen ein und wendet `-Enforce` danach erneut an. Nach jedem Schritt prüft er mit `Test-EdepL1`. | Zurücknehmen und erneutes Anwenden sind gemessen (Läufe 1 bis 3), die **Updateinstallation im Fenster ist nicht gemessen** |
+| **C. `-AllowWindowsUpdate`** | Domainregeln für `svchost.exe` (DD-13). | **Nicht zuverlässig** (Enterprise: im ersten Messblock 0 von 9 Versuchen); nur als Hilfe, nicht als Betriebsmodell |
+
+Ohne festgelegten Weg ist der Enforce-Modus **nicht empfohlen**. Für Einzelplatzrechner ohne eigenen Update-Weg gilt der
+Audit-Modus mit den Sperren nach EDEP-NET-04 und EDEP-TEL-02 (siehe README). `Test-EdepL1` meldet unter Enforce für
+EDEP-TEL-04 einen Hinweis mit Handlungsanweisung auf diesen Abschnitt; er ersetzt die Festlegung des Weges nicht.
+
+### 3.6 Bekannte Einschränkungen der L1-Referenzimplementierung
+
+Stand `0.1.0-draft`. Diese Punkte sind **ungeklärt oder ungemessen** und werden nicht als erfüllt dargestellt:
+
+- **Rücknahme (E-76).** Nach `Restore-EdepL1` und Neustart kam der EDEP-Zustand in zwei von sechs gültigen Versuchen zurück (Lauf 1 und 2; Lauf 3: sauber). Die Ursache ist unbekannt. Randbedingung: Nach jeder Rücknahme und jedem Neustart **MUSS** der Zustand mit `Test-EdepL1` geprüft werden (EDEP-OPS-01).
+- **Defender-Komponenten (E-85).** `MDCoreSvc` wird unter ausgehender Sperre abgewiesen; Defender-Signaturupdates schlagen mit `-AllowWindowsUpdate` überwiegend fehl.
+- **DiagTrack im Audit-Modus (E-86).** Ob die Sperre EDEP-TEL-02 dort wirkt, ist nicht gemessen.
+- **SYSTEM-initiierte Scans (E-87).** Token und Verhalten unter ausgehender Sperre sind nicht gemessen.
+- **Nicht geprüft:** fremder Virenschutz (Netzwerkschutz-Voraussetzung), DoH, Windows 11 Home, Windows Server, andere Sprachen, Updateinstallation unter Enforce.
+
 ---
 
 ## 4. Anforderungen
@@ -197,7 +224,7 @@ behaupten, eine dieser Umgehungen zu verhindern, wenn ihr Test das nicht belegt.
 
 | ID              | Stufe | Anforderung                                                                                                                                                                                                                      |
 | --------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **EDEP-OPS-01** | L1    | Vor jeder Änderung **MUSS** der bisherige Zustand gesichert werden, und es **MUSS** ein dokumentierter Wiederherstellungsweg existieren. **Hinweis (Lauf 1, [E-76](docs/EVIDENCE.md)):** Nach der Wiederherstellung und einem Neustart ist der Zustand mit `Test-EdepL1` zu prüfen; in zwei von fünf Versuchen (je einer auf Enterprise 25H2 und Pro 26H2) kam der EDEP-Zustand zurück (Ursache unbekannt).                                                                                         |
+| **EDEP-OPS-01** | L1    | Vor jeder Änderung **MUSS** der bisherige Zustand gesichert werden, und es **MUSS** ein dokumentierter Wiederherstellungsweg existieren. **Hinweis (Lauf 1, [E-76](docs/EVIDENCE.md)):** Nach der Wiederherstellung und einem Neustart ist der Zustand mit `Test-EdepL1` zu prüfen; in zwei von sechs gültigen Versuchen (je einer auf Enterprise 25H2 und Pro 26H2; Lauf 3 sauber) kam der EDEP-Zustand zurück (Ursache unbekannt).                                                                                         |
 | **EDEP-OPS-02** | L1    | Jede Implementierung **MUSS** einen Audit-Modus bieten, in dem nur protokolliert und nichts blockiert wird.                                                                                                                      |
 | **EDEP-OPS-03** | L2    | Ein Wartungsmodus (vorübergehend durchlässig) **MUSS** zeitlich begrenzt sein (Standard ≤ 30 min), **MUSS** lokale Admin-Bestätigung erfordern und **MUSS** protokolliert werden. Er **DARF NICHT** Isolation (ISO-01) aufheben. |
 | **EDEP-OPS-04** | L2    | Stürzt der Agent ab, **MÜSSEN** die persistenten Filter weiter gelten (fail-closed).                                                                                                                                             |

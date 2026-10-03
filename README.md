@@ -93,7 +93,7 @@ andere Anhang-A-Werkzeuge sind ausgehend gesperrt, auch für `Install-Module` un
 `winget`-Skripte.
 
 **Updates unter `-Enforce` (gemessen, [Lauf 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [Lauf 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md), [Lauf 3](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-Lauf3/run.md)):**
-**Kurzfassung: Den Enforce-Modus nur einsetzen, wenn die Updates einen eigenen, definierten Weg haben (WSUS, Intune, Proxy). Für Einzelrechner ohne solchen Weg sind Audit-Modus, LOLBin- und Telemetrie-Sperre sowie App Control (Audit) der belegte Kern.** Die Option `-AllowWindowsUpdate` verbessert die Lage, ist aber **nicht zuverlässig** (siehe unten).
+**Kurzfassung: Den Enforce-Modus nur einsetzen, wenn die Updates einen eigenen, definierten Weg haben (WSUS, Intune, Proxy; Betriebsmodell in [SPEC 3.5](SPEC.md)). Für Einzelrechner ohne solchen Weg sind Audit-Modus, LOLBin- und Telemetrie-Sperre sowie App Control (Audit) der belegte Kern.** Die Option `-AllowWindowsUpdate` verbessert die Lage, ist aber **nicht zuverlässig** (siehe unten).
 
 Ohne weitere Maßnahme sind unter `-Enforce` **Windows Update, Defender-Signaturupdates und BITS nicht
 erreichbar**. Die Erlaubnisregeln mit `-Service` greifen nicht, weil diese Dienste mit dem Token des
