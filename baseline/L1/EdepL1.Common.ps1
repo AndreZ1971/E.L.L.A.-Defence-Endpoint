@@ -208,6 +208,42 @@ function ConvertTo-EdepComparablePath([string]$Path) {
     [Environment]::ExpandEnvironmentVariables($Path).ToLowerInvariant()
 }
 
+# Name der App-Control-Richtlinie, die Install-EdepL1 anlegt (EDEP-ID-01).
+$script:EdepAppControlPolicyName = 'EDEP L1 Audit'
+
+function Get-EdepAppControlPolicyId {
+    # IDs aller aktiven App-Control-Richtlinien mit dem Namen $Name (CiTool --list-policies -json).
+    # $Json ist für Tests austauschbar; ohne Angabe wird CiTool befragt. Nicht lesbar: leere Liste.
+    param([string]$Json, [string]$Name = $script:EdepAppControlPolicyName)
+    try {
+        if (-not $Json) { $Json = (Invoke-EdepNative { CiTool.exe --list-policies -json }) -join "`n" }
+        $list = $Json | ConvertFrom-Json
+        @($list.Policies | Where-Object { $_.FriendlyName -eq $Name } | ForEach-Object { [string]$_.PolicyID })
+    }
+    catch { @() }
+}
+
+function Test-EdepUpdateReachable {
+    # Fragt die Windows-Update-Schnittstelle (wuauserv) ab. Ein Fehler ist ein sicherer Befund (die Verbindung
+    # kommt nicht zustande). Ein Erfolg ist es nicht: Die Suche kann aus dem Zwischenspeicher stammen
+    # (Lauf 1, Abweichung 16). $Search ist für Tests austauschbar.
+    param([scriptblock]$Search = { (New-Object -ComObject Microsoft.Update.Session).CreateUpdateSearcher().Search("IsInstalled=0 and Type='Software'") | Out-Null })
+    try { & $Search; [pscustomobject]@{ Ok = $true; HResult = '' } }
+    catch {
+        $code = if ($_.Exception.HResult) { '0x{0:X8}' -f $_.Exception.HResult } else { $_.Exception.Message }
+        [pscustomobject]@{ Ok = $false; HResult = $code }
+    }
+}
+
+function Get-EdepUpdateProbeOutcome {
+    # EDEP-TEL-04, Wirkung: ohne Messung WARN, Messung fehlgeschlagen FAIL, Messung gelungen WARN
+    # (ein Erfolg beweist wegen des Zwischenspeichers keine dauerhafte Erreichbarkeit).
+    param([bool]$Probed, $Probe)
+    if (-not $Probed) { return [pscustomobject]@{ Status = 'WARN'; Key = 'tel04.noprobe'; Arguments = @() } }
+    if ($Probe.Ok) { return [pscustomobject]@{ Status = 'WARN'; Key = 'tel04.probeok'; Arguments = @() } }
+    [pscustomobject]@{ Status = 'FAIL'; Key = 'tel04.probefail'; Arguments = @($Probe.HResult) }
+}
+
 function Get-EdepEditionSupportsSecurityTelemetry {
     # AllowTelemetry=0 wirkt nur auf Enterprise, Education, IoT Enterprise und Server.
     $edition = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -ErrorAction SilentlyContinue).EditionID

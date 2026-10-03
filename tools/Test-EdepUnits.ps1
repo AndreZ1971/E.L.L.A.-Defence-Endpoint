@@ -94,6 +94,38 @@ else {
     Assert-That "NET-10: Testprogramm $prog vorhanden" $false
 }
 
+# ---------------------------------------------------------------------------
+# ID-01 / OPS-01: Get-EdepAppControlPolicyId (Lauf 1, Abweichung 5: eine Richtlinie je Installer-Aufruf)
+# ---------------------------------------------------------------------------
+$ciJson = @'
+{"Policies":[
+ {"FriendlyName":"EDEP L1 Audit","PolicyID":"f1bb1080-fc9c-42e2-bfd3-40bde156797e","IsEnforced":true},
+ {"FriendlyName":"Microsoft Windows Driver Policy","PolicyID":"d2bda982-ccf6-4344-ac5b-0b44427b6816","IsEnforced":true},
+ {"FriendlyName":"EDEP L1 Audit","PolicyID":"b37684d5-ef32-4ac4-9c87-0566458c34a3","IsEnforced":true},
+ {"FriendlyName":"EDEP L1 Audit","PolicyID":"ad11e468-a63d-4ef2-85c8-cf402ed43b35","IsEnforced":true}]}
+'@
+$ids = @(Get-EdepAppControlPolicyId -Json $ciJson)
+Assert-That 'ID-01: alle drei EDEP-Richtlinien werden gefunden' ($ids.Count -eq 3)
+Assert-That 'ID-01: fremde Richtlinien werden nicht eingesammelt' ($ids -notcontains 'd2bda982-ccf6-4344-ac5b-0b44427b6816')
+Assert-That 'ID-01: keine EDEP-Richtlinie ergibt eine leere Liste' (@(Get-EdepAppControlPolicyId -Json '{"Policies":[]}').Count -eq 0)
+Assert-That 'ID-01: unlesbare Ausgabe ergibt eine leere Liste statt Fehler' (@(Get-EdepAppControlPolicyId -Json 'kein json').Count -eq 0)
+
+# ---------------------------------------------------------------------------
+# TEL-04: Wirkung statt nur Regeln (Lauf 1, Abweichungen 6 und 7)
+# ---------------------------------------------------------------------------
+$ok = Test-EdepUpdateReachable -Search { }
+Assert-That 'TEL-04: gelungene Suche wird als Ok gemeldet' ($ok.Ok -eq $true)
+$bad = Test-EdepUpdateReachable -Search { throw [System.Runtime.InteropServices.COMException]::new('Verbindung', [int]0x8024402F) }
+Assert-That 'TEL-04: fehlgeschlagene Suche wird mit HRESULT gemeldet' (($bad.Ok -eq $false) -and ($bad.HResult -eq '0x8024402F'))
+
+$o = Get-EdepUpdateProbeOutcome -Probed $false -Probe $null
+Assert-That 'TEL-04: ohne Messung nie PASS (nur WARN)' (($o.Status -eq 'WARN') -and ($o.Key -eq 'tel04.noprobe'))
+$o = Get-EdepUpdateProbeOutcome -Probed $true -Probe $bad
+Assert-That 'TEL-04: fehlgeschlagene Messung ergibt FAIL mit Fehlercode' (($o.Status -eq 'FAIL') -and ($o.Arguments[0] -eq '0x8024402F'))
+$o = Get-EdepUpdateProbeOutcome -Probed $true -Probe $ok
+Assert-That 'TEL-04: gelungene Messung ergibt nur WARN (Zwischenspeicher möglich)' (($o.Status -eq 'WARN') -and ($o.Key -eq 'tel04.probeok'))
+Assert-That 'TEL-04: Fehlertext nennt den Code' ((Get-EdepText 'tel04.probefail' @('0x8024402F')) -match '0x8024402F')
+
 Write-Host ''
 if ($script:failed) { Write-Host "$script:failed Test(s) fehlgeschlagen." -ForegroundColor Red; exit 1 }
 Write-Host 'Alle Einheitentests bestanden.' -ForegroundColor Green

@@ -15,7 +15,10 @@ function Test-EdepProfileMatch($Rule, [string]$ProfileName) {
 
 function Get-EdepL1CheckResult {
     [CmdletBinding()]
-    param()
+    param(
+        # EDEP-TEL-04: zusätzlich die Wirkung messen (Update-Suche), nicht nur die Regeln prüfen.
+        [switch]$ProbeUpdates
+    )
 
     $results = [System.Collections.Generic.List[object]]::new()
     function Add-Result([string]$Id, [string]$Status, [string]$Key, [object[]]$Arguments = @()) {
@@ -184,7 +187,14 @@ function Get-EdepL1CheckResult {
         if ($allowedPaths -notcontains (ConvertTo-EdepComparablePath $defenderExe)) { $problems += Get-EdepText 'tel04.defender' }
     }
     if ($problems) { $results.Add([pscustomobject]@{ Id = 'EDEP-TEL-04'; Status = 'FAIL'; Detail = ($problems -join '; ') }) }
-    else { Add-Result 'EDEP-TEL-04' 'PASS' 'tel04.pass' }
+    elseif (-not $outboundBlocked) { Add-Result 'EDEP-TEL-04' 'PASS' 'tel04.pass' }
+    else {
+        # Lauf 1 (Abweichungen 6, 7): Regeln und SID-Typ waren in Ordnung, die Updates aber nicht erreichbar.
+        # Deshalb gilt unter "ausgehend Block" nur eine Messung als Beleg; ohne Messung bleibt es bei WARN.
+        $probe = if ($ProbeUpdates -and $isAdmin) { Test-EdepUpdateReachable } else { $null }
+        $o = Get-EdepUpdateProbeOutcome -Probed ([bool]$probe) -Probe $probe
+        Add-Result 'EDEP-TEL-04' $o.Status $o.Key $o.Arguments
+    }
 
     # --- EDEP-LOG-01 -------------------------------------------------------
     $problems = @()

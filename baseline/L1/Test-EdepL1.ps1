@@ -17,6 +17,11 @@
 .PARAMETER Json
     Gibt das Prüfprotokoll als JSON aus (für Konformitätsnachweise, SPEC.md Abschnitt 5).
 
+.PARAMETER ProbeUpdates
+    Misst bei EDEP-TEL-04 zusätzlich die Wirkung: Eine Update-Suche muss gelingen. Unter "ausgehend Block"
+    ohne diesen Schalter meldet TEL-04 nur WARN, weil Regeln allein die Erreichbarkeit nicht belegen
+    (Lauf 1, Abweichungen 6 und 7). Die Suche ändert nichts am System, braucht aber Netz und etwas Zeit.
+
 .EXAMPLE
     .\Test-EdepL1.ps1
 .EXAMPLE
@@ -25,6 +30,7 @@
 [CmdletBinding()]
 param(
     [switch]$Json,
+    [switch]$ProbeUpdates,
     [ValidateSet('de', 'en')][string]$Language
 )
 
@@ -34,7 +40,7 @@ $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'EdepL1.Checks.ps1')
 if ($Language) { Set-EdepLanguage $Language }
 
-$results = @(Get-EdepL1CheckResult)
+$results = @(Get-EdepL1CheckResult -ProbeUpdates:$ProbeUpdates)
 
 $failed = @($results | Where-Object { $_.Status -in 'FAIL', 'UNKNOWN' }).Count
 $passed = $results.Count - $failed

@@ -236,9 +236,15 @@ if ($DeployAppControlAudit) {
     if (-not (Test-Path $template)) { throw "Vorlage fehlt: $template" }
     if ($PSCmdlet.ShouldProcess('App Control for Business', 'Richtlinie DefaultWindows_Audit aktivieren')) {
         Write-Step 'Aktiviere App-Control-Richtlinie (Audit)'
+        # Idempotenz (Lauf 1, Abweichung 5): Jeder Aufruf erzeugt eine neue Richtlinien-ID. Frühere EDEP-Richtlinien
+        # werden vorher entfernt, sonst sammeln sich mit jedem Aufruf weitere an.
+        foreach ($oldId in @(Get-EdepAppControlPolicyId)) {
+            & CiTool.exe --remove-policy $oldId -json | Out-Null
+            if ($LASTEXITCODE -ne 0) { Write-Warning "Frühere Richtlinie $oldId ließ sich nicht entfernen (CiTool Exit $LASTEXITCODE)." }
+        }
         $xml = Join-Path $backupPath 'EDEP-L1-AppControl-Audit.xml'
         Copy-Item $template $xml
-        $policyId = Set-CIPolicyIdInfo -FilePath $xml -PolicyName 'EDEP L1 Audit' -ResetPolicyID
+        $policyId = Set-CIPolicyIdInfo -FilePath $xml -PolicyName $EdepAppControlPolicyName -ResetPolicyID
         $policyId = ([regex]::Match([string]$policyId, '\{[0-9A-Fa-f-]{36}\}')).Value
         Set-RuleOption -FilePath $xml -Option 3   # Enabled:Audit Mode (sicherstellen)
         $cip = Join-Path $backupPath "$policyId.cip"

@@ -77,7 +77,8 @@ $policyIds = Get-ChildItem -Path $EdepBackupRoot -Directory -ErrorAction Silentl
 foreach ($id in $policyIds) {
     if ($PSCmdlet.ShouldProcess("App-Control-Richtlinie $id", 'Entfernen')) {
         & CiTool.exe --remove-policy $id -json | Out-Null
-        if ($LASTEXITCODE -ne 0) { Write-Warning "CiTool --remove-policy ${id}: Exit $LASTEXITCODE" }
+        # -2147024894 = 0x80070002 (nicht gefunden): schon entfernt, kein Fehler (Lauf 1, Abweichung 5)
+        if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne -2147024894) { Write-Warning "CiTool --remove-policy ${id}: Exit $LASTEXITCODE" }
     }
 }
 
