@@ -21,7 +21,9 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] Lauf 2 auf Windows 11 Pro 26H2 (Build 26300, korrigierter Stand, nicht committet), 2026-10-03: 15/15 mit TEL-01/TEL-04 WARN, Edge unter Enforce lädt, Updates und BITS auch dort blockiert, Neustart-Vorfall erneut einmal. Protokoll unter `conformance/runs/`
 - [x] Lauf 3 (Enterprise 25H2, veröffentlichter Tag `0.1.0-draft.2`, 2026-10-03): Audit 14/15, Enforce 15/15, Restore und sauberer Neustart herstellen den Ausgangszustand; Updates mit `-AllowWindowsUpdate` nicht zuverlässig (erster Block 0 von 9, später Suche ab Versuch 2); Edge-Antwort blieb aus. Protokoll unter `conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-Lauf3/`
 - [x] Entscheidung 2026-10-03: Die Suche nach einer Umgehung der Update-Sperre ist beendet; Enforce wird nur mit definiertem Update-Weg empfohlen (DD-13)
-- [ ] Zuordnung der Anforderungen zu BSI-Grundschutz und BSI-Windows-Empfehlungen, mit Quellen (Voraussetzung dafür, dass ein Fachgremium EDEP prüfen kann; eine Unterstützung durch das BSI ist nicht zugesagt)
+- [x] Entwurf der Zuordnung zu BSI-Grundschutz (Edition 2023: SYS.2.2.3, SYS.2.1, OPS.1.1.3, OPS.1.1.5) nach dem Originaltext, mit Hashes der gelesenen PDFs: [BSI-MAPPING.md](BSI-MAPPING.md)
+- [ ] Zuordnung vervollständigen: SiSyPHuS-Arbeitspakete AP4, AP10, AP11, AP12 lesen; NET.3.2 klären; aktuelle Edition des Kompendiums prüfen (ob 2023 noch gilt)
+- [ ] Kontakt zum BSI erst nach vollständiger Zuordnung und signiertem Release; eine Unterstützung durch das BSI ist nicht zugesagt
 - [ ] Neustart-Vorfall (E-76) mit sauber protokolliertem Ablauf (Uhrzeiten, Art des Neustarts, Eingriffe vorher) klären
 - [ ] Windows 11 Home und Windows Server prüfen
 - [ ] E-63/E-64: Vollständiger L1-Durchlauf auf frischer VM (Windows 11 Pro **und** Enterprise); Lauf 1 in Hyper-V mit Evaluierungs-ISO in Vorbereitung:
