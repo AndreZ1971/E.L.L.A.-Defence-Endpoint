@@ -1,0 +1,113 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003100704
+Benutzername: DESKTOP-QKILAOK\test
+RunAs-Benutzer: DESKTOP-QKILAOK\test
+Konfigurationsname: 
+Computer: DESKTOP-QKILAOK (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 13036
+PSVersion: 5.1.26100.9549
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9549
+BuildVersion: 10.0.26100.9549
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Get-ChildItem C:\edep-run -File | Select-Object Name, Length
+
+Name               Length
+----               ------
+audit-vorher.json   19035
+b2.json              2625
+edep.zip           552084
+l1-vorher.json       3952
+nach-neustart.json   2700
+transcript-2.txt    20619
+transcript-3.txt        0
+transcript.txt          0
+vorher.json          2625
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> clear
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # Fehlen die Tee-Dateien wirklich?
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> 'l1-audit','l1-enforce','l1-nach-neustart','l1-nach-reinstall' | ForEach-Object { "$_ : " + (Test-Path "C:\edep-run\$_.txt") }
+l1-audit : False
+l1-enforce : False
+l1-nach-neustart : False
+l1-nach-reinstall : False
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # R-E2: Trockenlauf
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> .\Restore-EdepL1.ps1 -WhatIf
+Sicherung vom 2026-10-03T09:32:22.5123871+02:00 (DESKTOP-QKILAOK)
+WhatIf: Ausführen des Vorgangs "Import aus C:\ProgramData\EDEP\backup\20261003-093200\firewall.wfw" für das Ziel "Windows-Firewall".
+WhatIf: Ausführen des Vorgangs "Wiederherstellen aus C:\ProgramData\EDEP\backup\20261003-093200\auditpol.csv" für das Ziel "Überwachungsrichtlinie".
+WhatIf: Ausführen des Vorgangs "Vorherige Werte wiederherstellen" für das Ziel "Telemetrie-Richtlinien".
+WhatIf: Ausführen des Vorgangs "Starttyp Automatic" für das Ziel "DiagTrack".
+WhatIf: Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {ad11e468-a63d-4ef2-85c8-cf402ed43b35}".
+WhatIf: Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {b37684d5-ef32-4ac4-9c87-0566458c34a3}".
+WhatIf: Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {f1bb1080-fc9c-42e2-bfd3-40bde156797e}".
+
+WhatIf: Es wurde nichts geändert.
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # R-E3: wirklich zurücknehmen (jede Rückfrage mit J)
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> .\Restore-EdepL1.ps1
+Sicherung vom 2026-10-03T09:32:22.5123871+02:00 (DESKTOP-QKILAOK)
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Import aus C:\ProgramData\EDEP\backup\20261003-093200\firewall.wfw" für das Ziel "Windows-Firewall".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Wiederherstellen aus C:\ProgramData\EDEP\backup\20261003-093200\auditpol.csv" für das Ziel "Überwachungsrichtlinie".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Vorherige Werte wiederherstellen" für das Ziel "Telemetrie-Richtlinien".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Starttyp Automatic" für das Ziel "DiagTrack".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {ad11e468-a63d-4ef2-85c8-cf402ed43b35}".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {b37684d5-ef32-4ac4-9c87-0566458c34a3}".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {f1bb1080-fc9c-42e2-bfd3-40bde156797e}".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # Kontrolle: Richtlinien und Firewall
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> 'EDEP-Richtlinien (erwartet: keine):'
+EDEP-Richtlinien (erwartet: keine):
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> CiTool.exe --list-policies -json | ConvertFrom-Json | ForEach-Object { $_.Policies } | Where-Object FriendlyName -like 'EDEP*' | Select-Object FriendlyName, PolicyID
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Get-NetFirewallProfile | Select-Object Name, DefaultOutboundAction | Format-Table -AutoSize
+
+Name    DefaultOutboundAction
+----    ---------------------
+Domain          NotConfigured
+Private         NotConfigured
+Public          NotConfigured
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> (Get-NetFirewallRule -Group EDEP-L1 -ErrorAction SilentlyContinue | Measure-Object).Count
+0
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # Sitzung sauber beenden, damit die Datei vollständig ist
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Stop-Transcript
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003100929
+**********************

@@ -1,0 +1,86 @@
+﻿{
+    "profile":  "EDEP",
+    "version":  "0.1.0",
+    "level":  "L1",
+    "computer":  "DESKTOP-QKILAOK",
+    "checked":  "2026-10-03T10:56:41.2938502+02:00",
+    "summary":  "EDEP 0.1.0 L1 — geprüft 2026-10-03 — 15/15 erfüllt",
+    "conform":  true,
+    "results":  [
+                    {
+                        "Id":  "EDEP-NET-01",
+                        "Status":  "PASS",
+                        "Detail":  "Alle Profile aktiv, eingehend Block"
+                    },
+                    {
+                        "Id":  "EDEP-NET-02",
+                        "Status":  "PASS",
+                        "Detail":  "Stealth-Modus aktiv (Standard)"
+                    },
+                    {
+                        "Id":  "EDEP-NET-03",
+                        "Status":  "PASS",
+                        "Detail":  "Ausgehend Block in allen Profilen; 140 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt"
+                    },
+                    {
+                        "Id":  "EDEP-NET-04",
+                        "Status":  "PASS",
+                        "Detail":  "21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel"
+                    },
+                    {
+                        "Id":  "EDEP-NET-05",
+                        "Status":  "PASS",
+                        "Detail":  "Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986"
+                    },
+                    {
+                        "Id":  "EDEP-NET-10",
+                        "Status":  "PASS",
+                        "Detail":  "20 freigegebene Programmpfade nur durch Admins änderbar"
+                    },
+                    {
+                        "Id":  "EDEP-ID-01",
+                        "Status":  "PASS",
+                        "Detail":  "Aktiv: EDEP L1 Audit [Audit]; EDEP L1 Audit [Audit]"
+                    },
+                    {
+                        "Id":  "EDEP-TEL-01",
+                        "Status":  "PASS",
+                        "Detail":  "AllowTelemetry=0, wirksam: Security"
+                    },
+                    {
+                        "Id":  "EDEP-TEL-02",
+                        "Status":  "PASS",
+                        "Detail":  "Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice"
+                    },
+                    {
+                        "Id":  "EDEP-TEL-03",
+                        "Status":  "PASS",
+                        "Detail":  "Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert"
+                    },
+                    {
+                        "Id":  "EDEP-TEL-04",
+                        "Status":  "PASS",
+                        "Detail":  "Update- und Schutzdienste erreichbar"
+                    },
+                    {
+                        "Id":  "EDEP-LOG-01",
+                        "Status":  "PASS",
+                        "Detail":  "Firewall-Log und Ereignis 5157 aktiv"
+                    },
+                    {
+                        "Id":  "EDEP-LOG-02",
+                        "Status":  "PASS",
+                        "Detail":  "Firewall-Log lokal"
+                    },
+                    {
+                        "Id":  "EDEP-LOG-06",
+                        "Status":  "PASS",
+                        "Detail":  "BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)"
+                    },
+                    {
+                        "Id":  "EDEP-OPS-01",
+                        "Status":  "PASS",
+                        "Detail":  "Sicherung vorhanden: C:\\ProgramData\\EDEP\\backup\\20261003-105603"
+                    }
+                ]
+}

@@ -28,7 +28,7 @@ Bitte angeben:
 
 Diese Punkte sind bekannte, dokumentierte Grenzen und kein Sicherheitsvorfall:
 
-- alles in SPEC 3.3 (R1–R6) und 3.4 (B-01–B-07)
+- alles in SPEC 3.3 (R1–R6) und 3.4 (B-01–B-08)
 - Microsoft-Verhalten, das EDEP bewusst anders konfiguriert (DD-12)
 
 Neue Wege um EDEP herum sind ausdrücklich erwünscht, auch wenn sie in eine dieser

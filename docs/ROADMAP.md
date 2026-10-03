@@ -1,12 +1,22 @@
 # Roadmap
 
-Reihenfolge nach Risiko: erst zeigen, dass es Nachfrage gibt, dann bauen.
+Dieses Repository enthält Spezifikation, L1-Baseline und Audit-Tool. Hier steht, was daran noch offen ist.
 
 ## M0: Offene Nachweise schließen (vor jeder Veröffentlichung)
 
 Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 
-- [ ] E-63/E-64: Vollständiger L1-Durchlauf auf frischer VM (Windows 11 Pro **und** Enterprise):
+- [x] Lauf 0 (Entdeckungslauf, Windows-Sandbox, Enterprise 24H2 26100.9550, 2026-10-02): drei Fehler gefunden und behoben
+      (Installer-Argument, NET-10 an der Laufwerkswurzel, NET-03-Wirkung/B-08), Protokoll unter `conformance/runs/`.
+      Das ist **kein** vollständiger Durchlauf: App Control, Defender und Windows Update waren dort nicht prüfbar.
+- [x] Lauf 1 (Hyper-V-VM, Windows 11 Enterprise 25H2, 2026-10-03): vollständiger Durchlauf Phase A bis F, 15/15 im Enforce-Modus. Befunde: Updates, Defender-Signaturen und BITS unter Enforce nicht erreichbar (Dienstregeln greifen nicht), `Install` nicht idempotent bei App Control, Rücknahme einmal wirkungslos (nicht reproduziert). Protokoll unter `conformance/runs/`
+- [x] TEL-04 prüft die Wirkung (`-ProbeUpdates`), in der VM nachgemessen (Nachtest in Lauf 1)
+- [ ] Lösung für die Erreichbarkeit von Updates unter Enforce entwerfen und messen (Dienstregel greift nicht, Programmregel für `svchost.exe` ist breit)
+- [x] `Install-EdepL1` idempotent bei App Control, `Restore-EdepL1` still bei bereits entfernten Richtlinien (Nachtest in Lauf 1)
+- [x] Lauf 2 auf Windows 11 Pro 26H2 (Build 26300, korrigierter Stand, nicht committet), 2026-10-03: 15/15 mit TEL-01/TEL-04 WARN, Edge unter Enforce lädt, Updates und BITS auch dort blockiert, Neustart-Vorfall erneut einmal. Protokoll unter `conformance/runs/`
+- [ ] Neustart-Vorfall (E-76) mit sauber protokolliertem Ablauf (Uhrzeiten, Art des Neustarts, Eingriffe vorher) klären
+- [ ] Windows 11 Home und Windows Server prüfen
+- [ ] E-63/E-64: Vollständiger L1-Durchlauf auf frischer VM (Windows 11 Pro **und** Enterprise); Lauf 1 in Hyper-V mit Evaluierungs-ISO in Vorbereitung:
       Install `-Enforce`, `Test-EdepL1` 15/15, Wirkungstests aus VERIFY-YOURSELF 2.2,
       Umgehungstests T-BYP-01/-04/-05/-07, Restore. Protokoll unter `conformance/runs/<datum>-<edition>/`
 - [x] E-16: Spaltenposition „Setting Value“ in `auditpol /backup` bestätigt (CI, 2026-09-30)
@@ -19,15 +29,11 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 
 - [x] `Invoke-EdepAudit`: Punktzahl, Erklärungen, HTML-Bericht, läuft ohne Adminrechte
 - [x] PowerShell-Modul `EDEP` mit Manifest, Build-Skript
-- [x] CI: Syntax, BOM, PSScriptAnalyzer, Rauchtests, Schema-Validierung
-- [ ] Code-Signing-Zertifikat beschaffen (OV genügt für Skripte; Schlüssel auf Hardware-Token/HSM)
+- [x] CI: Syntax, BOM, Einheitentests (23), Sperre für fehlerhafte native Argumente, PSScriptAnalyzer, Rauchtests, Schema-Validierung, Prüfung der Seitenzahlen
 - [ ] Signiert in der PowerShell Gallery veröffentlichen: `Install-Module EDEP`
 - [x] Englische Texte: Audit, Prüfdetails, HTML-Bericht, `README.en.md`; Sprache nach Windows-Anzeigesprache oder `-Language`
 - [ ] Englische Texte für `Install-EdepL1`/`Restore-EdepL1` und die Spezifikation
 - [x] Beispielbericht als Bild im README (aus der CI, hell/dunkel)
-- [ ] Ankündigung (z. B. r/sysadmin, heise-Forum, LinkedIn, MSP-Communities)
-
-**Erfolgskriterium:** Downloads, Issues, Anfragen. Ohne Resonanz nach 6–8 Wochen: Positionierung überdenken, bevor L2 gebaut wird.
 
 ## M2: L1 produktionsreif (dieses Repo, MIT)
 
@@ -36,25 +42,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [ ] Store-Apps: Umgang mit AppContainer-Regeln dokumentieren
 - [ ] Ausnahmen für `winget` / `Install-Module` im Wartungsfall dokumentieren
 
-## M3: L2-Agent Beta (privates Repo, proprietär)
+## Weitere Stufen
 
-- [x] Grundgerüst: Richtlinie, Filterplan, SHA-256-Identität, hash-verkettetes Protokoll
-- [ ] Authenticode-Prüfung
-- [ ] WFP-Umsetzung (Transaktion, Provider, Sublayer, persistent + Boot-Time)
-- [ ] Windows-Dienst, Manipulationserkennung, Wartungsmodus
-- [ ] Lernmodus: aus Audit-Protokoll einen Richtlinienentwurf erzeugen
-- [ ] Installer (MSI/MSIX), signiert
-- [ ] Konformität L2 in VM nachgewiesen
-
-## M4: Pilotkunden
-
-- [ ] 5–10 Gespräche mit IT-Dienstleistern (MSPs) vor dem Bau der Konsole
-- [ ] 2–3 Pilotinstallationen mit L2 im Audit-, dann Enforce-Modus
-- [ ] Supportprozess für Fehlblockaden (Reaktionszeit, Rollback)
-
-## M5: Verwaltungskonsole (proprietär, erst mit zahlenden Piloten)
-
-- [ ] Signierte Richtlinienverteilung (Agent holt ab, mTLS)
-- [ ] On-Premises-Variante zuerst, Cloud optional
-- [ ] Richtlinien-Generator aus Audit-Protokollen der Flotte
-- [ ] Vorfall-Übersicht (nur mit ausdrücklich konfigurierter Log-Weiterleitung, EDEP-LOG-02)
+L2 (Agent) und L3 sind **nicht Teil dieses Repositories**. Die Anforderungen an sie stehen in der
+[Spezifikation](../SPEC.md), die Referenzarchitektur in [L2-AGENT-ARCHITECTURE.md](L2-AGENT-ARCHITECTURE.md).

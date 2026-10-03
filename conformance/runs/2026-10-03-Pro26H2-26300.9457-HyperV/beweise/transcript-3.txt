@@ -1,0 +1,31 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003134101
+Benutzername: test\test1
+RunAs-Benutzer: test\test1
+Konfigurationsname: 
+Computer: TEST (Microsoft Windows NT 10.0.26300.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 7492
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+PS C:\edep-run\baseline\L1> .\Restore-EdepL1.ps1 -Confirm:$false
+Sicherung vom 2026-10-03T13:20:20.6679314+02:00 (TEST)
+WARNUNG: CiTool --remove-policy {7055548e-225c-42f8-a323-42e573fdd9e7}: Exit -2147023728
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+PS C:\edep-run\baseline\L1> Start-Sleep 180
+PS C:\edep-run\baseline\L1> "EDEP-Regeln in Registry: " + @((Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules').PSObject.Properties | Where-Object { [string]$_.Value -match 'EDEP' }).Count
+EDEP-Regeln in Registry: 0
+PS C:\edep-run\baseline\L1> Stop-Transcript | Out-Null
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003134403
+**********************

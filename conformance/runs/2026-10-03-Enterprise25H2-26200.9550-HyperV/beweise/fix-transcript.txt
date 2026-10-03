@@ -1,0 +1,133 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003111807
+Benutzername: DESKTOP-QKILAOK\test
+RunAs-Benutzer: DESKTOP-QKILAOK\test
+Konfigurationsname: 
+Computer: DESKTOP-QKILAOK (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 10904
+PSVersion: 5.1.26100.9549
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9549
+BuildVersion: 10.0.26100.9549
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+PS C:\edep-run\neu\baseline\L1> '=== Drei Installer-Aufrufe (Idempotenz) ==='
+=== Drei Installer-Aufrufe (Idempotenz) ===
+PS C:\edep-run\neu\baseline\L1> .\Install-EdepL1.ps1 -Enforce -DeployAppControlAudit -Confirm:$false | Out-Null
+WARNUNG: -Enforce ohne -AllowProgram: Browser und alle Programme ohne eigene Erlaubnisregel verlieren den Netzzugang. Store-Apps mit eigenen Windows-Regeln bleiben erreichbar.
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-105603
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261003-111807
+==> Firewall-Profile: eingehend Block, ausgehend Block, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Setze Telemetrie-Richtlinien
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: ENFORCE).
+Sicherung:      C:\ProgramData\EDEP\backup\20261003-111807
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261003-111807'
+PS C:\edep-run\neu\baseline\L1> .\Install-EdepL1.ps1 -Enforce -DeployAppControlAudit -Confirm:$false | Out-Null
+WARNUNG: -Enforce ohne -AllowProgram: Browser und alle Programme ohne eigene Erlaubnisregel verlieren den Netzzugang. Store-Apps mit eigenen Windows-Regeln bleiben erreichbar.
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-105603
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261003-111811
+==> Firewall-Profile: eingehend Block, ausgehend Block, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Setze Telemetrie-Richtlinien
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: ENFORCE).
+Sicherung:      C:\ProgramData\EDEP\backup\20261003-111811
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261003-111811'
+PS C:\edep-run\neu\baseline\L1> .\Install-EdepL1.ps1 -Enforce -DeployAppControlAudit -Confirm:$false | Out-Null
+WARNUNG: -Enforce ohne -AllowProgram: Browser und alle Programme ohne eigene Erlaubnisregel verlieren den Netzzugang. Store-Apps mit eigenen Windows-Regeln bleiben erreichbar.
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-105603
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261003-111815
+==> Firewall-Profile: eingehend Block, ausgehend Block, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Setze Telemetrie-Richtlinien
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: ENFORCE).
+Sicherung:      C:\ProgramData\EDEP\backup\20261003-111815
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261003-111815'
+PS C:\edep-run\neu\baseline\L1> 'EDEP-Richtlinien (erwartet: genau 1):'
+EDEP-Richtlinien (erwartet: genau 1):
+PS C:\edep-run\neu\baseline\L1> CiTool.exe --list-policies -json | ConvertFrom-Json | ForEach-Object { $_.Policies } | Where-Object FriendlyName -like 'EDEP*' | Select-Object FriendlyName, PolicyID
+
+FriendlyName  PolicyID
+------------  --------
+EDEP L1 Audit cd6abaff-1d37-4705-ba0c-c7d5c02b8dfe
+
+
+PS C:\edep-run\neu\baseline\L1> "Regeln Gruppe EDEP-L1: " + @(Get-NetFirewallRule -Group EDEP-L1).Count
+Regeln Gruppe EDEP-L1: 32
+PS C:\edep-run\neu\baseline\L1> '=== Test ohne und mit Messung ==='
+=== Test ohne und mit Messung ===
+PS C:\edep-run\neu\baseline\L1> .\Test-EdepL1.ps1
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 139 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  19 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Regeln vorhanden, Wirkung nicht gemessen (mit -ProbeUpdates messen; unter "ausgehend Block" waren Updates in Lauf 1 trotz Regeln nicht erreichbar)
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-105603
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 15/15 erfüllt
+PS C:\edep-run\neu\baseline\L1> '--- mit -ProbeUpdates ---'
+--- mit -ProbeUpdates ---
+PS C:\edep-run\neu\baseline\L1> .\Test-EdepL1.ps1 -ProbeUpdates | Select-String 'TEL-04|erfüllt'
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 139 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  19 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Update-Suche gelungen; sie kann aus dem Zwischenspeicher stammen und beweist keine dauerhafte Erreichbarkeit
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-105603
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 15/15 erfüllt
+PS C:\edep-run\neu\baseline\L1> '=== Restore zweimal (erwartet: keine Warnung) ==='
+=== Restore zweimal (erwartet: keine Warnung) ===
+PS C:\edep-run\neu\baseline\L1> .\Restore-EdepL1.ps1 -Confirm:$false
+Sicherung vom 2026-10-03T10:56:04.0248010+02:00 (DESKTOP-QKILAOK)
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+PS C:\edep-run\neu\baseline\L1> '--- zweiter Restore ---'
+--- zweiter Restore ---
+PS C:\edep-run\neu\baseline\L1> .\Restore-EdepL1.ps1 -Confirm:$false
+Sicherung vom 2026-10-03T10:56:04.0248010+02:00 (DESKTOP-QKILAOK)
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+PS C:\edep-run\neu\baseline\L1> 'EDEP-Richtlinien nach Restore (erwartet: keine):'
+EDEP-Richtlinien nach Restore (erwartet: keine):
+PS C:\edep-run\neu\baseline\L1> CiTool.exe --list-policies -json | ConvertFrom-Json | ForEach-Object { $_.Policies } | Where-Object FriendlyName -like 'EDEP*' | Select-Object FriendlyName, PolicyID
+PS C:\edep-run\neu\baseline\L1> Stop-Transcript | Out-Null
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003111854
+**********************

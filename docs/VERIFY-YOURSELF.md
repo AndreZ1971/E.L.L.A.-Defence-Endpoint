@@ -44,10 +44,15 @@ und [EdepAudit.ps1](../baseline/L1/EdepAudit.ps1) enthalten nur lesende Aufrufe.
 
 PowerShell **als Administrator**, Snapshot vorher anlegen.
 
-> **Stand:** Stufe 2 hat das Projekt selbst noch nicht vollständig auf einer VM durchlaufen
-> ([EVIDENCE.md](EVIDENCE.md), E-63 und E-64 sind ⏳). Die Erwartungen unten sind aus
-> Spezifikation und Quellen abgeleitet. Das erste vollständige Protokoll wird unter
-> `conformance/runs/` veröffentlicht. Bis dahin ist jeder Durchlauf eines Dritten ein Beitrag.
+> **Stand:** Zwei vollständige Durchläufe auf Hyper-V-VMs liegen vor: Windows 11 Enterprise 25H2
+> ([Protokoll](../conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md)) und Windows 11 Pro 26H2
+> ([Protokoll](../conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md)). Sie haben Mängel gefunden,
+> die in den Erwartungen unten stehen. Home und Server sind nicht geprüft; jeder Durchlauf eines Dritten
+> ist ein Beitrag.
+>
+> **Vorbereitung auf einem frischen Windows:** Skripte sind gesperrt. Einmal pro PowerShell-Sitzung
+> `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`. Rückfragen werden auf deutschem
+> Windows mit **`J`** bestätigt (`A` = alle), auf englischem mit `y`; `-Confirm:$false` überspringt sie.
 
 ### 2.1 Anwenden und Konformität messen
 
@@ -58,8 +63,9 @@ cd baseline\L1
 .\Test-EdepL1.ps1
 ```
 
-**Erwartung:** `EDEP 0.1.0 L1 — … — 15/15 erfüllt`. Auf Home/Pro ist EDEP-TEL-01 `WARN`,
-weil „Diagnostic data off“ dort nicht existiert (SPEC Q-07); WARN zählt als erfüllt.
+**Erwartung:** `EDEP 0.1.0 L1 — … — 15/15 erfüllt` (gemessen auf Enterprise 25H2). Auf Home/Pro ist
+EDEP-TEL-01 `WARN`, weil „Diagnostic data off“ dort nicht existiert (SPEC Q-07); WARN zählt als
+erfüllt. **15/15 sagt nichts darüber, ob Updates erreichbar sind** (siehe Zeile „Updates gehen“).
 
 ### 2.2 Wirkung nachweisen, nicht nur Konfiguration
 
@@ -69,7 +75,7 @@ weil „Diagnostic data off“ dort nicht existiert (SPEC Q-07); WARN zählt als
 | LOLBin blockiert                     | `curl.exe -m 5 https://example.org`                                                                             | Fehler/Timeout                       |
 | Protokolliert                        | `Get-WinEvent -FilterHashtable @{LogName='Security'; Id=5157} -MaxEvents 5 \| Format-List TimeCreated, Message` | Einträge mit `x.exe` bzw. `curl.exe` |
 | Erlaubtes Programm geht              | Edge öffnen, beliebige Seite                                                                                    | lädt                                 |
-| Updates gehen                        | Einstellungen → Windows Update → Nach Updates suchen; `Update-MpSignature`                                      | erfolgreich                          |
+| Updates gehen                        | Einstellungen → Windows Update → Nach Updates suchen; `Update-MpSignature`                                      | **Gemessen: scheitert** (`0x8024402F`/`0x80072EFD`), obwohl TEL-04 PASS meldet ([E-74](EVIDENCE.md)). Gelingt es bei dir, bitte melden |
 | Telemetrie blockiert                 | `Get-NetFirewallRule -Group EDEP-L1 \| ? DisplayName -like '*Telemetrie*' \| Get-NetFirewallServiceFilter`      | `DiagTrack`, `dmwappushservice`      |
 | Hintertür per Benutzerpfad abgelehnt | `.\Install-EdepL1.ps1 -AllowProgram "$env:LOCALAPPDATA\Programs\…\app.exe" -WhatIf`                             | Abbruch mit EDEP-NET-10              |
 
@@ -79,21 +85,26 @@ EDEP behauptet nicht, alles zu verhindern. Die dokumentierten Umgehungen (SPEC 3
 sich vorführen, und das Ergebnis muss **genau** der Beschreibung entsprechen:
 
 ```powershell
-# B-01: BITS umgeht die Programmsperre (bekannt), wird aber protokolliert
+# B-01: BITS (gemessen: unter Enforce blockiert, Ursache offen), Protokoll prüfen
 Start-BitsTransfer -Source https://example.org -Destination $env:TEMP\bits.html
 Get-WinEvent -LogName Microsoft-Windows-Bits-Client/Operational -MaxEvents 5 |
     Where-Object Id -in 3, 59 | Format-List TimeCreated, Id, Message
 ```
 
-**Erwartung:** Die Übertragung **gelingt**, Ereignis 3 (Job mit Besitzer) und 59 (URL) stehen
-im Protokoll. Gelingt sie **nicht**, ist die Dokumentation falsch, auch das bitte melden.
+**Gemessen (Sandbox und VM):** Die Übertragung **scheitert** („Die Serververbindung konnte nicht
+hergestellt werden“), Ereignis 3 (Job angelegt) steht im Protokoll, Ereignis 59 nicht
+([E-71](EVIDENCE.md)). Die Spezifikation (SPEC 3.4, B-01) sagt dazu, was belegt ist. Gelingt sie bei
+dir, ist das eine neue Messung und bitte zu melden.
 
 ### 2.4 Rücknahme prüfen
 
 ```powershell
 .\Restore-EdepL1.ps1
-.\Test-EdepL1.ps1   # wieder die ursprünglichen FAIL-Ergebnisse
+.\Test-EdepL1.ps1   # wieder die ursprünglichen FAIL-Ergebnisse (7/15 im Ausgangszustand mit Sicherungen)
 ```
+
+In zwei von fünf Versuchen kam der EDEP-Zustand nach Neustart zurück ([E-76](EVIDENCE.md)).
+Prüfe daher nach der Rücknahme und einem Neustart noch einmal.
 
 Snapshot zurücksetzen.
 

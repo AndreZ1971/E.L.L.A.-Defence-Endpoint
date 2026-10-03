@@ -1,0 +1,86 @@
+﻿{
+    "profile":  "EDEP",
+    "version":  "0.1.0",
+    "level":  "L1",
+    "computer":  "DESKTOP-QKILAOK",
+    "checked":  "2026-10-03T10:11:36.6867931+02:00",
+    "summary":  "EDEP 0.1.0 L1 — geprüft 2026-10-03 — 11/15 erfüllt",
+    "conform":  false,
+    "results":  [
+                    {
+                        "Id":  "EDEP-NET-01",
+                        "Status":  "PASS",
+                        "Detail":  "Alle Profile aktiv, eingehend Block"
+                    },
+                    {
+                        "Id":  "EDEP-NET-02",
+                        "Status":  "PASS",
+                        "Detail":  "Stealth-Modus aktiv (Standard)"
+                    },
+                    {
+                        "Id":  "EDEP-NET-03",
+                        "Status":  "PASS",
+                        "Detail":  "Ausgehend Block in allen Profilen; 140 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt"
+                    },
+                    {
+                        "Id":  "EDEP-NET-04",
+                        "Status":  "PASS",
+                        "Detail":  "21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel"
+                    },
+                    {
+                        "Id":  "EDEP-NET-05",
+                        "Status":  "PASS",
+                        "Detail":  "Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986"
+                    },
+                    {
+                        "Id":  "EDEP-NET-10",
+                        "Status":  "PASS",
+                        "Detail":  "20 freigegebene Programmpfade nur durch Admins änderbar"
+                    },
+                    {
+                        "Id":  "EDEP-ID-01",
+                        "Status":  "FAIL",
+                        "Detail":  "Keine aktive, nicht-systemeigene App-Control-Richtlinie"
+                    },
+                    {
+                        "Id":  "EDEP-TEL-01",
+                        "Status":  "FAIL",
+                        "Detail":  "Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)"
+                    },
+                    {
+                        "Id":  "EDEP-TEL-02",
+                        "Status":  "PASS",
+                        "Detail":  "Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice"
+                    },
+                    {
+                        "Id":  "EDEP-TEL-03",
+                        "Status":  "FAIL",
+                        "Detail":  "Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed"
+                    },
+                    {
+                        "Id":  "EDEP-TEL-04",
+                        "Status":  "PASS",
+                        "Detail":  "Update- und Schutzdienste erreichbar"
+                    },
+                    {
+                        "Id":  "EDEP-LOG-01",
+                        "Status":  "FAIL",
+                        "Detail":  "Ereignis 5157 (Fehler) nicht aktiviert"
+                    },
+                    {
+                        "Id":  "EDEP-LOG-02",
+                        "Status":  "PASS",
+                        "Detail":  "Firewall-Log lokal"
+                    },
+                    {
+                        "Id":  "EDEP-LOG-06",
+                        "Status":  "PASS",
+                        "Detail":  "BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)"
+                    },
+                    {
+                        "Id":  "EDEP-OPS-01",
+                        "Status":  "PASS",
+                        "Detail":  "Sicherung vorhanden: C:\\ProgramData\\EDEP\\backup\\20261003-093200"
+                    }
+                ]
+}

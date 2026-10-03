@@ -1,0 +1,64 @@
+﻿{
+    "erzeugt":  "2026-10-03T13:37:14.7720306+02:00",
+    "profile":  [
+                    {
+                        "name":  "Domain",
+                        "enabled":  "True",
+                        "inbound":  "Block",
+                        "outbound":  "Block",
+                        "logBlocked":  "True"
+                    },
+                    {
+                        "name":  "Private",
+                        "enabled":  "True",
+                        "inbound":  "Block",
+                        "outbound":  "Block",
+                        "logBlocked":  "True"
+                    },
+                    {
+                        "name":  "Public",
+                        "enabled":  "True",
+                        "inbound":  "Block",
+                        "outbound":  "Block",
+                        "logBlocked":  "True"
+                    }
+                ],
+    "regeln":  {
+                   "ausgehendErlauben":  131,
+                   "ausgehendBlock":  23,
+                   "eingehendErlauben":  106,
+                   "eingehendBlock":  1,
+                   "gruppeEdepL1":  33
+               },
+    "registrierung":  [
+                          {
+                              "wert":  "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection\\AllowTelemetry",
+                              "aktuell":  0
+                          },
+                          {
+                              "wert":  "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\AdvertisingInfo\\DisabledByGroupPolicy",
+                              "aktuell":  1
+                          },
+                          {
+                              "wert":  "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\PublishUserActivities",
+                              "aktuell":  0
+                          },
+                          {
+                              "wert":  "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\UploadUserActivities",
+                              "aktuell":  0
+                          },
+                          {
+                              "wert":  "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\System\\EnableActivityFeed",
+                              "aktuell":  0
+                          }
+                      ],
+    "audit5157":  0,
+    "diagTrackStart":  "Automatic",
+    "appControlEigene":  [
+                             "EDEP L1 Audit"
+                         ],
+    "defender":  {
+                     "aktiv":  true,
+                     "plattform":  "4.18.25080.5"
+                 }
+}

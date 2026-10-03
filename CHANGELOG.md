@@ -11,10 +11,10 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 - `Invoke-EdepAudit`: kostenloses Audit mit Punktzahl, Erklärungen und HTML-Bericht, auch ohne Adminrechte
 - PowerShell-Modul `EDEP` (Manifest, Build- und Signierskript)
 - Zweisprachigkeit (Deutsch/Englisch) für Audit, Prüfdetails und HTML-Bericht (`-Language`), `README.en.md`
-- SPEC 3.4 „Bekannte Umgehungen“ (B-01 bis B-07) mit Umgehungstests T-BYP-01 bis T-BYP-07
+- SPEC 3.4 „Bekannte Umgehungen“ (B-01 bis B-08) mit Umgehungstests T-BYP-01 bis T-BYP-08
 - EDEP-NET-10: Freigaben nur für admin-geschützte Programmpfade
 - EDEP-LOG-06: BITS-Clientprotokoll als Erkennung für B-01
-- Quellenverzeichnis (SPEC Anhang B, 26 Quellen), Nachweisregister (`docs/EVIDENCE.md`),
+- Quellenverzeichnis (SPEC Anhang B, 28 Quellen), Nachweisregister (`docs/EVIDENCE.md`),
   Prüfanleitung (`docs/VERIFY-YOURSELF.md`), `SECURITY.md`
 - DD-11 (Programmidentität per App-Control-AppID-Tags prüfen), DD-12 (bewusste Abweichungen von Microsoft)
 - CI: Syntax, BOM, PSScriptAnalyzer, Rauchtests, Schema-Validierung mit Negativtests
@@ -23,6 +23,27 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 - Einheitentests `tools/Test-EdepUnits.ps1` (nachgebaute ACL, Regelerkennung, Mutationstest), in der CI
 - Quellen Q-27 und Q-28 (Windows-Update-Fehlercodes); Nachweise E-66 bis E-71
 - Projektseite auf GitHub Pages (https://andrez1971.github.io/E.L.L.A.-Defence-Endpoint/), Deutsch/Englisch, ohne externe Ressourcen; jede Zahl wird vor dem Veröffentlichen gegen das Repository geprüft (`tools/check-site.py`)
+
+### Lauf 1 (Hyper-V-VM, Windows 11 Enterprise 25H2, 2026-10-03)
+
+- Vollständiger Durchlauf Phase A bis F, Protokoll und Rohdaten unter `conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/`. Enforce-Modus 15/15, Rücknahme stellt den Ausgangszustand her, Unterschiede sind gemessen und als Abweichungen geführt.
+- **Befund, noch offen:** Windows Update, Defender-Signaturen und BITS sind unter Enforce nicht erreichbar, weil dienstbezogene Erlaubnisregeln für `wuauserv` und `BITS` nicht greifen (E-73, E-74). Nach `Restore` und Neustart kam der EDEP-Zustand einmal zurück, nicht reproduziert (E-76).
+- **Korrigiert und in der VM nachgemessen (E-80, E-81):** `Test-EdepL1` meldete TEL-04 unter „ausgehend Block“ mit PASS, obwohl Updates nicht erreichbar sind; jetzt WARN ohne Messung und FAIL mit `-ProbeUpdates`, wenn die Update-Suche scheitert. `Install-EdepL1 -DeployAppControlAudit` legte je Aufruf eine weitere App-Control-Richtlinie an; jetzt wird die vorherige entfernt. `Restore-EdepL1` warnt nicht mehr bei bereits entfernten Richtlinien. Zehn neue Einheitentests (23 insgesamt).
+- Spezifikation: B-01 auf den gemessenen Stand gebracht, Hinweise bei TEL-04, ID-05 und OPS-01.
+- Anleitung: Ausführungsrichtlinie, `J` statt `y` auf deutschem Windows, sechs Rückfragen, bekannte Grenze von `-Enforce` im README; Testplan um Hinweise aus Lauf 1 ergänzt.
+- Nachweise E-72 bis E-79, vier Einträge in der Fehlerliste; E-71 jetzt gemessen.
+
+### Lauf 2 (Hyper-V-VM, Windows 11 Pro 26H2, Build 26300, 2026-10-03)
+
+- Zweiter vollständiger Durchlauf (Phasen A bis E) mit den korrigierten Skripten aus dem Nachtest von Lauf 1, Protokoll und Rohdaten unter `conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/`. Enforce 15/15 mit TEL-01 und TEL-04 als WARN; Edge kommt unter Enforce durch (erstmals gemessen); die Befunde zu Updates und BITS treten auch auf Pro auf (E-82, E-83).
+- Kontrollmessung auf Pro bei aktiver Pause: Die Update-Suche gelingt ohne EDEP und scheitert mit EDEP (`wuauserv` blockiert); die Pause ist nicht die Ursache.
+- Der Neustart-Vorfall aus Lauf 1 trat auf Pro erneut auf (zweimal in fünf Versuchen), Ursache weiter offen (E-76).
+
+### Offen (aus dem ersten Durchlauf, Windows-Sandbox, 2026-10-02)
+
+- Abweichung 11 (BITS im Enforce-Modus blockiert): in Lauf 1 in der VM bestätigt, B-01 korrigiert; Ursache weiter offen (E-71, E-73).
+- Abweichung 12 (Regelanzahl nach der Rücknahme): in der VM **nicht** aufgetreten, die Zahlen stimmen exakt; damit spricht alles für eine Eigenschaft des Sandbox-Images.
+- App Control, Defender und Windows Update, in der Sandbox nicht prüfbar, wurden in Lauf 1 gemessen (siehe oben).
 
 ### Korrigiert
 

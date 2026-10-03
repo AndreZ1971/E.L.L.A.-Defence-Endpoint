@@ -1,0 +1,95 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003173240
+Benutzername: test\test1
+RunAs-Benutzer: test\test1
+Konfigurationsname: 
+Computer: TEST (Microsoft Windows NT 10.0.26300.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 11392
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+PS C:\edep-run\baseline\L1> $edge = "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
+PS C:\edep-run\baseline\L1> function Reset-WuCache {
+    Stop-Service wuauserv, bits, UsoSvc -Force -ErrorAction SilentlyContinue
+    $d = "$env:SystemRoot\SoftwareDistribution"
+    if (Test-Path "$d.edep-old") { Remove-Item "$d.edep-old" -Recurse -Force }
+    Rename-Item $d 'SoftwareDistribution.edep-old'
+    Start-Service wuauserv
+    Start-Service bits -ErrorAction SilentlyContinue
+}
+PS C:\edep-run\baseline\L1> function Test-WuSuche([string]$Name) {
+    $t = Get-Date
+    try { $r = (New-Object -ComObject Microsoft.Update.Session).CreateUpdateSearcher().Search("IsInstalled=0 and Type='Software'"); "$Name : ERFOLG, $($r.Updates.Count) Updates" } catch { "$Name : FEHLER 0x{0:X8}" -f $_.Exception.HResult }
+    Start-Sleep 3
+    Get-WinEvent -FilterHashtable @{LogName='Security';Id=5157;StartTime=$t} -ErrorAction SilentlyContinue | Where-Object { $_.Message -match 'Ausgehend' -and $_.Message -notmatch '239\.255' } | ForEach-Object {
+        $p = if ($_.Message -match 'Prozess-ID:\s+(\d+)') { [int]$Matches[1] }
+        $d = ($_.Message -split "`r?`n" | Where-Object { $_ -match '^\s*(Zieladresse|Zielport)' } | ForEach-Object { ($_ -replace '\s+',' ').Trim() }) -join ' '
+        "  5157: PID $p [" + ((Get-CimInstance Win32_Service -Filter "ProcessId=$p" | Select-Object -ExpandProperty Name) -join ',') + "] $d" }
+}
+PS C:\edep-run\baseline\L1> '--- Zustand: Pause aktiv, EDEP nicht angewendet ---'
+--- Zustand: Pause aktiv, EDEP nicht angewendet ---
+PS C:\edep-run\baseline\L1> Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings' | Select-Object PauseUpdatesExpiryTime | Format-List
+
+
+PauseUpdatesExpiryTime : 2026-10-10T10:45:19Z
+
+
+
+PS C:\edep-run\baseline\L1> "Ausgehend aktiv: " + ((Get-NetFirewallProfile -PolicyStore ActiveStore | ForEach-Object { $_.DefaultOutboundAction }) -join ', ')
+Ausgehend aktiv: Allow, Allow, Allow
+PS C:\edep-run\baseline\L1> "EDEP-Regeln: " + @(Get-NetFirewallRule -Group EDEP-L1 -ErrorAction SilentlyContinue).Count
+EDEP-Regeln: 0
+PS C:\edep-run\baseline\L1> '=== K1: KONTROLLE ohne EDEP, Pause aktiv, Cache leer ==='
+=== K1: KONTROLLE ohne EDEP, Pause aktiv, Cache leer ===
+PS C:\edep-run\baseline\L1> Reset-WuCache
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+PS C:\edep-run\baseline\L1> Test-WuSuche 'K1 ohne EDEP'
+K1 ohne EDEP : ERFOLG, 2 Updates
+PS C:\edep-run\baseline\L1> '=== K2: MIT EDEP (Enforce), Pause aktiv, Cache leer ==='
+=== K2: MIT EDEP (Enforce), Pause aktiv, Cache leer ===
+PS C:\edep-run\baseline\L1> .\Install-EdepL1.ps1 -Enforce -DeployAppControlAudit -AllowProgram $edge -Confirm:$false | Out-Null
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-132020
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261003-173311
+==> Firewall-Profile: eingehend Block, ausgehend Block, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Setze Telemetrie-Richtlinien
+WARNUNG: Edition 'Professional': AllowTelemetry=0 wirkt wie 1 (Required). Das ist die niedrigste Stufe, die diese Edition zulässt (EDEP-TEL-01).
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: ENFORCE).
+Sicherung:      C:\ProgramData\EDEP\backup\20261003-173311
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261003-173311'
+PS C:\edep-run\baseline\L1> Reset-WuCache
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+PS C:\edep-run\baseline\L1> Test-WuSuche 'K2 mit EDEP'
+K2 mit EDEP : FEHLER 0x80072EFD
+  5157: PID 3400 [DiagTrack] Zieladresse: 20.52.64.204 Zielport: 443
+  5157: PID 11900 [wuauserv] Zieladresse: 20.165.94.63 Zielport: 443
+PS C:\edep-run\baseline\L1> '=== Rücknahme ==='
+=== Rücknahme ===
+PS C:\edep-run\baseline\L1> .\Restore-EdepL1.ps1 -Confirm:$false
+Sicherung vom 2026-10-03T13:20:20.6679314+02:00 (TEST)
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+PS C:\edep-run\baseline\L1> Start-Sleep 60
+PS C:\edep-run\baseline\L1> "Dauerhaft ausgehend: " + ((Get-NetFirewallProfile -PolicyStore PersistentStore | ForEach-Object { $_.DefaultOutboundAction }) -join ', ')
+Dauerhaft ausgehend: NotConfigured, NotConfigured, NotConfigured
+PS C:\edep-run\baseline\L1> "EDEP-Regeln: " + @(Get-NetFirewallRule -Group EDEP-L1 -ErrorAction SilentlyContinue).Count
+EDEP-Regeln: 0
+PS C:\edep-run\baseline\L1> Stop-Transcript | Out-Null
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003173426
+**********************

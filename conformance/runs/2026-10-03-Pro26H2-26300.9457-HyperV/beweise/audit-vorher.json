@@ -1,0 +1,303 @@
+﻿{
+    "Profile":  "EDEP-Audit",
+    "Version":  "0.1.0",
+    "Language":  "de",
+    "Computer":  "TEST",
+    "Os":  "Microsoft Windows 11 Pro 10.0.26300",
+    "Checked":  "2026-10-03T13:17:48.3810723+02:00",
+    "CheckedDisplay":  "03.10.2026 13:17",
+    "IsAdmin":  true,
+    "Score":  {
+                  "Score":  41,
+                  "Grade":  "D",
+                  "Max":  95
+              },
+    "Counts":  {
+                   "INFO":  2,
+                   "PASS":  9,
+                   "FAIL":  13,
+                   "WARN":  0,
+                   "UNKNOWN":  0
+               },
+    "Categories":  [
+                       {
+                           "Name":  "Programmkontrolle",
+                           "Score":  0,
+                           "Open":  2,
+                           "Rated":  true
+                       },
+                       {
+                           "Name":  "Ausgehender Verkehr",
+                           "Score":  21,
+                           "Open":  3,
+                           "Rated":  true
+                       },
+                       {
+                           "Name":  "Telemetrie",
+                           "Score":  36,
+                           "Open":  3,
+                           "Rated":  true
+                       },
+                       {
+                           "Name":  "Protokollierung",
+                           "Score":  45,
+                           "Open":  2,
+                           "Rated":  true
+                       },
+                       {
+                           "Name":  "Eingehender Verkehr",
+                           "Score":  69,
+                           "Open":  1,
+                           "Rated":  true
+                       },
+                       {
+                           "Name":  "Angriffsfläche",
+                           "Score":  71,
+                           "Open":  2,
+                           "Rated":  true
+                       }
+                   ],
+    "Findings":  [
+                     {
+                         "Id":  "EDEP-NET-01",
+                         "Status":  "PASS",
+                         "Detail":  "Alle Profile aktiv, eingehend Block",
+                         "Title":  "Firewall aktiv, eingehend blockiert",
+                         "Category":  "Eingehender Verkehr",
+                         "Weight":  8,
+                         "Why":  "Ohne aktive Firewall sind alle lauschenden Dienste aus dem Netz erreichbar.",
+                         "Fix":  "Firewall in allen Profilen aktivieren, eingehende Standardaktion Block."
+                     },
+                     {
+                         "Id":  "EDEP-NET-02",
+                         "Status":  "PASS",
+                         "Detail":  "Stealth-Modus aktiv (Standard)",
+                         "Title":  "Stealth-Modus aktiv",
+                         "Category":  "Eingehender Verkehr",
+                         "Weight":  3,
+                         "Why":  "Im Stealth-Modus antwortet der Rechner nicht auf Anfragen an geschlossene Ports und ist für Scanner schwerer zu erkennen.",
+                         "Fix":  "Registrierungswert DisableStealthMode entfernen oder auf 0 setzen."
+                     },
+                     {
+                         "Id":  "EDEP-NET-03",
+                         "Status":  "FAIL",
+                         "Detail":  "Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.",
+                         "Title":  "Ausgehender Verkehr standardmäßig blockiert",
+                         "Category":  "Ausgehender Verkehr",
+                         "Weight":  10,
+                         "Why":  "Ist ausgehender Verkehr standardmäßig erlaubt, kann jedes Programm, auch Schadcode, ungehindert Daten senden und Befehle nachladen. Windows lässt ausgehend standardmäßig alles zu, auch mit Defender. Auch eine einzelne uneingeschränkte Erlaubnisregel hebt eine Standardsperre wieder auf.",
+                         "Fix":  "Ausgehende Standardaktion auf Block setzen und nur benötigte Programme freigeben (Install-EdepL1.ps1 -Enforce -AllowProgram ...). Vorher im Audit-Modus das Firewall-Log auswerten."
+                     },
+                     {
+                         "Id":  "EDEP-NET-04",
+                         "Status":  "FAIL",
+                         "Detail":  "21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere",
+                         "Title":  "Windows-Bordwerkzeuge (LOLBins) ausgehend gesperrt",
+                         "Category":  "Ausgehender Verkehr",
+                         "Weight":  8,
+                         "Why":  "Angreifer laden Schadcode bevorzugt mit Bordwerkzeugen wie PowerShell, curl, certutil oder mshta nach, weil diese signiert und überall vorhanden sind.",
+                         "Fix":  "Ausgehende Blockregeln für die Programme aus SPEC.md Anhang A anlegen (Install-EdepL1.ps1 erledigt das auch im Audit-Modus)."
+                     },
+                     {
+                         "Id":  "EDEP-NET-05",
+                         "Status":  "FAIL",
+                         "Detail":  "Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986",
+                         "Title":  "SMB/RDP/WinRM/RPC in öffentlichen Netzen gesperrt",
+                         "Category":  "Eingehender Verkehr",
+                         "Weight":  5,
+                         "Why":  "In Hotel-, Bahn- oder Café-WLANs sind Datei- und Fernwartungsdienste ein häufiger Einstiegspunkt.",
+                         "Fix":  "Eingehende Blockregel im Profil Public für TCP 135, 445, 3389, 5985, 5986."
+                     },
+                     {
+                         "Id":  "EDEP-NET-10",
+                         "Status":  "PASS",
+                         "Detail":  "15 freigegebene Programmpfade nur durch Admins änderbar",
+                         "Title":  "Freigegebene Programme nur durch Admins änderbar",
+                         "Category":  "Ausgehender Verkehr",
+                         "Weight":  6,
+                         "Why":  "Liegt ein Programm mit Netzfreigabe in einem Ordner, den der Benutzer beschreiben darf (z. B. AppData), kann Schadcode die Datei austauschen oder eine DLL daneben legen und erbt die Freigabe.",
+                         "Fix":  "Programme systemweit unter C:\\Program Files installieren oder die Freigabe entfernen. In EDEP L2 wird die Freigabe zusätzlich an Signatur oder Hash gebunden."
+                     },
+                     {
+                         "Id":  "EDEP-ID-01",
+                         "Status":  "FAIL",
+                         "Detail":  "Keine aktive, nicht-systemeigene App-Control-Richtlinie",
+                         "Title":  "App Control for Business aktiv",
+                         "Category":  "Programmkontrolle",
+                         "Weight":  6,
+                         "Why":  "App Control legt fest, welcher Code überhaupt starten darf, und wird vom Windows-Kernel durchgesetzt.",
+                         "Fix":  "Mit der Richtlinie DefaultWindows_Audit im Audit-Modus beginnen (Install-EdepL1.ps1 -DeployAppControlAudit), Protokolle auswerten, dann erzwingen."
+                     },
+                     {
+                         "Id":  "EDEP-TEL-01",
+                         "Status":  "FAIL",
+                         "Detail":  "Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)",
+                         "Title":  "Telemetrie auf niedrigster Stufe",
+                         "Category":  "Telemetrie",
+                         "Weight":  3,
+                         "Why":  "Ohne Richtlinie können optionale Diagnosedaten übertragen werden.",
+                         "Fix":  "Richtlinie AllowTelemetry auf 0 setzen (wirkt auf Home/Pro als 1 = Required)."
+                     },
+                     {
+                         "Id":  "EDEP-TEL-02",
+                         "Status":  "FAIL",
+                         "Detail":  "Ohne ausgehende Blockregel: DiagTrack, dmwappushservice",
+                         "Title":  "Telemetrie-Dienste ausgehend gesperrt",
+                         "Category":  "Telemetrie",
+                         "Weight":  4,
+                         "Why":  "DiagTrack und dmwappushservice übertragen Diagnose- und Nutzungsdaten an Microsoft.",
+                         "Fix":  "Ausgehende Blockregeln auf Dienstebene (nicht per IP- oder Hosts-Liste, das bricht Updates)."
+                     },
+                     {
+                         "Id":  "EDEP-TEL-03",
+                         "Status":  "FAIL",
+                         "Detail":  "Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed",
+                         "Title":  "Werbe-ID und Aktivitätsverlauf deaktiviert",
+                         "Category":  "Telemetrie",
+                         "Weight":  2,
+                         "Why":  "Werbe-ID und Aktivitätsverlauf ermöglichen Profilbildung. Microsoft empfiehlt selbst, den Verlauf abzuschalten, nicht nur seinen Upload.",
+                         "Fix":  "Richtlinien AdvertisingInfo\\DisabledByGroupPolicy=1 sowie System\\EnableActivityFeed=0, PublishUserActivities=0, UploadUserActivities=0."
+                     },
+                     {
+                         "Id":  "EDEP-TEL-04",
+                         "Status":  "PASS",
+                         "Detail":  "Update- und Schutzdienste erreichbar",
+                         "Title":  "Sicherheitsupdates erreichbar",
+                         "Category":  "Telemetrie",
+                         "Weight":  5,
+                         "Why":  "Wer beim Abschotten Windows Update, Defender-Signaturen oder Zertifikatsprüfungen blockiert, macht das System unsicherer.",
+                         "Fix":  "Dienste wuauserv, BITS, DoSvc, CryptSvc, W32Time und Defender ausgehend erlauben."
+                     },
+                     {
+                         "Id":  "EDEP-LOG-01",
+                         "Status":  "FAIL",
+                         "Detail":  "LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert",
+                         "Title":  "Blockierte Verbindungen werden protokolliert",
+                         "Category":  "Protokollierung",
+                         "Weight":  4,
+                         "Why":  "Ohne Protokoll bleibt unbemerkt, welche Programme wohin senden wollten.",
+                         "Fix":  "Firewall-Log für verworfene Pakete und Überwachung „Filterplattformverbindung“ (Ereignis 5157) aktivieren."
+                     },
+                     {
+                         "Id":  "EDEP-LOG-02",
+                         "Status":  "PASS",
+                         "Detail":  "Firewall-Log lokal",
+                         "Title":  "Firewall-Log bleibt lokal",
+                         "Category":  "Protokollierung",
+                         "Weight":  2,
+                         "Why":  "Protokolle sollen nur mit ausdrücklicher Entscheidung das Gerät verlassen.",
+                         "Fix":  "LogFileName auf einen lokalen Pfad setzen."
+                     },
+                     {
+                         "Id":  "EDEP-LOG-06",
+                         "Status":  "PASS",
+                         "Detail":  "BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)",
+                         "Title":  "BITS-Übertragungen werden protokolliert",
+                         "Category":  "Protokollierung",
+                         "Weight":  3,
+                         "Why":  "Über den Windows-Dienst BITS kann jeder Benutzer Dateien laden und hochladen, auch wenn Programme sonst gesperrt sind (MITRE ATT\u0026CK T1197). Das Protokoll ist das Erkennungsmittel.",
+                         "Fix":  "Protokoll Microsoft-Windows-Bits-Client/Operational aktivieren (wevtutil sl Microsoft-Windows-Bits-Client/Operational /e:true)."
+                     },
+                     {
+                         "Id":  "EDEP-OPS-01",
+                         "Status":  "INFO",
+                         "Detail":  "Keine EDEP-Sicherung unter C:\\ProgramData\\EDEP\\backup",
+                         "Title":  "EDEP-Sicherung vorhanden",
+                         "Category":  "Betrieb",
+                         "Weight":  0,
+                         "Why":  "Nur relevant, wenn EDEP angewendet wurde: Ohne Sicherung gibt es keinen sauberen Rückweg.",
+                         "Fix":  "Install-EdepL1.ps1 legt vor jeder Änderung eine Sicherung an."
+                     },
+                     {
+                         "Id":  "AUD-SMB1",
+                         "Status":  "PASS",
+                         "Detail":  "SMBv1-Client-Treiber nicht installiert",
+                         "Title":  "SMBv1-Client nicht aktiv",
+                         "Category":  "Angriffsfläche",
+                         "Weight":  5,
+                         "Why":  "SMBv1 ist veraltet und war Einfallstor von WannaCry und NotPetya.",
+                         "Fix":  "Windows-Feature „SMB 1.0/CIFS-Dateifreigabeunterstützung“ entfernen."
+                     },
+                     {
+                         "Id":  "AUD-LLMNR",
+                         "Status":  "FAIL",
+                         "Detail":  "Aktiv (Windows-Standard)",
+                         "Title":  "LLMNR deaktiviert",
+                         "Category":  "Angriffsfläche",
+                         "Weight":  3,
+                         "Why":  "Über LLMNR-Antworten kann ein Angreifer im selben Netz Namensauflösungen fälschen und Anmelde-Hashes abgreifen.",
+                         "Fix":  "Richtlinie „Multicastnamensauflösung deaktivieren“ (DNSClient\\EnableMulticast = 0)."
+                     },
+                     {
+                         "Id":  "AUD-NETBIOS",
+                         "Status":  "FAIL",
+                         "Detail":  "Auf 2 von 2 Schnittstellen aktiv oder per DHCP gesteuert",
+                         "Title":  "NetBIOS über TCP/IP deaktiviert",
+                         "Category":  "Angriffsfläche",
+                         "Weight":  2,
+                         "Why":  "NetBIOS-Namensdienst ermöglicht denselben Angriff wie LLMNR und verrät Rechner- und Benutzernamen.",
+                         "Fix":  "Pro Netzwerkadapter NetBIOS über TCP/IP deaktivieren (NetbiosOptions = 2)."
+                     },
+                     {
+                         "Id":  "AUD-RDP",
+                         "Status":  "PASS",
+                         "Detail":  "Remotedesktop deaktiviert",
+                         "Title":  "Remotedesktop aus oder mit NLA",
+                         "Category":  "Angriffsfläche",
+                         "Weight":  4,
+                         "Why":  "Offenes RDP ist einer der häufigsten Einstiegspunkte für Ransomware. Ohne Netzwerkebenen-Authentifizierung (NLA) ist der Anmeldebildschirm ungeschützt erreichbar.",
+                         "Fix":  "Remotedesktop deaktivieren oder zumindest NLA erzwingen und nur über VPN erreichbar machen."
+                     },
+                     {
+                         "Id":  "AUD-PSV2",
+                         "Status":  "PASS",
+                         "Detail":  "PowerShell-2.0-Engine nicht vorhanden",
+                         "Title":  "PowerShell 2.0 entfernt",
+                         "Category":  "Angriffsfläche",
+                         "Weight":  3,
+                         "Why":  "Mit „powershell -Version 2“ umgehen Angreifer Skriptprotokollierung und AMSI.",
+                         "Fix":  "Windows-Feature „Windows PowerShell 2.0“ entfernen."
+                     },
+                     {
+                         "Id":  "AUD-NETPROT",
+                         "Status":  "FAIL",
+                         "Detail":  "Deaktiviert",
+                         "Title":  "Defender Network Protection aktiv",
+                         "Category":  "Ausgehender Verkehr",
+                         "Weight":  4,
+                         "Why":  "Network Protection blockiert Verbindungen zu bekannten Schad- und Phishing-Zielen für alle Programme, nicht nur im Browser.",
+                         "Fix":  "Set-MpPreference -EnableNetworkProtection Enabled"
+                     },
+                     {
+                         "Id":  "AUD-ASR",
+                         "Status":  "FAIL",
+                         "Detail":  "Keine ASR-Regel aktiv",
+                         "Title":  "Defender-ASR-Regeln im Blockiermodus",
+                         "Category":  "Programmkontrolle",
+                         "Weight":  3,
+                         "Why":  "Attack-Surface-Reduction-Regeln stoppen typische Angriffsketten, z. B. Office-Makros, die Prozesse starten.",
+                         "Fix":  "ASR-Regeln zunächst im Audit-, dann im Blockiermodus aktivieren (Add-MpPreference -AttackSurfaceReductionRules_Ids ...)."
+                     },
+                     {
+                         "Id":  "AUD-PSLOG",
+                         "Status":  "FAIL",
+                         "Detail":  "Nicht aktiv",
+                         "Title":  "PowerShell-Skriptblockprotokollierung aktiv",
+                         "Category":  "Protokollierung",
+                         "Weight":  2,
+                         "Why":  "Ohne Skriptblockprotokoll ist nicht nachvollziehbar, welcher PowerShell-Code ausgeführt wurde.",
+                         "Fix":  "Richtlinie „PowerShell-Skriptblockprotokollierung aktivieren“ (ScriptBlockLogging\\EnableScriptBlockLogging = 1)."
+                     },
+                     {
+                         "Id":  "AUD-LISTEN",
+                         "Status":  "INFO",
+                         "Detail":  "20 lauschende TCP-Endpunkte: lsass (49664); services (49670); spoolsv (49668); svchost (135); svchost (49666); svchost (49667); svchost (49669); svchost (5040); svchost (7680); System (139,445); wininit (49665)",
+                         "Title":  "Aus dem Netz erreichbare Dienste",
+                         "Category":  "Angriffsfläche",
+                         "Weight":  0,
+                         "Why":  "Jeder Prozess, der auf einer Nicht-Loopback-Adresse lauscht, ist potenziell von außen erreichbar, sofern die Firewall es zulässt.",
+                         "Fix":  "Nicht benötigte Dienste beenden; benötigte nur im Profil Domain/Private freigeben."
+                     }
+                 ],
+    "HtmlPath":  null
+}

@@ -1,0 +1,98 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003133644
+Benutzername: test\test1
+RunAs-Benutzer: test\test1
+Konfigurationsname: 
+Computer: TEST (Microsoft Windows NT 10.0.26300.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 7492
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+PS C:\edep-run\baseline\L1> "Neustart: " + (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+Neustart: 10/03/2026 13:35:59
+PS C:\edep-run\baseline\L1> $k = 'HKLM:\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy'
+PS C:\edep-run\baseline\L1> "EDEP-Regeln in Registry: " + @((Get-ItemProperty "$k\FirewallRules").PSObject.Properties | Where-Object { [string]$_.Value -match 'EDEP' }).Count
+EDEP-Regeln in Registry: 33
+PS C:\edep-run\baseline\L1> "Dauerhaft ausgehend: " + ((Get-NetFirewallProfile -PolicyStore PersistentStore | ForEach-Object { $_.DefaultOutboundAction }) -join ', ')
+Dauerhaft ausgehend: Block, Block, Block
+PS C:\edep-run\baseline\L1> .\Test-EdepL1.ps1
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 131 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  19 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+WARN    EDEP-TEL-01  AllowTelemetry=0, wirksam auf 'Professional': 1 (Required) — niedrigste Stufe dieser Edition
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Regeln vorhanden, Wirkung nicht gemessen (mit -ProbeUpdates messen; unter "ausgehend Block" waren Updates in Lauf 1 trotz Regeln nicht erreichbar)
+FAIL    EDEP-LOG-01  Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-132020
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 14/15 erfüllt
+PS C:\edep-run\baseline\L1> .\Test-EdepL1.ps1 -Json | Set-Content "$out\l1-nachher.json" -Encoding UTF8
+PS C:\edep-run\baseline\L1> & $fp -Root $L1 -Out "$out\nachher.json" | Out-Null
+PS C:\edep-run\baseline\L1> 'Unterschiede zu vorher.json (erwartet: keine, ausser Defender-Plattform):'
+Unterschiede zu vorher.json (erwartet: keine, ausser Defender-Plattform):
+PS C:\edep-run\baseline\L1> Compare-Object (Get-Content "$out\vorher.json" | Where-Object { $_ -notmatch 'erzeugt' }) (Get-Content "$out\nachher.json" | Where-Object { $_ -notmatch 'erzeugt' })
+
+InputObject                                    SideIndicator
+-----------                                    -------------
+                        "outbound":  "Block",  =>
+                        "logBlocked":  "True"  =>
+                        "outbound":  "Block",  =>
+                        "logBlocked":  "True"  =>
+                        "outbound":  "Block",  =>
+                        "logBlocked":  "True"  =>
+                   "ausgehendErlauben":  131,  =>
+                   "ausgehendBlock":  23,      =>
+                   "eingehendBlock":  1,       =>
+                   "gruppeEdepL1":  33         =>
+                              "aktuell":  0    =>
+                              "aktuell":  1    =>
+                              "aktuell":  0    =>
+                              "aktuell":  0    =>
+                              "aktuell":  0    =>
+                             "EDEP L1 Audit"   =>
+                        "outbound":  "Allow",  <=
+                        "logBlocked":  "False" <=
+                        "outbound":  "Allow",  <=
+                        "logBlocked":  "False" <=
+                        "outbound":  "Allow",  <=
+                        "logBlocked":  "False" <=
+                   "ausgehendErlauben":  122,  <=
+                   "ausgehendBlock":  0,       <=
+                   "eingehendBlock":  0,       <=
+                   "gruppeEdepL1":  0          <=
+                              "aktuell":  null <=
+                              "aktuell":  null <=
+                              "aktuell":  null <=
+                              "aktuell":  null <=
+                              "aktuell":  null <=
+                                               <=
+
+
+PS C:\edep-run\baseline\L1> "R-A4: " + (curl.exe -m 10 -s -o NUL -w "%{http_code}" https://example.org)
+R-A4: 000
+PS C:\edep-run\baseline\L1> "R-A5: " + (& "$env:TEMP\x.exe" -m 10 -s -o NUL -w "%{http_code}" https://example.org)
+R-A5: 000
+PS C:\edep-run\baseline\L1> try { Start-BitsTransfer -Source https://example.org -Destination "$env:TEMP\bits2.html" -ErrorAction Stop; "R-A6: BITS gelungen" } catch { "R-A6: FEHLER " + $_.Exception.Message }
+PS C:\edep-run\baseline\L1> TerminatingError(Start-BitsTransfer): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Die Serververbindung konnte nicht hergestellt werden.
+."
+R-A6: FEHLER Die Serververbindung konnte nicht hergestellt werden.
+PS C:\edep-run\baseline\L1> Stop-Transcript
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003133721
+**********************

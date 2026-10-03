@@ -67,13 +67,16 @@ language; `-Language en` or `-Language de` forces it.
 In **PowerShell as administrator** in the folder `baseline\L1`:
 
 ```powershell
+# 0. For this session only: allow script execution (Windows blocks it by default)
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
 # 1. Only show what would happen
 .\Install-EdepL1.ps1 -DeployAppControlAudit -WhatIf
 
 # 2. Apply in audit mode (outbound still allowed, everything is logged)
 .\Install-EdepL1.ps1 -DeployAppControlAudit
 
-# 3. Check
+# 3. Check (add -ProbeUpdates to also measure update reachability)
 .\Test-EdepL1.ps1
 
 # 4. After reviewing the firewall log: block outbound by default
@@ -85,10 +88,20 @@ In **PowerShell as administrator** in the folder `baseline\L1`:
 ```
 
 **Caution with `-Enforce`:** afterwards only programs with an allow rule have network access:
-Windows core networking, update services, Defender and the programs listed under `-AllowProgram`.
-Store apps keep their own Windows rules. PowerShell, `curl.exe`, `certutil` and the other
-Annex A tools are blocked outbound, including for `Install-Module` and `winget` scripts.
-The installer and `Restore-EdepL1` ask before every step (installer: five, restore: four prompts, confirm each with `y`).
+Windows core networking, the programs listed under `-AllowProgram` and programs with their own
+Windows rules (Store apps). PowerShell, `curl.exe`, `certutil` and the other Annex A tools are
+blocked outbound, including for `Install-Module` and `winget` scripts.
+
+**Known limit (measured, [run 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [run 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md)):**
+under `-Enforce`, **Windows Update, Defender signature updates and BITS were not reachable** on
+Windows 11 Enterprise 25H2 and Pro 26H2, although `Test-EdepL1` reports 15/15. The allow rules for these
+services do not take effect there ([E-73, E-74](docs/EVIDENCE.md)). Use enforce mode only with a
+maintenance window and keep `Restore-EdepL1.ps1` ready. After a restore, verify the state with
+`Test-EdepL1.ps1`.
+
+The installer and `Restore-EdepL1` ask before every step (installer: five, six with
+`-DeployAppControlAudit`; restore: four plus one per App Control policy). Confirm with the letter
+shown: on German Windows **`J`** (or `A` for all), on English `y`. For scripts use `-Confirm:$false`.
 `-AllowProgram` refuses paths that non-admins can modify (EDEP-NET-10).
 
 Install and restore messages are currently German only.

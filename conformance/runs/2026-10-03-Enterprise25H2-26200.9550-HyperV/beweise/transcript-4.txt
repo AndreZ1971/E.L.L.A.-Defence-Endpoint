@@ -1,0 +1,391 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003101103
+Benutzername: DESKTOP-QKILAOK\test
+RunAs-Benutzer: DESKTOP-QKILAOK\test
+Konfigurationsname: 
+Computer: DESKTOP-QKILAOK (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 6324
+PSVersion: 5.1.26100.9549
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9549
+BuildVersion: 10.0.26100.9549
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # R-E4: Prüfung nach Rücknahme (erwartet 7 von 15)
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> $res = .\Test-EdepL1.ps1
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 140 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  20 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+PASS    EDEP-TEL-02  Ausgehend blockiert (Dienst-SID wirksam): DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-093200
+
+EDEP 0.1.0 L1 — geprüft 2026-10-03 — 11/15 erfüllt
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> $res
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> $res | Out-File "$out\l1-nachher.txt" -Encoding UTF8
+>> CommandInvocation(Out-Null): "Out-Null"
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> .\Test-EdepL1.ps1 -Json | Set-Content "$out\l1-nachher.json" -Encoding UTF8
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # R-E5: Fingerabdruck gegen vorher.json
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> & $fp -Root $L1 -Out "$out\nachher.json" | Out-Null
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> 'Unterschiede zu vorher.json (erwartet: keine, ausser Defender-Plattform):'
+Unterschiede zu vorher.json (erwartet: keine, ausser Defender-Plattform):
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Compare-Object (Get-Content "$out\vorher.json" | Where-Object { $_ -notmatch 'erzeugt' }) (Get-Content "$out\nachher.json" | Where-Object { $_ -notmatch 'erzeugt' })
+
+InputObject                                       SideIndicator
+-----------                                       -------------
+                        "outbound":  "Block",     =>
+                        "logBlocked":  "True"     =>
+                        "outbound":  "Block",     =>
+                        "logBlocked":  "True"     =>
+                        "outbound":  "Block",     =>
+                        "logBlocked":  "True"     =>
+                   "ausgehendErlauben":  140,     =>
+                   "ausgehendBlock":  23,         =>
+                   "eingehendBlock":  1,          =>
+                   "gruppeEdepL1":  33            =>
+                     "plattform":  "4.18.26080.4" =>
+                        "outbound":  "Allow",     <=
+                        "logBlocked":  "False"    <=
+                        "outbound":  "Allow",     <=
+                        "logBlocked":  "False"    <=
+                        "outbound":  "Allow",     <=
+                        "logBlocked":  "False"    <=
+                   "ausgehendErlauben":  131,     <=
+                   "ausgehendBlock":  0,          <=
+                   "eingehendBlock":  0,          <=
+                   "gruppeEdepL1":  0             <=
+                     "plattform":  "4.18.25080.5" <=
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # R-E6: Kontrollmessungen wie in Phase A
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> "R-A4: " + (curl.exe -m 10 -s -o NUL -w "%{http_code}" https://example.org)
+R-A4: 000
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> "R-A5: " + (& "$env:TEMP\x.exe" -m 10 -s -o NUL -w "%{http_code}" https://example.org)
+R-A5: 000
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> try { Start-BitsTransfer -Source https://example.org -Destination "$env:TEMP\bits9.html" -ErrorAction Stop; "R-A6: BITS gelungen" } catch { "R-A6: FEHLER " + $_.Exception.Message }
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> TerminatingError(Start-BitsTransfer): "Der ausgeführte Befehl wurde beendet, da die Einstellungsvariable "ErrorActionPreference" oder ein allgemeiner Parameter auf "Stop" festgelegt ist: Die Serververbindung konnte nicht hergestellt werden.
+."
+R-A6: FEHLER Die Serververbindung konnte nicht hergestellt werden.
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> clear
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # [VM] Administrator, selbe PowerShell. Nur lesend.
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- Profile, dauerhafter Speicher ---'
+--- Profile, dauerhafter Speicher ---
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Get-NetFirewallProfile -PolicyStore PersistentStore | Select-Object Name, DefaultOutboundAction | Format-Table -AutoSize
+
+Name    DefaultOutboundAction
+----    ---------------------
+Domain                  Block
+Private                 Block
+Public                  Block
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- Profile, aktiver Speicher ---'
+--- Profile, aktiver Speicher ---
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Get-NetFirewallProfile -PolicyStore ActiveStore | Select-Object Name, DefaultOutboundAction | Format-Table -AutoSize
+
+Name    DefaultOutboundAction
+----    ---------------------
+Domain                  Block
+Private                 Block
+Public                  Block
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- EDEP-Regeln je Speicher ---'
+--- EDEP-Regeln je Speicher ---
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> 'dauerhaft: ' + (Get-NetFirewallRule -Group EDEP-L1 -PolicyStore PersistentStore -ErrorAction SilentlyContinue | Measure-Object).Count
+dauerhaft: 33
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> 'aktiv:     ' + (Get-NetFirewallRule -Group EDEP-L1 -PolicyStore ActiveStore -ErrorAction SilentlyContinue | Measure-Object).Count
+aktiv:     33
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- Herkunft der aktiven EDEP-Regeln ---'
+--- Herkunft der aktiven EDEP-Regeln ---
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Get-NetFirewallRule -Group EDEP-L1 -PolicyStore ActiveStore -ErrorAction SilentlyContinue | Group-Object PolicyStoreSourceType, PolicyStoreSource | Select-Object Count, Name | Format-Table -AutoSize -Wrap
+
+Count Name
+----- ----
+   33 Local, PersistentStore
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- Gruppenrichtlinie / MDM-Firewallschluessel vorhanden? ---'
+--- Gruppenrichtlinie / MDM-Firewallschluessel vorhanden? ---
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Test-Path 'HKLM:\SOFTWARE\Policies\Microsoft\WindowsFirewall'
+False
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Get-ChildItem 'HKLM:\SOFTWARE\Policies\Microsoft\WindowsFirewall' -ErrorAction SilentlyContinue | Select-Object PSChildName
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> clear
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # [VM] Administrator, selbe PowerShell. Nur lesend.
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> $ev = Get-WinEvent -LogName 'Microsoft-Windows-Windows Firewall With Advanced Security/Firewall' -ErrorAction SilentlyContinue | Where-Object { $_.TimeCreated -gt (Get-Date).AddHours(-4) }
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> "Ereignisse insgesamt: $(@($ev).Count)"
+Ereignisse insgesamt: 942
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- je Minute und Ereignis-ID ---'
+--- je Minute und Ereignis-ID ---
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> $ev | Group-Object { $_.TimeCreated.ToString('HH:mm') + '  Id ' + $_.Id } | Sort-Object Name | Select-Object Count, Name | Format-Table -AutoSize
+
+Count Name
+----- ----
+   43 09:18  Id 2052
+   47 09:18  Id 2097
+   12 09:32  Id 2082
+   32 09:32  Id 2097
+   21 09:32  Id 2099
+   32 09:36  Id 2052
+    3 09:36  Id 2082
+   33 09:36  Id 2097
+   21 09:36  Id 2099
+    1 09:47  Id 2097
+    1 09:48  Id 2052
+    1 09:49  Id 2052
+    3 09:49  Id 2082
+    3 09:49  Id 2097
+    1 09:49  Id 2099
+    3 09:50  Id 2082
+    2 09:52  Id 2052
+    2 09:52  Id 2097
+    1 09:54  Id 2052
+    2 09:54  Id 2097
+    1 09:55  Id 2052
+   33 09:59  Id 2052
+   33 09:59  Id 2097
+   21 09:59  Id 2099
+    1 10:02  Id 2052
+    1 10:02  Id 2097
+    2 10:04  Id 2052
+    2 10:04  Id 2097
+    1 10:09  Id 2059
+   54 10:09  Id 2082
+   15 10:09  Id 2083
+    4 10:09  Id 2084
+  496 10:09  Id 2097
+    1 10:10  Id 2010
+    1 10:10  Id 2051
+    3 10:10  Id 2052
+    1 10:10  Id 2059
+    4 10:10  Id 2084
+    3 10:10  Id 2097
+    1 10:10  Id 2099
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- aendernde Anwendung ---'
+--- aendernde Anwendung ---
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> $ev | ForEach-Object { ($_.Message -split "`r?`n" | Where-Object { $_ -match 'Anwendung|Application' } | ForEach-Object { $_.Trim() }) -join ' ' } | Group-Object | Sort-Object Count -Descending | Select-Object Count, Name | Format-Table -AutoSize -Wrap
+
+Count Name
+----- ----
+  160 Anwendungspfad:	%SystemRoot%\system32\svchost.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+  137 Anwendungspfad:	System Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+   94 Anwendung ändern: 	C:\Windows\System32\wbem\WmiPrvSE.exe
+   70 Anwendungspfad: Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+   51 Anwendung ändern: 	C:\Windows\System32\netsh.exe
+   49 Anwendungspfad: Ändernde Anwendung:	C:\WINDOWS\System32\svchost.exe
+   45 Anwendung ändern: 	C:\WINDOWS\System32\svchost.exe
+   42 Anwendungspfad:	System Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+   26 Anwendungspfad: Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+   18 Anwendungspfad:	%SystemRoot%\system32\svchost.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+   14 Ändern der Anwendung: 	C:\Windows\System32\netsh.exe
+   10
+    9 Anwendungspfad:	%ProgramFiles%\Windows Media Player\wmplayer.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    9 Anwendungspfad:	%SystemRoot%\system32\mdeserver.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    8 Anwendungspfad:	%PROGRAMFILES%\Windows Media Player\wmpnetwk.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    8 Anwendungspfad:	C:\Program Files\WindowsApps\MSTeams_26246.1604.5133.838_x64__8wekyb3d8bbwe\ms-teams.exe Ändernde Anwendung:
+      C:\Windows\System32\netsh.exe
+    8 Anwendungspfad:	C:\WINDOWS\SystemApps\MicrosoftWindows.Client.OOBE_cw5n1h2txyewy\OobeHostApp.exe Ändernde Anwendung:
+      C:\Windows\System32\netsh.exe
+    8 Anwendungspfad:	C:\WINDOWS\SystemApps\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\WindowsBackupClient.exe Ändernde Anwendung:
+      C:\Windows\System32\netsh.exe
+    5 Anwendungspfad:	C:\WINDOWS\System32\svchost.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    5 Anwendungspfad:	%SystemRoot%\system32\wudfhost.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    5 Anwendungspfad:	%SystemRoot%\system32\spoolsv.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    4 Anwendungspfad:	%SystemRoot%\system32\msra.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    4 Anwendungspfad:	%SystemRoot%\system32\msdtc.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    4 Anwendungspfad:	C:\Program Files\WindowsApps\Microsoft.MicrosoftOfficeHub_19.2609.52011.0_x64__8wekyb3d8bbwe\M365Copilot.exe Ändernde
+      Anwendung:	C:\Windows\System32\netsh.exe
+    4 Anwendungspfad:	%SystemRoot%\system32\RmtTpmVscMgrSvr.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    4 Anwendungspfad:	%SystemRoot%\system32\dashost.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    4 Anwendungspfad:	%SystemRoot%\system32\p2phost.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    4 Anwendungspfad:	%ProgramData%\Microsoft\Windows Defender\Platform\4.18.26080.4-0\MsMpEng.exe Ändernde Anwendung:	C:\Program Files\Windows
+      Defender\MsMpEng.exe
+    4 Anwendungspfad:	%SystemRoot%\ehome\ehshell.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    4 Anwendungspfad:	C:\WINDOWS\System32\curl.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\System32\cscript.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\System32\wscript.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\SysWOW64\regsvr32.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Typ: 	Benutzerdefiniertes Zusammenführen von autorisierten Anwendungen zulassen Anwendung ändern: 	C:\Windows\System32\netsh.exe
+    3 Anwendungspfad:	C:\WINDOWS\System32\regsvr32.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\InstallUtil.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\hh.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	%SystemRoot%\system32\lsass.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\SysWOW64\rundll32.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\SysWOW64\WindowsPowerShell\v1.0\powershell.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell_ise.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\System32\smartscreen.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	%SystemRoot%\system32\spoolsvworker.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    3 Anwendungspfad:	C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	%ProgramFiles(x86)%\Windows Media Player\wmplayer.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    3 Anwendungspfad:	C:\WINDOWS\SysWOW64\curl.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\System32\mshta.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\SysWOW64\mshta.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\System32\rundll32.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\SysWOW64\certutil.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\System32\certutil.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    3 Anwendungspfad:	C:\WINDOWS\System32\bitsadmin.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    2 Anwendungspfad:	C:\Program Files\Windows Defender\MsMpEng.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    2 Anwendungspfad:	C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    2 Anwendungspfad:	C:\Program Files\Windows Defender\MpCmdRun.exe Ändernde Anwendung:	C:\Windows\System32\wbem\WmiPrvSE.exe
+    2 Anwendungspfad:	%SystemRoot%\system32\vdsldr.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Anwendungspfad:	%SystemRoot%\system32\vds.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Anwendungspfad:	%systemroot%\system32\plasrv.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Anwendungspfad:	%SystemRoot%\system32\proximityuxhost.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Anwendungspfad:	%systemroot%\system32\wininit.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Regelname:
+      @{Microsoft.BingWeather_4.54.63045.0_x64__8wekyb3d8bbwe?ms-resource://Microsoft.BingWeather/Resources/ApplicationTitleWithBranding}
+      Anwendungspfad: Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Anwendungspfad:	%ProgramData%\Microsoft\Windows Defender\Platform\4.18.26080.4-0\MsMpEng.exe Ändernde Anwendung:
+      C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.26080.4-0\MsMpEng.exe
+    2 Anwendungspfad:	%SystemRoot%\system32\sppextcomobj.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Anwendungspfad:	%SystemRoot%\system32\services.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Anwendungspfad:	%systemroot%\system32\wbem\unsecapp.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Anwendungspfad:	%SystemRoot%\system32\snmptrap.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Anwendungspfad:	%SystemRoot%\System32\lsass.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    2 Anwendungspfad:	%SystemRoot%\system32\raserver.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    1 Anwendungspfad:	C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.26080.4-0\MpCmdRun.exe Ändernde Anwendung:
+      C:\Windows\System32\wbem\WmiPrvSE.exe
+    1 Anwendungspfad:	%SystemRoot%\system32\Microsoft-Edge-WebView\msedgewebview2.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    1 Anwendungspfad:	C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.26080.4-0\MsMpEng.exe Ändernde Anwendung:
+      C:\Windows\System32\wbem\WmiPrvSE.exe
+    1 Anwendungspfad:	%SystemRoot%\system32\RdpSa.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    1 Anwendung ändern: 	C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.26080.4-0\MsMpEng.exe
+    1 Ändern der Anwendung:
+    1 ModifyingApplication:	C:\WINDOWS\System32\svchost.exe
+    1 Anwendung ändern: 	C:\Program Files\Windows Defender\MsMpEng.exe
+    1 Anwendungspfad:	C:\Program Files (x86)\Microsoft\EdgeWebView\Application\154.0.4258.53\msedgewebview2.exe Ändernde Anwendung:
+      C:\Windows\System32\netsh.exe
+    1 Anwendungspfad:	%SystemRoot%\system32\omadmclient.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    1 Anwendungspfad:	%SystemRoot%\system32\dmcertinst.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    1 Anwendungspfad:	%SystemRoot%\system32\deviceenroller.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    1 Anwendungspfad:	%systemroot%\system32\CastSrv.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    1 Anwendungspfad:	%SystemRoot%\ehome\mcx2prov.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    1 ModifyingApplication:	C:\Windows\System32\netsh.exe
+    1 Anwendungspfad:	C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    1 Anwendungspfad:	%SystemRoot%\ehome\mcrmgr.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+    1 Anwendungspfad:	%SystemRoot%\system32\NetEvtFwdr.exe Ändernde Anwendung:	C:\Windows\System32\netsh.exe
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- letzter Neustart ---'
+--- letzter Neustart ---
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+
+Samstag, 3. Oktober 2026 10:10:25
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> clear
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # [VM] Administrator, selbe PowerShell. NICHT neu starten.
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> function Get-FwReg {
+    $k = 'HKLM:\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy'
+    [pscustomobject]@{
+        Zeit = (Get-Date).ToString('HH:mm:ss')
+        EdepRegelnInRegistry = @((Get-ItemProperty "$k\FirewallRules").PSObject.Properties | Where-Object { [string]$_.Value -match 'EDEP' }).Count
+        PublicOutboundRegistry = (Get-ItemProperty "$k\PublicProfile" -ErrorAction SilentlyContinue).DefaultOutboundAction
+        PersistentOutbound = (Get-NetFirewallProfile -Name Public -PolicyStore PersistentStore).DefaultOutboundAction
+        EdepRegelnDauerhaft = @(Get-NetFirewallRule -Group EDEP-L1 -PolicyStore PersistentStore -ErrorAction SilentlyContinue).Count
+    }
+}
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- vor Restore ---';  Get-FwReg | Format-List
+--- vor Restore ---
+
+
+Zeit                   : 10:42:32
+EdepRegelnInRegistry   : 33
+PublicOutboundRegistry : 1
+PersistentOutbound     : Block
+EdepRegelnDauerhaft    : 33
+
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> .\Restore-EdepL1.ps1
+Sicherung vom 2026-10-03T09:32:22.5123871+02:00 (DESKTOP-QKILAOK)
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Import aus C:\ProgramData\EDEP\backup\20261003-093200\firewall.wfw" für das Ziel "Windows-Firewall".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Wiederherstellen aus C:\ProgramData\EDEP\backup\20261003-093200\auditpol.csv" für das Ziel "Überwachungsrichtlinie".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Vorherige Werte wiederherstellen" für das Ziel "Telemetrie-Richtlinien".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Starttyp Automatic" für das Ziel "DiagTrack".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {ad11e468-a63d-4ef2-85c8-cf402ed43b35}".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+WARNUNG: CiTool --remove-policy {ad11e468-a63d-4ef2-85c8-cf402ed43b35}: Exit -2147024894
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {b37684d5-ef32-4ac4-9c87-0566458c34a3}".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+WARNUNG: CiTool --remove-policy {b37684d5-ef32-4ac4-9c87-0566458c34a3}: Exit -2147024894
+Bestätigung
+Möchten Sie diese Aktion wirklich ausführen?
+Ausführen des Vorgangs "Entfernen" für das Ziel "App-Control-Richtlinie {f1bb1080-fc9c-42e2-bfd3-40bde156797e}".
+&Ja  Ja, &alle  &Nein  Nein, &keine  An&halten
+J
+WARNUNG: CiTool --remove-policy {f1bb1080-fc9c-42e2-bfd3-40bde156797e}: Exit -2147024894
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- direkt nach Restore ---'; Get-FwReg | Format-List
+--- direkt nach Restore ---
+
+
+Zeit                   : 10:42:45
+EdepRegelnInRegistry   : 0
+PublicOutboundRegistry :
+PersistentOutbound     : NotConfigured
+EdepRegelnDauerhaft    : 0
+
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Start-Sleep 180
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> '--- 3 Minuten spaeter ---'; Get-FwReg | Format-List
+--- 3 Minuten spaeter ---
+
+
+Zeit                   : 10:45:46
+EdepRegelnInRegistry   : 0
+PublicOutboundRegistry :
+PersistentOutbound     : NotConfigured
+EdepRegelnDauerhaft    : 0
+
+
+
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> # [VM] vor dem Neustart
+PS C:\edep-run\E.L.L.A.-Defence-Endpoint-c15ecb9a63e13c59503a552d920ff0dc2f0b52ba\baseline\L1> Stop-Transcript
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003104847
+**********************

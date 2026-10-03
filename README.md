@@ -66,13 +66,16 @@ richtet sich nach der Windows-Anzeigesprache; `-Language de` oder `-Language en`
 In einer **PowerShell als Administrator** im Ordner `baseline\L1`:
 
 ```powershell
+# 0. Nur für diese Sitzung: Skriptausführung erlauben (Windows sperrt sie standardmäßig)
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
 # 1. Nur anzeigen, was passieren würde
 .\Install-EdepL1.ps1 -DeployAppControlAudit -WhatIf
 
 # 2. Im Audit-Modus anwenden (ausgehend bleibt noch erlaubt, alles wird protokolliert)
 .\Install-EdepL1.ps1 -DeployAppControlAudit
 
-# 3. Prüfen
+# 3. Prüfen (mit -ProbeUpdates zusätzlich die Update-Erreichbarkeit messen)
 .\Test-EdepL1.ps1
 
 # 4. Nach Auswertung des Firewall-Logs: ausgehend standardmäßig blockieren
@@ -84,11 +87,22 @@ In einer **PowerShell als Administrator** im Ordner `baseline\L1`:
 ```
 
 **Achtung bei `-Enforce`:** Danach haben nur noch Programme mit Erlaubnisregel
-Netzzugang: Windows-Kernnetzwerk, Update-Dienste, Defender und die unter `-AllowProgram`
-genannten Programme. Store-Apps behalten ihre eigenen Windows-Regeln. PowerShell,
-`curl.exe`, `certutil` und andere Anhang-A-Werkzeuge sind ausgehend gesperrt, auch für
-`Install-Module` und `winget`-Skripte.
-Installer und `Restore-EdepL1` fragen vor jedem Schritt nach (Installer: fünf, `Restore`: vier Rückfragen, jeweils mit `y` bestätigen).
+Netzzugang: Windows-Kernnetzwerk, die unter `-AllowProgram` genannten Programme und
+Programme mit eigenen Windows-Regeln (Store-Apps). PowerShell, `curl.exe`, `certutil` und
+andere Anhang-A-Werkzeuge sind ausgehend gesperrt, auch für `Install-Module` und
+`winget`-Skripte.
+
+**Bekannte Grenze (gemessen, [Lauf 1](conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md), [Lauf 2](conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md)):**
+Unter `-Enforce` waren auf Windows 11 Enterprise 25H2 und Pro 26H2 **Windows Update, Defender-Signaturupdates
+und BITS nicht erreichbar**, obwohl `Test-EdepL1` 15/15 meldet. Die Erlaubnisregeln für diese
+Dienste greifen dort nicht ([E-73, E-74](docs/EVIDENCE.md)). Den Enforce-Modus deshalb nur
+mit einem Wartungsfenster einsetzen und `Restore-EdepL1.ps1` bereithalten. Nach einer
+Wiederherstellung den Zustand mit `Test-EdepL1.ps1` prüfen.
+
+Installer und `Restore-EdepL1` fragen vor jedem Schritt nach (Installer: fünf, mit
+`-DeployAppControlAudit` sechs; `Restore`: vier plus eine je App-Control-Richtlinie). Bestätigt wird
+mit dem angezeigten Buchstaben: auf deutschem Windows **`J`** (oder `A` für alle), auf englischem
+`y`. Für Skripte: `-Confirm:$false`.
 
 Die Blocklisten stützen sich zum Teil auf Programmpfade. Wird eine Richtlinie per
 Gruppenrichtlinie oder Intune verteilt, überschreibt diese die lokalen Einstellungen.

@@ -84,7 +84,7 @@ einem Testsystem mit einem eigenen Zielserver (z. B. `python -m http.server` auf
 
 | Test | Umgehung | Stufe | Verfahren (als normaler Benutzer) | Erwartung |
 |---|---|---|---|---|
-| T-BYP-01 | B-01 BITS | L1 | `Start-BitsTransfer -Source http://<ziel>/x -Destination $env:TEMP\x` | **Übertragung gelingt** (bekannte Lücke). Ereignis 3 und 59 in `Bits-Client/Operational` mit Benutzer und URL |
+| T-BYP-01 | B-01 BITS | L1 | `Start-BitsTransfer -Source http://<ziel>/x -Destination $env:TEMP\x` | **Gemessen (Sandbox, VM): blockiert** unter Enforce, Ereignis 3 vorhanden, 59 nicht (E-71, Ursache offen). Die Erwartung „gelingt“ aus SPEC 3.4 ist nicht belegt; beide Ausgänge sind ein Messwert |
 | T-BYP-02 | B-02 DNS | L1 | `Resolve-DnsName ((1..20 \| % {'{0:x2}' -f $_}) -join '').<eigene-domain>` | Anfrage erreicht den autoritativen Server der eigenen Domain (bekannte Lücke); auf L2 nur über konfigurierte Resolver |
 | T-BYP-03 | B-03 erlaubtes Programm | L1 | Erlaubten Browser per Kommandozeile mit Ziel-URL starten | **Verbindung gelingt** (Grenze jeder programmbasierten Firewall) |
 | T-BYP-04 | B-04 ersetzbarer Pfad | L1 | Freigabe für ein Programm unter `%LOCALAPPDATA%` versuchen | Install bricht ab (NET-10); ein vorhandener Fall wird von T-NET-10 als FAIL gemeldet |
