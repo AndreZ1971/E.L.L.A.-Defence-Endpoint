@@ -74,13 +74,30 @@ Die Anforderungen A5 bis A14 (Änderungsmanagement, Test, Dokumentation) liegen 
 
 ## BSI-Projekt SiSyPHuS Win10
 
-Die Projektseite des BSI listet die Arbeitspakete: **AP4** Telemetriekomponenten, **AP5** TPM und UEFI Secure Boot, **AP10** Konfiguration der Protokollierung, **AP11** Härtung mit Bordmitteln, **AP12** Gruppenrichtliniensätze, weitere. SYS.2.2.3 verweist ausdrücklich darauf. Untersucht wurden laut Seite **Windows 10 (Versionen 1607 und 1809, LTSC)**. Eine Windows-11-Fassung wurde nicht gefunden.
+SiSyPHuS ist eine vom BSI beauftragte Studie (Auftragnehmer ERNW) zu **Windows 10**; SYS.2.2.3 verweist ausdrücklich darauf. Die Dokumente stehen auf der [Projektseite](https://www.bsi.bund.de/DE/Service-Navi/Publikationen/Studien/SiSyPHuS_Win10/SiSyPHuS.html) unter den Arbeitspaketen (AP). **Gelesen** wurden drei Dokumente; sie gelten für Windows 10 (LTSC 2019 bzw. 21H2). **Eine Windows-11-Fassung wurde nicht gefunden**, die Übertragung auf Windows 11 ist eine Annahme des Projekts.
 
-**Die Dokumente selbst wurden noch nicht gelesen.** Eine Zuordnung einzelner Einstellungen (Registrierungswerte, Filter, Audit-Kategorien) zu SiSyPHuS erfolgt erst nach der Auswertung der Arbeitspakete AP4, AP10, AP11 und AP12.
+| Dokument | AP | Stand | SHA-256 (geladen 2026-10-03) |
+| --- | --- | --- | --- |
+| Deaktivierung der Telemetriekomponente in Windows 10 21H2 (`E20172000_BSI_Win10_AFUNKT_TELE_DEAKTIVIEREN_v1_0.pdf`) | AP4 (AFUNKT) | Version 1.0, 2022 | `7e81eee53cbd2eadaf4e16a051931503e7dcbdc32ce17d9cccbb6ff17c0c962a` |
+| Empfehlung zur Konfiguration der Protokollierung in Windows 10 (`Empfehlung_zur_Konfiguration_der_Protokollierung_Win_10.pdf`) | AP10 | Version 1.0, 2020 | `68e759906bc31b2ef033e572cdfe95e1fed301a6b281de413538b550217136e9` |
+| Konfigurationsempfehlungen zur Härtung von Windows 10 (`Konfigurationsempfehlungen_zur_Haertung_von_Windows_10.pdf`) | AP11 | Windows 10 LTSC 2019 | `d582378c747503776a61abeb5c4becd6aaaadf65c7a4e4dd94d80d2526ad2f67` |
+
+Die Dateien stammen aus `https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Cyber-Sicherheit/SiSyPHus/`. Nicht gelesen: AP12 (Gruppenrichtliniensätze), die Endpunktliste (Tabelle zu 21H2) und die älteren Telemetrie-Analysen.
+
+| SiSyPHuS | Inhalt (verkürzt, sinngemäß) | EDEP | Beziehung | Anmerkung und Beleg |
+| --- | --- | --- | --- | --- |
+| AP4, Abschnitt 2.2 | Telemetrie-Level „0 – Security“ nur unter Enterprise, Education und Server setzbar; Microsoft rät davon ab, wenn Windows Updates benötigt werden; in einer Testumgebung wurde in 48 Stunden keine Telemetrie-Kommunikation festgestellt | EDEP-TEL-01 | **deckt** | Gleiche Einschränkung auf Pro (TEL-01 = WARN, SPEC Q-07). Auf Enterprise gemessen: PASS „wirksam: Security“ (Lauf 3). |
+| AP4, Abschnitt 2.3 | Ausgehende Firewall-Regel gegen den Dienst `DiagTrack`: `New-NetFirewallRule … -Direction Outbound -Service "DiagTrack" -Action Block` (oder vordefinierte Regelgruppe „Benutzererfahrungen und Telemetrie im Verbund“) | EDEP-TEL-02 | **deckt** (gleicher Ansatz) | EDEP blockiert `DiagTrack` und `dmwappushservice` per Dienstregel (Lauf 3: R-C8). **Offen:** Der Mitschnitt in Lauf 2 zeigte, dass `DiagTrack` mit dem Token des angemeldeten Benutzers und ohne Dienst-SID verbindet; ob die Dienstregel auf Windows 11 durchgehend wirkt, ist **nicht gemessen** ([E-86](EVIDENCE.md)). |
+| AP4, Abschnitt 2.1 | Telemetrie-Dienst und ETW-Autologger-Session deaktivieren (Neustart nötig) | | kein Bezug | L1 deaktiviert den Dienst nicht; nur L2 (EDEP-TEL-05) sieht das vor |
+| AP10, Abschnitt 4.2 (alle Profile) | Firewall-Protokoll: verworfene Pakete protokollieren („Ja“), Größenlimit mindestens 16.384 KB, Protokolldatei je Profil benannt | EDEP-LOG-01, EDEP-LOG-02 | **deckt** | `Install-EdepL1.ps1` setzt `-LogBlocked True` und `-LogMaxSizeKilobytes 16384`. `Test-EdepL1` prüft nur `LogBlocked`, **nicht** die Größe. |
+| AP11, Abschnitt 5.1 | WDAC-Richtlinie **signieren**, um nicht autorisierte Änderungen zu verhindern; Empfehlungen zur Konfiguration der Anwendungssteuerung (für hohen Schutzbedarf, „HD“) | EDEP-ID-01 | teilweise / **Spannung** | L1 liefert die Richtlinie im Audit-Modus und **unsigniert**. Die erzwingende, signierte Variante ist L2. |
+| AP11, Abschnitt 5.5.1 | PowerShell 2.0 deaktivieren; geeignete Ausführungsrichtlinie festlegen; die Richtlinie verhindert nur versehentliche Ausführung | | kein Bezug / Spannung | L1 deaktiviert PowerShell 2.0 nicht. Die Ausführungsrichtlinie wird in den Testläufen im Prozess auf `Bypass` gestellt (siehe SYS.2.2.3.A22). |
+| AP11, Abschnitt 5.4 | Windows-Telemetrie (Tabellen zu Dienst und Autologger) | EDEP-TEL-01, EDEP-TEL-02 | teilweise | siehe AP4 |
 
 ## Schlussfolgerungen
 
 1. **Deckung gibt es im Kern bei Telemetrie** (SYS.2.2.3 A4, A25), **lokalem Paketfilter unter Enforce** (SYS.2.1 A31) und **Ausführungskontrolle nur im Audit-Modus** (SYS.2.1 A33, teilweise).
 2. **Zwei Spannungen sind offen:** Updates unter ausgehender Sperre (SYS.2.1 A3, OPS.1.1.3 A15; Antwort: Betriebsmodell in SPEC 3.5) und **unsignierte Skripte** (SYS.2.2.3 A22).
-3. **Der größte Teil der BSI-Anforderungen liegt außerhalb von L1** (Authentisierung, Berechtigungen, Organisation). EDEP versteht sich als technische Ergänzung und nicht als Ersatz des Grundschutzes.
-4. Eine **Konformität mit dem IT-Grundschutz** behauptet EDEP **nicht**. Die Tabellen zeigen Schnittmengen.
+3. **SiSyPHuS bestätigt den Ansatz von EDEP-TEL-02** (Dienstregel gegen `DiagTrack`) und die Firewall-Protokollierung (LOG-01); die Wirkung der Dienstregel unter Windows 11 ist offen (E-86). SiSyPHuS empfiehlt zusätzlich, die Anwendungssteuerung zu **signieren**, was L1 nicht tut.
+4. **Der größte Teil der BSI-Anforderungen liegt außerhalb von L1** (Authentisierung, Berechtigungen, Organisation). EDEP versteht sich als technische Ergänzung und nicht als Ersatz des Grundschutzes.
+5. Eine **Konformität mit dem IT-Grundschutz** behauptet EDEP **nicht**. Die Tabellen zeigen Schnittmengen.
