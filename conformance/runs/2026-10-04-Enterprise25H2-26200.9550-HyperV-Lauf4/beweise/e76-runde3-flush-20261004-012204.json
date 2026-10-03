@@ -1,0 +1,188 @@
+﻿[
+    {
+        "N":  1,
+        "Art":  "hart",
+        "Wartezeit":  0,
+        "Ergebnis":  "sauber",
+        "Restore":  "2026-10-04T01:04:25",
+        "Neustart":  "2026-10-04T01:04:25",
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T00:30:03"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T00:30:03"
+                        },
+        "RestoreWarnung":  "Rücknahme konnte nicht vollständig auf den Datenträger geschrieben werden: SECURITY\r",
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T01:04:27"
+                         },
+        "Ereignisse":  "01:04:29 41; 01:04:35 6008; 01:04:35 6005"
+    },
+    {
+        "N":  2,
+        "Art":  "hart",
+        "Wartezeit":  0,
+        "Ergebnis":  "sauber",
+        "Restore":  "2026-10-04T01:05:57",
+        "Neustart":  "2026-10-04T01:05:57",
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T01:04:27"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T01:04:27"
+                        },
+        "RestoreWarnung":  "Rücknahme konnte nicht vollständig auf den Datenträger geschrieben werden: SECURITY\r",
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T01:06:00"
+                         },
+        "Ereignisse":  "01:04:29 41; 01:04:35 6008; 01:04:35 6005; 01:05:58 41; 01:06:06 6008; 01:06:06 6005"
+    },
+    {
+        "N":  3,
+        "Art":  "hart",
+        "Wartezeit":  5,
+        "Ergebnis":  "sauber",
+        "Restore":  "2026-10-04T01:07:30",
+        "Neustart":  "2026-10-04T01:07:35",
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T01:06:00"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T01:06:00"
+                        },
+        "RestoreWarnung":  "Rücknahme konnte nicht vollständig auf den Datenträger geschrieben werden: SECURITY\r",
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T01:14:24"
+                         },
+        "Ereignisse":  "01:14:22 41; 01:14:30 6008; 01:14:30 6005"
+    },
+    {
+        "N":  4,
+        "Art":  "hart",
+        "Wartezeit":  5,
+        "Ergebnis":  "sauber",
+        "Restore":  "2026-10-04T01:15:54",
+        "Neustart":  "2026-10-04T01:15:59",
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T01:14:24"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T01:14:24"
+                        },
+        "RestoreWarnung":  "Rücknahme konnte nicht vollständig auf den Datenträger geschrieben werden: SECURITY\r",
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T01:16:01"
+                         },
+        "Ereignisse":  "01:14:22 41; 01:14:30 6008; 01:14:30 6005; 01:16:01 41; 01:16:08 6008; 01:16:08 6005"
+    },
+    {
+        "N":  5,
+        "Art":  "hart",
+        "Wartezeit":  30,
+        "Ergebnis":  "sauber",
+        "Restore":  "2026-10-04T01:17:32",
+        "Neustart":  "2026-10-04T01:18:02",
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T01:16:01"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T01:16:01"
+                        },
+        "RestoreWarnung":  "Rücknahme konnte nicht vollständig auf den Datenträger geschrieben werden: SECURITY\r",
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T01:18:43"
+                         },
+        "Ereignisse":  "01:14:22 41; 01:14:30 6008; 01:14:30 6005; 01:16:01 41; 01:16:08 6008; 01:16:08 6005; 01:18:43 41; 01:18:49 6008; 01:18:49 6005"
+    },
+    {
+        "N":  6,
+        "Art":  "hart",
+        "Wartezeit":  30,
+        "Ergebnis":  "sauber",
+        "Restore":  "2026-10-04T01:20:16",
+        "Neustart":  "2026-10-04T01:20:46",
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T01:18:43"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T01:18:43"
+                        },
+        "RestoreWarnung":  "Rücknahme konnte nicht vollständig auf den Datenträger geschrieben werden: SECURITY\r",
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T01:20:48"
+                         },
+        "Ereignisse":  "01:16:08 6008; 01:16:08 6005; 01:18:43 41; 01:18:49 6008; 01:18:49 6005; 01:20:47 41; 01:20:54 6008; 01:20:54 6005"
+    }
+]

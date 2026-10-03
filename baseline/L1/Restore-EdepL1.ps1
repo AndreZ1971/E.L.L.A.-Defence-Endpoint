@@ -104,6 +104,13 @@ if ($null -ne $npRestore -and (Get-EdepNetworkProtection) -ne $npRestore -and
     }
 }
 
+# Rücknahme dauerhaft machen (E-76): Registrierung und Dateisystem auf den Datenträger schreiben, damit ein harter Neustart
+# direkt danach keine Werte zurückbringt.
+if (-not $WhatIfPreference) {
+    $persist = Invoke-EdepFlushRegistry
+    if ($persist.Failed.Count) { Write-Warning ("Rücknahme konnte nicht vollständig auf den Datenträger geschrieben werden: " + ($persist.Failed -join ', ')) }
+}
+
 Write-Host ''
 if ($WhatIfPreference) { Write-Host 'WhatIf: Es wurde nichts geändert.' -ForegroundColor Yellow; return }
 Write-Host 'Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).' -ForegroundColor Green

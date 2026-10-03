@@ -1,0 +1,224 @@
+﻿[
+    {
+        "N":  1,
+        "Art":  "ordentlich",
+        "Wartezeit":  0,
+        "Restore":  "2026-10-04T00:05:14",
+        "Neustart":  "2026-10-04T00:05:14",
+        "Vorfall":  false,
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-03T21:39:45"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-03T21:39:45"
+                        },
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T00:05:24"
+                         },
+        "Ereignisse":  "00:05:15 1074; 00:05:17 6006; 00:05:31 6005"
+    },
+    {
+        "N":  2,
+        "Art":  "ordentlich",
+        "Wartezeit":  30,
+        "Restore":  "2026-10-04T00:07:10",
+        "Neustart":  "2026-10-04T00:07:40",
+        "Vorfall":  false,
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T00:05:24"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T00:05:24"
+                        },
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T00:07:48"
+                         },
+        "Ereignisse":  "00:05:15 1074; 00:05:17 6006; 00:05:31 6005; 00:07:41 1074; 00:07:44 6006; 00:07:54 6005"
+    },
+    {
+        "N":  3,
+        "Art":  "hart",
+        "Wartezeit":  0,
+        "Restore":  "2026-10-04T00:09:12",
+        "Neustart":  "2026-10-04T00:09:12",
+        "Vorfall":  false,
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T00:07:48"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T00:07:48"
+                        },
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T00:09:14"
+                         },
+        "Ereignisse":  "00:05:15 1074; 00:05:17 6006; 00:05:31 6005; 00:07:41 1074; 00:07:44 6006; 00:07:54 6005; 00:09:13 41; 00:09:21 6008; 00:09:21 6005"
+    },
+    {
+        "N":  4,
+        "Art":  "hart",
+        "Wartezeit":  5,
+        "Restore":  "2026-10-04T00:10:40",
+        "Neustart":  "2026-10-04T00:10:45",
+        "Vorfall":  true,
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T00:09:14"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T00:09:14"
+                        },
+        "NachNeustart":  null,
+        "Ereignisse":  null
+    },
+    {
+        "N":  5,
+        "Art":  "hart",
+        "Wartezeit":  30,
+        "Restore":  "2026-10-04T00:13:26",
+        "Neustart":  "2026-10-04T00:13:56",
+        "Vorfall":  true,
+        "Angewendet":  null,
+        "NachRestore":  null,
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T00:13:58"
+                         },
+        "Ereignisse":  "00:05:15 1074; 00:05:17 6006; 00:05:31 6005; 00:07:41 1074; 00:07:44 6006; 00:07:54 6005; 00:09:13 41; 00:09:21 6008; 00:09:21 6005; 00:13:56 41; 00:14:04 6008; 00:14:04 6005"
+    },
+    {
+        "N":  6,
+        "Art":  "ordentlich",
+        "Wartezeit":  0,
+        "Restore":  "2026-10-04T00:15:27",
+        "Neustart":  "2026-10-04T00:15:27",
+        "Vorfall":  false,
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T00:13:58"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T00:13:58"
+                        },
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T00:15:34"
+                         },
+        "Ereignisse":  "00:05:15 1074; 00:05:17 6006; 00:05:31 6005; 00:07:41 1074; 00:07:44 6006; 00:07:54 6005; 00:09:13 41; 00:09:21 6008; 00:09:21 6005; 00:13:56 41; 00:14:04 6008; 00:14:04 6005; 00:15:28 1074; 00:15:31 6006; 00:15:39 6005"
+    },
+    {
+        "N":  7,
+        "Art":  "hart",
+        "Wartezeit":  0,
+        "Restore":  "2026-10-04T00:16:57",
+        "Neustart":  "2026-10-04T00:16:57",
+        "Vorfall":  false,
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T00:15:34"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T00:15:34"
+                        },
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T00:16:59"
+                         },
+        "Ereignisse":  "00:05:15 1074; 00:05:17 6006; 00:05:31 6005; 00:07:41 1074; 00:07:44 6006; 00:07:54 6005; 00:09:13 41; 00:09:21 6008; 00:09:21 6005; 00:13:56 41; 00:14:04 6008; 00:14:04 6005; 00:15:28 1074; 00:15:31 6006; 00:15:39 6005; 00:16:58 41; 00:17:05 6008; 00:17:05 6005"
+    },
+    {
+        "N":  8,
+        "Art":  "hart",
+        "Wartezeit":  5,
+        "Restore":  "2026-10-04T00:18:27",
+        "Neustart":  "2026-10-04T00:18:32",
+        "Vorfall":  false,
+        "Angewendet":  {
+                           "Profile":  "Domain=Block Private=Block Public=Block",
+                           "EdepRegeln":  32,
+                           "AllowTelemetry":  "0",
+                           "AppControlEdep":  1,
+                           "Boot":  "2026-10-04T00:16:59"
+                       },
+        "NachRestore":  {
+                            "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                            "EdepRegeln":  0,
+                            "AllowTelemetry":  "",
+                            "AppControlEdep":  0,
+                            "Boot":  "2026-10-04T00:16:59"
+                        },
+        "NachNeustart":  {
+                             "Profile":  "Domain=Allow Private=Allow Public=Allow",
+                             "EdepRegeln":  0,
+                             "AllowTelemetry":  "",
+                             "AppControlEdep":  0,
+                             "Boot":  "2026-10-04T00:19:18"
+                         },
+        "Ereignisse":  "00:05:15 1074; 00:05:17 6006; 00:05:31 6005; 00:07:41 1074; 00:07:44 6006; 00:07:54 6005; 00:09:13 41; 00:09:21 6008; 00:09:21 6005; 00:13:56 41; 00:14:04 6008; 00:14:04 6005; 00:15:28 1074; 00:15:31 6006; 00:15:39 6005; 00:16:58 41; 00:17:05 6008; 00:17:05 6005; 00:19:17 41; 00:19:23 6008; 00:19:23 6005"
+    }
+]

@@ -29,7 +29,8 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [ ] `Test-EdepConformance.ps1` Stufe „Destructive“ (nur in einer Test-VM: Install, Enforce, Umgehungstests, Restore, Fingerabdruck-Vergleich) und ein Lauf in der VM
 - [x] Signierter Release `0.1.0-draft.3` (SHA256SUMS, SSH-Signatur, signierter Tag; Anleitung in [SIGNING.md](SIGNING.md)); Authenticode-Signatur der Skripte (SYS.2.2.3.A22) bleibt offen, es fehlt ein anerkanntes Zertifikat
 - [ ] Kontakt zum BSI erst nach vollständiger Zuordnung und signiertem Release; eine Unterstützung durch das BSI ist nicht zugesagt
-- [ ] Neustart-Vorfall (E-76) mit sauber protokolliertem Ablauf (Uhrzeiten, Art des Neustarts, Eingriffe vorher) klären
+- [x] Neustart-Vorfall (E-76) protokolliert nachgemessen ([Lauf 4](../conformance/runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Lauf4/run.md)): Telemetriewert nach hartem Neustart reproduziert und mit Flush in `Restore-EdepL1` behoben (6 von 6); die früheren umfassenderen Vorfälle bleiben ungeklärt
+- [ ] Geänderten `Restore-EdepL1` ohne den Fehlalarm zu SECURITY einmal in einer VM sehen
 - [ ] Windows 11 Home und Windows Server prüfen
 - [ ] E-63/E-64: Vollständiger L1-Durchlauf auf frischer VM (Windows 11 Pro **und** Enterprise); Lauf 1 in Hyper-V mit Evaluierungs-ISO in Vorbereitung:
       Install `-Enforce`, `Test-EdepL1` 15/15, Wirkungstests aus VERIFY-YOURSELF 2.2,

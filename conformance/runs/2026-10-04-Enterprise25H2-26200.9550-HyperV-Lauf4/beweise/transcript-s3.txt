@@ -1,0 +1,175 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261004000044
+Benutzername: DESKTOP-QKILAOK\test
+RunAs-Benutzer: DESKTOP-QKILAOK\test
+Konfigurationsname: 
+Computer: DESKTOP-QKILAOK (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 1324
+PSVersion: 5.1.26100.9549
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9549
+BuildVersion: 10.0.26100.9549
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+00:00:44  === R-A7: Edge im Ausgangszustand (20 s offen, bitte beobachten) ===
+00:01:04  === Anwenden: Enforce mit -AllowWindowsUpdate und Edge ===
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-211947
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261004-000104
+==> Firewall-Profile: eingehend Block, ausgehend Block, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Lege Update-Domainregeln an (9 Domains, Stand 2026-10-03)
+==> Setze Telemetrie-Richtlinien
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: ENFORCE).
+Sicherung:      C:\ProgramData\EDEP\backup\20261004-000104
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261004-000104'
+
+Enforce-Modus: Updates sind nur mit einem festgelegten Update-Weg erreichbar (WSUS/Intune/Proxy oder Wartungsfenster, SPEC 3.5).
+00:01:07  --- Test-EdepL1: TEL-02 und TEL-04 ---
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 149 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  20 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+
+WARN    EDEP-TEL-02  Blockregeln und Dienst-SID-Typ in Ordnung (DiagTrack, dmwappushservice), Wirkung nicht belegt: DiagTrack verband in der
+Messung trotz Regel (E-86)
+WARN    EDEP-TEL-02  Blockregeln und Dienst-SID-Typ in Ordnung (DiagTrack, dmwappushservice), Wirkung nicht belegt: DiagTrack verband in der Messung trotz Regel (E-86)
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen. Messen: .\Test-EdepL1.ps1 -ProbeUpdates. Betrieb:
+Enforce nur mit definiertem Update-Weg (SPEC 3.5)
+WARN    EDEP-TEL-04  Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen. Messen: .\Test-EdepL1.ps1 -ProbeUpdates. Betrieb: Enforce nur mit definiertem Update-Weg (SPEC 3.5)
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP 0.1.0 L1 — geprüft 2026-10-04 — 15/15 erfüllt
+EDEP 0.1.0 L1 — geprüft 2026-10-04 — 15/15 erfüllt
+00:01:23  === LOG-01-WARN erzeugen: Public-Profil auf 4096 KB, dann Test ===
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 149 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  20 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+WARN    EDEP-TEL-02  Blockregeln und Dienst-SID-Typ in Ordnung (DiagTrack, dmwappushservice), Wirkung nicht belegt: DiagTrack verband in der Messung trotz Regel (E-86)
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen. Messen: .\Test-EdepL1.ps1 -ProbeUpdates. Betrieb: Enforce nur mit definiertem Update-Weg (SPEC 3.5)
+WARN    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv, Größenlimit unter 16.384 KB (Empfehlung BSI SiSyPHuS AP10): Public
+WARN    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv, Größenlimit unter 16.384 KB (Empfehlung BSI SiSyPHuS AP10): Public
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP 0.1.0 L1 — geprüft 2026-10-04 — 15/15 erfüllt
+EDEP 0.1.0 L1 — geprüft 2026-10-04 — 15/15 erfüllt
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 149 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  20 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+WARN    EDEP-TEL-02  Blockregeln und Dienst-SID-Typ in Ordnung (DiagTrack, dmwappushservice), Wirkung nicht belegt: DiagTrack verband in der Messung trotz Regel (E-86)
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen. Messen: .\Test-EdepL1.ps1 -ProbeUpdates. Betrieb: Enforce nur mit definiertem Update-Weg (SPEC 3.5)
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP 0.1.0 L1 — geprüft 2026-10-04 — 15/15 erfüllt
+00:01:52  === Konformitätsskript unter Enforce (ohne Probe, ohne Integrität) ===
+EDEP-Konformitätsprüfung (Version 0.1.0) auf DESKTOP-QKILAOK
+SKIPPED Prüfsummen
+SKIPPED Signatur
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 149 aktive ausgehende Erlaubnisregeln, keine davon uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  20 freigegebene Programmpfade nur durch Admins änderbar
+PASS    EDEP-ID-01   Aktiv: EDEP L1 Audit [Audit]
+PASS    EDEP-TEL-01  AllowTelemetry=0, wirksam: Security
+WARN    EDEP-TEL-02  Blockregeln und Dienst-SID-Typ in Ordnung (DiagTrack, dmwappushservice), Wirkung nicht belegt: DiagTrack verband in der
+Messung trotz Regel (E-86)
+WARN    EDEP-TEL-02  Blockregeln und Dienst-SID-Typ in Ordnung (DiagTrack, dmwappushservice), Wirkung nicht belegt: DiagTrack verband in der Messung trotz Regel (E-86)
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen. Messen: .\Test-EdepL1.ps1 -ProbeUpdates. Betrieb:
+Enforce nur mit definiertem Update-Weg (SPEC 3.5)
+WARN    EDEP-TEL-04  Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen. Messen: .\Test-EdepL1.ps1 -ProbeUpdates. Betrieb: Enforce nur mit definiertem Update-Weg (SPEC 3.5)
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP-Audit DESKTOP-QKILAOK — 83/100 (Stufe B)
+Offen: 4  Teilweise: 3  Erfüllt: 16  Nicht prüfbar: 0
+
+FAIL     LLMNR deaktiviert
+         Aktiv (Windows-Standard)
+FAIL     Defender-ASR-Regeln im Blockiermodus
+         Keine ASR-Regel aktiv
+FAIL     NetBIOS über TCP/IP deaktiviert
+         Auf 2 von 2 Schnittstellen aktiv oder per DHCP gesteuert
+FAIL     PowerShell-Skriptblockprotokollierung aktiv
+         Nicht aktiv
+WARN     Sicherheitsupdates erreichbar
+         Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen. Messen: .\Test-EdepL1.ps1 -ProbeUpdates. Betrieb: Enforce nur mit definiertem Update-Weg (SPEC 3.5)
+WARN     Telemetrie-Dienste ausgehend gesperrt
+         Blockregeln und Dienst-SID-Typ in Ordnung (DiagTrack, dmwappushservice), Wirkung nicht belegt: DiagTrack verband in der Messung trotz Regel (E-86)
+WARN     Defender Network Protection aktiv
+         Nur Audit-Modus
+INFO     Aus dem Netz erreichbare Dienste
+         19 lauschende TCP-Endpunkte: lsass (49664); services (49670); spoolsv (49668); svchost (135); svchost (49666); svchost (49667); svchost (49673); svchost (5040); System (139,445); wininit (49665)
+PASS     Ausgehender Verkehr standardmäßig blockiert
+PASS     Firewall aktiv, eingehend blockiert
+PASS     Windows-Bordwerkzeuge (LOLBins) ausgehend gesperrt
+PASS     Freigegebene Programme nur durch Admins änderbar
+PASS     App Control for Business aktiv
+PASS     SMBv1-Client nicht aktiv
+PASS     SMB/RDP/WinRM/RPC in öffentlichen Netzen gesperrt
+PASS     Remotedesktop aus oder mit NLA
+PASS     Blockierte Verbindungen werden protokolliert
+PASS     PowerShell 2.0 entfernt
+PASS     Telemetrie auf niedrigster Stufe
+PASS     Stealth-Modus aktiv
+PASS     BITS-Übertragungen werden protokolliert
+PASS     Firewall-Log bleibt lokal
+PASS     Werbe-ID und Aktivitätsverlauf deaktiviert
+PASS     EDEP-Sicherung vorhanden
+
+Ergebnis unvollständig (UNKNOWN, Integrität nicht prüfbar oder nur Zeilenenden abweichend).
+Ergebnis unvollständig (UNKNOWN, Integrität nicht prüfbar oder nur Zeilenenden abweichend).
+Protokoll: C:\edep-run4\out\edep-conformance-DESKTOP-QKILAOK-20261004-000222.json
+Protokoll: C:\edep-run4\out\edep-conformance-DESKTOP-QKILAOK-20261004-000222.json
+Exit-Code: 2 (erwartet 2: kein FAIL, aber Integrität nicht geprüft)
+00:02:22  === R-C6: Edge unter Enforce (20 s offen, bitte beobachten) ===
+00:02:42  === Rücknahme ===
+Sicherung vom 2026-10-03T21:19:47.9916758+02:00 (DESKTOP-QKILAOK)
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+Vergleich mit vorher.json (leer = identisch):
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261004000245
+**********************

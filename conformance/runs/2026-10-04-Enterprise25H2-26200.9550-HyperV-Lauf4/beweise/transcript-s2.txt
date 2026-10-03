@@ -1,0 +1,93 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003235941
+Benutzername: DESKTOP-QKILAOK\test
+RunAs-Benutzer: DESKTOP-QKILAOK\test
+Konfigurationsname: 
+Computer: DESKTOP-QKILAOK (Microsoft Windows NT 10.0.26200.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 1324
+PSVersion: 5.1.26100.9549
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9549
+BuildVersion: 10.0.26100.9549
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+EDEP-Regeln vorher: 0 (erwartet 0); Netzwerkschutz: 0 (erwartet 0)
+EDEP-Konformitätsprüfung (Version 0.1.0) auf DESKTOP-QKILAOK
+SKIPPED Prüfsummen
+SKIPPED Signatur
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  16 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-211947
+
+EDEP-Audit DESKTOP-QKILAOK — 41/100 (Stufe D)
+Offen: 13  Teilweise: 0  Erfüllt: 10  Nicht prüfbar: 0
+
+FAIL     Ausgehender Verkehr standardmäßig blockiert
+         Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL     Windows-Bordwerkzeuge (LOLBins) ausgehend gesperrt
+         21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL     App Control for Business aktiv
+         Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL     SMB/RDP/WinRM/RPC in öffentlichen Netzen gesperrt
+         Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+FAIL     Telemetrie-Dienste ausgehend gesperrt
+         Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL     Defender Network Protection aktiv
+         Deaktiviert
+FAIL     Blockierte Verbindungen werden protokolliert
+         LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+FAIL     LLMNR deaktiviert
+         Aktiv (Windows-Standard)
+FAIL     Defender-ASR-Regeln im Blockiermodus
+         Keine ASR-Regel aktiv
+FAIL     Telemetrie auf niedrigster Stufe
+         Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL     Werbe-ID und Aktivitätsverlauf deaktiviert
+         Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed
+FAIL     NetBIOS über TCP/IP deaktiviert
+         Auf 2 von 2 Schnittstellen aktiv oder per DHCP gesteuert
+FAIL     PowerShell-Skriptblockprotokollierung aktiv
+         Nicht aktiv
+INFO     Aus dem Netz erreichbare Dienste
+         19 lauschende TCP-Endpunkte: lsass (49664); services (49670); spoolsv (49668); svchost (135); svchost (49666); svchost (49667); svchost (49673); svchost (5040); System (139,445); wininit (49665)
+PASS     Firewall aktiv, eingehend blockiert
+PASS     Freigegebene Programme nur durch Admins änderbar
+PASS     SMBv1-Client nicht aktiv
+PASS     Sicherheitsupdates erreichbar
+PASS     Remotedesktop aus oder mit NLA
+PASS     BITS-Übertragungen werden protokolliert
+PASS     Stealth-Modus aktiv
+PASS     PowerShell 2.0 entfernt
+PASS     Firewall-Log bleibt lokal
+PASS     EDEP-Sicherung vorhanden
+PASS    Einheitentests: 61 bestanden, 0 fehlgeschlagen
+
+Abweichungen gefunden (FAIL).
+Protokoll: C:\edep-run4\out\edep-conformance-DESKTOP-QKILAOK-20261003-235949.json
+Exit-Code: 1 (erwartet 1: Abweichungen im ungehärteten Zustand)
+Umgebung: EnterpriseEval 26200.9550, Admin=True, VM=True
+Integrität: SKIPPED / SKIPPED
+L1: 7 von 15, Audit: 41 (D)
+Einheitentests: ran=True bestanden=61 fehlgeschlagen=0
+notRun: 19 Tests
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003235949
+**********************

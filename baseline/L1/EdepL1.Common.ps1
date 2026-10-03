@@ -269,6 +269,28 @@ $script:EdepUpdateRulePrefix = 'EDEP L1 - Update-Domain '
 # Mindestgröße des Firewall-Protokolls in KB (BSI SiSyPHuS AP10, Abschnitt 4.2: "16.384 KB oder größer").
 $script:EdepFirewallLogMinKb = 16384
 
+function Invoke-EdepFlushRegistry {
+    # Schreibt die Registrierungs-Hives und das Dateisystem auf den Datenträger. Hintergrund (E-76): Nach einem harten
+    # Neustart direkt nach Restore-EdepL1 kam der Telemetrie-Richtlinienwert zurück (3 von 6 harten Neustarts ohne,
+    # 0 von 6 mit dieser Funktion). SECURITY und SAM sind nur mit SYSTEM-Rechten schreibbar und gelten deshalb als
+    # optional: Eine Absage erzeugt keine Warnung (Skipped statt Failed).
+    $flushed = @(); $failed = @(); $skipped = @()
+    foreach ($name in 'SOFTWARE', 'SYSTEM', 'SECURITY', 'SAM') {
+        $optional = $name -in 'SECURITY', 'SAM'
+        try {
+            $k = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($name)
+            if ($k) { $k.Flush(); $k.Close(); $flushed += $name }
+            elseif ($optional) { $skipped += $name }
+        }
+        catch { if ($optional) { $skipped += $name } else { $failed += $name } }
+    }
+    try { [Microsoft.Win32.Registry]::LocalMachine.Flush(); $flushed += 'HKLM' }
+    catch { $failed += 'HKLM' }
+    try { Write-VolumeCache -DriveLetter $env:SystemDrive.Substring(0, 1) -ErrorAction Stop; $flushed += 'Datenträger' }
+    catch { $failed += 'Datenträger' }
+    [pscustomobject]@{ Flushed = $flushed; Failed = $failed; Skipped = $skipped }
+}
+
 function Get-EdepSmallLogProfile {
     # Namen der Profile, deren Firewall-Protokoll kleiner als das empfohlene Mindestmaß ist.
     param($Profiles, [int]$MinKb = $script:EdepFirewallLogMinKb)

@@ -117,7 +117,7 @@ dir, ist das eine neue Messung und bitte zu melden.
 .\Test-EdepL1.ps1   # wieder die ursprünglichen FAIL-Ergebnisse (7/15 im Ausgangszustand mit Sicherungen)
 ```
 
-In zwei von fünf Versuchen kam der EDEP-Zustand nach Neustart zurück ([E-76](EVIDENCE.md)).
+Früher kam in zwei von fünf Versuchen der EDEP-Zustand nach dem Neustart zurück; nach einem **harten** Neustart direkt nach der Rücknahme kam zuletzt der Telemetriewert zurück ([E-76](EVIDENCE.md)). Starte nach der Rücknahme **ordentlich** neu.
 Prüfe daher nach der Rücknahme und einem Neustart noch einmal.
 
 Snapshot zurücksetzen.

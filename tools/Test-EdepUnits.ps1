@@ -214,6 +214,14 @@ Assert-That 'Nicht ausgeführte Tests: Angriffssimulation T-NET-04a (aktiv) und 
 Assert-That 'Nicht ausgeführte Tests: automatische Tests (T-NET-01) und L2-Tests (T-NET-06) fehlen' ((@($manual | Where-Object { $_.Test -in 'T-NET-01', 'T-NET-06' }).Count -eq 0) -and ($manual.Count -ge 5))
 Assert-That 'Nicht ausgeführte Tests: Umgehungstest T-BYP-01 (L1) wird gelistet, T-BYP-06 (L2) nicht' ((@($manual | Where-Object { $_.Test -eq 'T-BYP-01' }).Count -eq 1) -and (@($manual | Where-Object { $_.Test -eq 'T-BYP-06' }).Count -eq 0))
 
+# ---------------------------------------------------------------------------
+# E-76: Rücknahme auf den Datenträger schreiben (ohne Adminrechte darf nichts abstürzen)
+# ---------------------------------------------------------------------------
+$flush = Invoke-EdepFlushRegistry
+Assert-That 'E-76: Invoke-EdepFlushRegistry liefert Listen und wirft keinen Fehler' (($null -ne $flush) -and ($null -ne $flush.Flushed) -and ($null -ne $flush.Failed))
+Assert-That 'E-76: SOFTWARE und SYSTEM lassen sich auch ohne Adminrechte schreiben' (($flush.Flushed -contains 'SOFTWARE') -and ($flush.Flushed -contains 'SYSTEM'))
+Assert-That 'E-76: SECURITY und SAM gelten als optional und erzeugen nie einen Fehler (Failed)' (($flush.Failed -notcontains 'SECURITY') -and ($flush.Failed -notcontains 'SAM'))
+
 Write-Host ''
 if ($script:failed) { Write-Host "$script:failed Test(s) fehlgeschlagen." -ForegroundColor Red; exit 1 }
 Write-Host 'Alle Einheitentests bestanden.' -ForegroundColor Green
