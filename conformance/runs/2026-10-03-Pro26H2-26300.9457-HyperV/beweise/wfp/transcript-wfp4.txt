@@ -1,0 +1,35 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003194932
+Benutzername: test\test1
+RunAs-Benutzer: test\test1
+Konfigurationsname: 
+Computer: TEST (Microsoft Windows NT 10.0.26300.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 11392
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+19:49:37  Update-Cache zurückgesetzt, Enforce aktiv
+19:49:47  Mitschnitt läuft
+19:50:07  Suche gestartet (Benutzer test1 per COM, SYSTEM per UsoClient), warte bis zu 90 s
+19:50:09  COM-Suche: FEHLER 0x80072EFD
+19:50:34  Mitschnitt beendet
+
+Name        Length
+----        ------
+wfpdiag.cab 318877
+
+
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003195035
+**********************

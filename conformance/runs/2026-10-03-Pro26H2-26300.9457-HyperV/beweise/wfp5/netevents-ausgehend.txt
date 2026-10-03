@@ -1,0 +1,12 @@
+Dienst-PIDs laut transcript-wfp5.txt vor und nach dem Mitschnitt (unverändert): wuauserv 2232, BITS 11044, UsoSvc 1244, DiagTrack 3400
+Ereignisse: 57
+Zeit(UTC)     PID    Dienst     App                       Benutzer-SID                                   Dienst-SID  Ziel
+18:00:30.216  6704   ?          svchostexe                S-1-5-19                                        ja          239.255.255.250:1900/17
+18:00:30.216  6704   ?          svchostexe                S-1-5-19                                        ja          239.255.255.250:1900/17
+18:00:41.867  2232   wuauserv   svchostexe                S-1-5-21-3556823193-2318704152-2739749010-1001  nein        20.165.94.63:443/6
+18:00:43.041  11044  BITS       svchostexe                S-1-5-21-3556823193-2318704152-2739749010-1001  nein        172.66.157.237:443/6
+18:00:43.041  11044  BITS       svchostexe                S-1-5-21-3556823193-2318704152-2739749010-1001  nein        104.20.26.136:443/6
+18:00:43.543  3400   DiagTrack  svchostexe                S-1-5-21-3556823193-2318704152-2739749010-1001  nein        20.184.175.0:443/6
+18:00:46.560  3400   DiagTrack  svchostexe                S-1-5-21-3556823193-2318704152-2739749010-1001  nein        20.184.175.0:443/6
+18:00:47.690  3452   ?          mpdefendercoreserviceexe  S-1-5-18                                        ja          52.123.245.175:443/6
+18:00:56.578  3400   DiagTrack  svchostexe                S-1-5-21-3556823193-2318704152-2739749010-1001  nein        20.184.175.0:443/6

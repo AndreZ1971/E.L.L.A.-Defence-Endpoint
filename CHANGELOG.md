@@ -36,6 +36,7 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 ### Lauf 2 (Hyper-V-VM, Windows 11 Pro 26H2, Build 26300, 2026-10-03)
 
 - Zweiter vollständiger Durchlauf (Phasen A bis E) mit den korrigierten Skripten aus dem Nachtest von Lauf 1, Protokoll und Rohdaten unter `conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/`. Enforce 15/15 mit TEL-01 und TEL-04 als WARN; Edge kommt unter Enforce durch (erstmals gemessen); die Befunde zu Updates und BITS treten auch auf Pro auf (E-82, E-83).
+- Diagnose der Dienstregeln mit Filterdump und Netzwerkmitschnitt: Der Filter ist wohlgeformt; der Update-Client verbindet mit dem Token des aufrufenden Benutzers ohne Dienst-SID (E-84). Außerdem: `MpDefenderCoreService.exe` wird unter Enforce blockiert (E-85), die Wirkung der DiagTrack-Sperre ist ungemessen (E-86).
 - Kontrollmessung auf Pro bei aktiver Pause: Die Update-Suche gelingt ohne EDEP und scheitert mit EDEP (`wuauserv` blockiert); die Pause ist nicht die Ursache.
 - Der Neustart-Vorfall aus Lauf 1 trat auf Pro erneut auf (zweimal in fünf Versuchen), Ursache weiter offen (E-76).
 

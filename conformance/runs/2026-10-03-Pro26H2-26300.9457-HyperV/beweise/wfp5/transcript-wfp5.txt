@@ -1,0 +1,67 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261003200019
+Benutzername: test\test1
+RunAs-Benutzer: test\test1
+Konfigurationsname: 
+Computer: TEST (Microsoft Windows NT 10.0.26300.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 11392
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+20:00:20  wende Enforce an
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-132020
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261003-200020
+==> Firewall-Profile: eingehend Block, ausgehend Block, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Setze Telemetrie-Richtlinien
+WARNUNG: Edition 'Professional': AllowTelemetry=0 wirkt wie 1 (Required). Das ist die niedrigste Stufe, die diese Edition zulässt (EDEP-TEL-01).
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: ENFORCE).
+Sicherung:      C:\ProgramData\EDEP\backup\20261003-200020
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261003-200020'
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+WARNUNG: Warten auf Start des Diensts "Background Intelligent Transfer Service (bits)"...
+20:00:29  Dienste vor dem Mitschnitt
+
+Name      ProcessId State  
+----      --------- -----  
+BITS          11044 Running
+DiagTrack      3400 Running
+DoSvc             0 Stopped
+UsoSvc         1244 Running
+wuauserv       2232 Running
+20:00:39  Mitschnitt läuft
+20:00:40  COM-Suche, BITS-Auftrag und Orchestrator-Scan gestartet, warte bis zu 90 s
+20:00:41  Ergebnis: FEHLER 0x80072EFD
+20:00:43  Ergebnis: BITS FEHLER Die Serververbindung konnte nicht hergestellt werden.
+20:01:18  Mitschnitt beendet
+20:01:18  Dienste nach dem Mitschnitt
+
+Name      ProcessId State  
+----      --------- -----  
+BITS          11044 Running
+DiagTrack      3400 Running
+DoSvc             0 Stopped
+UsoSvc         1244 Running
+wuauserv       2232 Running
+
+Name        Length
+----        ------
+wfpdiag.cab 318168
+
+
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261003200118
+**********************
