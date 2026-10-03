@@ -266,6 +266,15 @@ $script:EdepUpdateDomains = @(
 )
 $script:EdepUpdateRulePrefix = 'EDEP L1 - Update-Domain '
 
+# Mindestgröße des Firewall-Protokolls in KB (BSI SiSyPHuS AP10, Abschnitt 4.2: "16.384 KB oder größer").
+$script:EdepFirewallLogMinKb = 16384
+
+function Get-EdepSmallLogProfile {
+    # Namen der Profile, deren Firewall-Protokoll kleiner als das empfohlene Mindestmaß ist.
+    param($Profiles, [int]$MinKb = $script:EdepFirewallLogMinKb)
+    @($Profiles | Where-Object { [int64]$_.LogMaxSizeKilobytes -lt $MinKb } | ForEach-Object { [string]$_.Name })
+}
+
 function Get-EdepNetworkProtectionName {
     # EnableNetworkProtection: 0 aus, 1 an (Block), 2 Audit. Für Set-MpPreference.
     param([int]$Value)

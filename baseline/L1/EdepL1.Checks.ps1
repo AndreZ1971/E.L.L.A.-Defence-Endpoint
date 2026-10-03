@@ -227,7 +227,12 @@ function Get-EdepL1CheckResult {
     }
     if ($problems) { $results.Add([pscustomobject]@{ Id = 'EDEP-LOG-01'; Status = 'FAIL'; Detail = ($problems -join '; ') }) }
     elseif (-not $isAdmin) { Add-Result 'EDEP-LOG-01' 'UNKNOWN' 'log01.unknown' }
-    else { Add-Result 'EDEP-LOG-01' 'PASS' 'log01.pass' }
+    else {
+        # Empfehlung (BSI SiSyPHuS AP10), keine Anforderung der SPEC: zu kleines Protokoll gibt WARN, nicht FAIL.
+        $small = @(Get-EdepSmallLogProfile $profiles)
+        if ($small.Count) { Add-Result 'EDEP-LOG-01' 'WARN' 'log01.smalllog' @(($small -join ', ')) }
+        else { Add-Result 'EDEP-LOG-01' 'PASS' 'log01.pass' }
+    }
 
     # --- EDEP-LOG-02 -------------------------------------------------------
     $remote = $profiles | Where-Object { ([Environment]::ExpandEnvironmentVariables([string]$_.LogFileName)) -like '\\*' }

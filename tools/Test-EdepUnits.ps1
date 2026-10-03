@@ -161,6 +161,18 @@ Assert-That 'Restore: Wert der Sicherung, die geändert hat (auch hinter einer S
 Assert-That 'Restore: bei mehreren Änderungen zählt die älteste' ((Get-EdepNetworkProtectionRestoreValue @($m1, $m2, $m3)) -eq 0)
 Assert-That 'Restore: keine Manifeste ergibt nichts zurückzustellen' ($null -eq (Get-EdepNetworkProtectionRestoreValue @()))
 
+# ---------------------------------------------------------------------------
+# LOG-01: Größe des Firewall-Protokolls (Empfehlung BSI SiSyPHuS AP10)
+# ---------------------------------------------------------------------------
+$logProfiles = @(
+    [pscustomobject]@{ Name = 'Domain'; LogMaxSizeKilobytes = 16384 },
+    [pscustomobject]@{ Name = 'Private'; LogMaxSizeKilobytes = 4096 },
+    [pscustomobject]@{ Name = 'Public'; LogMaxSizeKilobytes = 32767 })
+Assert-That 'LOG-01: Profil mit 4096 KB wird gemeldet, 16384 und 32767 nicht' ((@(Get-EdepSmallLogProfile $logProfiles) -join ',') -eq 'Private')
+Assert-That 'LOG-01: genau 16384 KB gilt als ausreichend' (@(Get-EdepSmallLogProfile @($logProfiles[0])).Count -eq 0)
+Assert-That 'LOG-01: keine Profile ergibt keine Meldung' (@(Get-EdepSmallLogProfile @()).Count -eq 0)
+Assert-That 'LOG-01: Text nennt die Profile' ((Get-EdepText 'log01.smalllog' @('Private')) -match 'Private')
+
 Write-Host ''
 if ($script:failed) { Write-Host "$script:failed Test(s) fehlgeschlagen." -ForegroundColor Red; exit 1 }
 Write-Host 'Alle Einheitentests bestanden.' -ForegroundColor Green
