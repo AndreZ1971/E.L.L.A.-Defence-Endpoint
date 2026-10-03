@@ -106,8 +106,9 @@ update domains" (dynamic keywords of the Windows firewall; domain list with sour
   `Restore` sets it back. This does not work with third-party antivirus (unmeasured).
 - The firewall learns the addresses from observed DNS answers and discards them on restart. **The first
   connections may fail** (measured: one BITS attempt), later ones succeed.
-- Unmeasured: behaviour after a restart, installing updates, Defender signatures (`WdNisSvc`, `MDCoreSvc` are still
-  rejected), long-term operation ([E-89](docs/EVIDENCE.md)).
+- **Defender signature updates are not solved by this**: `Update-MpSignature` still fails, and `WdNisSvc` and
+  `MDCoreSvc` are rejected ([E-89](docs/EVIDENCE.md)). Unmeasured: installing updates, the search after a restart
+  with an empty cache, long-term operation.
 - Use enforce mode only with a maintenance window and keep `Restore-EdepL1.ps1` ready. After a restore, verify the
   state with `Test-EdepL1.ps1`.
 

@@ -106,8 +106,9 @@ den Update-Domains“ an (Dynamic Keywords der Windows-Firewall, Domainliste mit
   `Restore` stellt ihn zurück. Mit fremdem Virenschutz geht das nicht (ungemessen).
 - Die Firewall lernt die Adressen aus beobachteten DNS-Antworten und verwirft sie beim Neustart. **Die ersten
   Verbindungen können scheitern** (gemessen: ein BITS-Versuch), spätere gelingen.
-- Ungemessen: Verhalten nach einem Neustart, Installation von Updates, Defender-Signaturen (`WdNisSvc`, `MDCoreSvc`
-  werden weiter abgewiesen), Dauerbetrieb ([E-89](docs/EVIDENCE.md)).
+- **Defender-Signaturupdates sind damit nicht gelöst**: `Update-MpSignature` scheitert weiter, und `WdNisSvc` und
+  `MDCoreSvc` werden abgewiesen ([E-89](docs/EVIDENCE.md)). Ungemessen: Installation von Updates, die Suche nach einem
+  Neustart mit leerem Cache, Dauerbetrieb.
 - Den Enforce-Modus nur mit einem Wartungsfenster einsetzen und `Restore-EdepL1.ps1` bereithalten. Nach einer
   Wiederherstellung den Zustand mit `Test-EdepL1.ps1` prüfen.
 

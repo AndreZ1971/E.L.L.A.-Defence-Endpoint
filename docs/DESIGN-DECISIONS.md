@@ -193,4 +193,4 @@ war) und beim Restore zurückgestellt. EDEP-TEL-04 meldet unter Enforce ohne die
 erste Verbindungen können scheitern. Es gilt die Microsoft-Voraussetzung (Defender läuft, Netzwerkschutz an, DoH
 aus, [Microsoft Learn](https://learn.microsoft.com/windows/security/operating-system-security/network-security/windows-firewall/dynamic-keywords)).
 Die Domainliste stammt aus Microsofts Liste für Unternehmensnetze (Stand 2026-10-03) und ist nicht auf Vollständigkeit
-für jedes System geprüft. Ungemessen: Neustart, Updateinstallation, Defender-Signaturen, fremder Virenschutz (E-89).
+für jedes System geprüft. **Defender-Signaturupdates sind mit dieser Option nicht gelöst** (`Update-MpSignature` scheitert weiter, ein zusätzlicher Hostname und das Race beim ersten Versuch sind offen, E-89). Ungemessen: Updateinstallation, die Suche nach einem Neustart mit leerem Cache, fremder Virenschutz.
