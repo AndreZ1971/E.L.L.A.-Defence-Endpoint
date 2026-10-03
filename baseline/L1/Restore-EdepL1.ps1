@@ -97,7 +97,11 @@ if ($hasKeywords -and $PSCmdlet.ShouldProcess('Update-Domain-Schlüsselwörter',
 $npRestore = Get-EdepNetworkProtectionRestoreValue $allManifests
 if ($null -ne $npRestore -and (Get-EdepNetworkProtection) -ne $npRestore -and
     $PSCmdlet.ShouldProcess('Netzwerkschutz', "Zurück auf $(Get-EdepNetworkProtectionName $npRestore)")) {
-    Set-MpPreference -EnableNetworkProtection (Get-EdepNetworkProtectionName $npRestore)
+    try { Set-MpPreference -EnableNetworkProtection (Get-EdepNetworkProtectionName $npRestore) -ErrorAction Stop }
+    catch {
+        Write-Warning ("Der Netzwerkschutz konnte nicht zurückgestellt werden (Defender nicht erreichbar: $($_.FullyQualifiedErrorId)). " +
+            "Bitte später nachholen: Set-MpPreference -EnableNetworkProtection $(Get-EdepNetworkProtectionName $npRestore)")
+    }
 }
 
 Write-Host ''
