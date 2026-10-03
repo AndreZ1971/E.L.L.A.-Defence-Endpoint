@@ -244,6 +244,71 @@ function Get-EdepUpdateProbeOutcome {
     [pscustomobject]@{ Status = 'FAIL'; Key = 'tel04.probefail'; Arguments = @($Probe.HResult) }
 }
 
+# EDEP-TEL-04: Freigabe der Update-Ziele nach Domainnamen (Lauf 2, Abweichung 6 und Lösungsversuch).
+# Dienstregeln greifen für wuauserv und BITS nicht, weil sie unter dem Token des Aufrufers ohne Dienst-SID
+# verbinden (E-84). Stattdessen: Programm svchost.exe, TCP 80/443, nur zu diesen Domains (Dynamic Keywords der
+# Windows-Firewall, setzt den Netzwerkschutz von Defender voraus, E-88).
+# Quelle der Liste (Stand 2026-10-03): Microsoft Learn, "Configure your network" (Windows Autopatch). Eine Liste
+# für Unternehmensnetze, ihre Vollständigkeit für jedes System ist nicht belegt; Änderungen hier immer mit
+# Quelle und Datum eintragen.
+$script:EdepUpdateDomainSource = 'https://learn.microsoft.com/en-us/windows/deployment/windows-autopatch/prepare/windows-autopatch-configure-network'
+$script:EdepUpdateDomainDate = '2026-10-03'
+$script:EdepUpdateDomains = @(
+    '*.update.microsoft.com'
+    '*.windowsupdate.com'
+    '*.windowsupdate.microsoft.com'
+    '*.delivery.mp.microsoft.com'
+    '*.dl.delivery.mp.microsoft.com'
+    '*.prod.do.dsp.mp.microsoft.com'
+    '*.download.microsoft.com'
+    'emdl.ws.microsoft.com'
+    'tsfe.trafficshaping.dsp.mp.microsoft.com'
+)
+$script:EdepUpdateRulePrefix = 'EDEP L1 - Update-Domain '
+
+function Get-EdepNetworkProtectionName {
+    # EnableNetworkProtection: 0 aus, 1 an (Block), 2 Audit. Für Set-MpPreference.
+    param([int]$Value)
+    switch ($Value) { 0 { 'Disabled' } 1 { 'Enabled' } 2 { 'AuditMode' } default { throw "Unbekannter Wert für den Netzwerkschutz: $Value" } }
+}
+
+function Get-EdepNetworkProtection {
+    # Aktueller Wert des Netzwerkschutzes oder $null, wenn Defender ihn nicht liefert (z. B. fremder Virenschutz).
+    try { [int](Get-MpPreference -ErrorAction Stop).EnableNetworkProtection } catch { $null }
+}
+
+function Select-EdepUpdateKeyword {
+    # Wählt aus Dynamic-Keyword-Objekten die von EDEP angelegten (AutoResolve und Domain aus der Liste).
+    param($Keyword)
+    @($Keyword | Where-Object { $_.AutoResolve -and ($script:EdepUpdateDomains -contains $_.Keyword) })
+}
+
+function Get-EdepUpdateDomainStatus {
+    # TEL-04 unter "ausgehend Block": ok | nodomains (keine Regeln) | nonp (Netzwerkschutz aus oder nicht verfügbar)
+    param([int]$RuleCount, $NetworkProtection)
+    if ($RuleCount -eq 0) { return 'nodomains' }
+    if ($null -eq $NetworkProtection -or $NetworkProtection -notin 1, 2) { return 'nonp' }
+    'ok'
+}
+
+function Get-EdepNetworkProtectionRestoreValue {
+    # Wert, auf den der Netzwerkschutz zurückgestellt wird: der Wert VOR der ersten Änderung durch EDEP, also der Eintrag
+    # der ältesten Sicherung, die "networkProtectionChanged" trägt. Keine solche Sicherung: $null (nichts zurückstellen).
+    # $Manifest: Manifeste in der Reihenfolge der Sicherungen (älteste zuerst).
+    param($Manifest)
+    $first = @($Manifest | Where-Object { $_.networkProtectionChanged } | Select-Object -First 1)
+    if ($first.Count -eq 0 -or $null -eq $first[0].networkProtection) { return $null }
+    [int]$first[0].networkProtection
+}
+
+function Remove-EdepUpdateKeyword {
+    # Entfernt die von EDEP angelegten Schlüsselwörter (die Firewall-Sicherung enthält sie nicht).
+    if (-not (Get-Command Get-NetFirewallDynamicKeywordAddress -ErrorAction SilentlyContinue)) { return }
+    foreach ($k in Select-EdepUpdateKeyword (Get-NetFirewallDynamicKeywordAddress -AllAutoResolve -ErrorAction SilentlyContinue)) {
+        Remove-NetFirewallDynamicKeywordAddress -Id $k.Id -ErrorAction SilentlyContinue
+    }
+}
+
 function Get-EdepEditionSupportsSecurityTelemetry {
     # AllowTelemetry=0 wirkt nur auf Enterprise, Education, IoT Enterprise und Server.
     $edition = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -ErrorAction SilentlyContinue).EditionID

@@ -42,7 +42,12 @@ function Get-EdepFingerprint {
         diagTrackStart   = $(if ($svc) { [string]$svc.StartType } else { $null })
         appControlEigene = $ci
         defender         = [ordered]@{ aktiv = $(if ($mp) { [bool]$mp.AntivirusEnabled } else { $null })
-                                       plattform = $(if ($mp) { [string]$mp.AMProductVersion } else { $null }) }
+                                       plattform = $(if ($mp) { [string]$mp.AMProductVersion } else { $null })
+                                       netzwerkschutz = (Get-EdepNetworkProtection) }
+        updateSchluesselwoerter = $(if (Get-Command Get-NetFirewallDynamicKeywordAddress -ErrorAction SilentlyContinue) {
+            @(Select-EdepUpdateKeyword (Get-NetFirewallDynamicKeywordAddress -AllAutoResolve -ErrorAction SilentlyContinue)).Count } else { $null })
+        updateRegeln     = @(Get-NetFirewallRule -PolicyStore ActiveStore -Enabled True -ErrorAction SilentlyContinue |
+            Where-Object { $_.DisplayName -like "$EdepUpdateRulePrefix*" }).Count
     }
 }
 

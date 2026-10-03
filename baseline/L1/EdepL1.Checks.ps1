@@ -186,6 +186,17 @@ function Get-EdepL1CheckResult {
             Get-NetFirewallApplicationFilter -ErrorAction SilentlyContinue | ForEach-Object { ConvertTo-EdepComparablePath $_.Program })
         if ($allowedPaths -notcontains (ConvertTo-EdepComparablePath $defenderExe)) { $problems += Get-EdepText 'tel04.defender' }
     }
+    if ($outboundBlocked) {
+        # Dienstregeln erlauben wuauserv und BITS nicht (E-84); erreichbar werden die Update-Ziele nur über die
+        # Domainregeln (-AllowWindowsUpdate) und den Netzwerkschutz, den sie voraussetzen (E-88).
+        $updateRules = @(Get-NetFirewallRule -PolicyStore ActiveStore -Direction Outbound -Action Allow -Enabled True -ErrorAction SilentlyContinue |
+            Where-Object { $_.DisplayName -like "$EdepUpdateRulePrefix*" })
+        $np = if ($isAdmin) { Get-EdepNetworkProtection } else { 2 }   # ohne Adminrechte nicht prüfbar, dann nicht werten
+        switch (Get-EdepUpdateDomainStatus -RuleCount $updateRules.Count -NetworkProtection $np) {
+            'nodomains' { $problems += Get-EdepText 'tel04.nodomains' }
+            'nonp'      { $problems += Get-EdepText 'tel04.nonp' }
+        }
+    }
     if ($problems) { $results.Add([pscustomobject]@{ Id = 'EDEP-TEL-04'; Status = 'FAIL'; Detail = ($problems -join '; ') }) }
     elseif (-not $outboundBlocked) { Add-Result 'EDEP-TEL-04' 'PASS' 'tel04.pass' }
     else {

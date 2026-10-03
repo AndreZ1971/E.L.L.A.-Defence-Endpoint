@@ -28,6 +28,15 @@
 .PARAMETER DisableDiagTrack
     Deaktiviert zusätzlich den Dienst DiagTrack (EDEP-TEL-05, auf L1 optional).
 
+.PARAMETER AllowWindowsUpdate
+    Erlaubt unter -Enforce Windows Update, BITS und Defender-Updates: Für die Update-Domains (Liste in
+    EdepL1.Common.ps1, mit Quelle und Stand) wird je eine Regel "Programm svchost.exe, TCP 80/443, nur zu
+    dieser Domain" angelegt (Dynamic Keywords der Windows-Firewall). Voraussetzung ist der Netzwerkschutz
+    von Defender; er wird auf den Audit-Modus gestellt (der alte Wert steht in der Sicherung, Restore stellt
+    ihn zurück). Ohne diese Option sind Updates unter -Enforce NICHT erreichbar (gemessen, Lauf 1 und 2),
+    und EDEP-TEL-04 meldet FAIL. Die ersten Verbindungen nach einem Neustart können scheitern, bis die
+    Firewall die Adressen aus beobachteten DNS-Antworten gelernt hat.
+
 .EXAMPLE
     .\Install-EdepL1.ps1 -DeployAppControlAudit -WhatIf
     Zeigt nur an, was geändert würde.
@@ -41,7 +50,8 @@ param(
     [switch]$Enforce,
     [string[]]$AllowProgram = @(),
     [switch]$DeployAppControlAudit,
-    [switch]$DisableDiagTrack
+    [switch]$DisableDiagTrack,
+    [switch]$AllowWindowsUpdate
 )
 
 $ErrorActionPreference = 'Stop'
@@ -109,6 +119,9 @@ if ($PSCmdlet.ShouldProcess($backupPath, 'Aktuellen Zustand sichern')) {
         registry          = @($registryBackup)
         diagTrackStartType = if ($diagTrack) { [string]$diagTrack.StartType } else { $null }
         appControlPolicyId = $null
+        networkProtection  = Get-EdepNetworkProtection
+        networkProtectionChanged = $false
+        updateKeywordIds   = @()
     }
     $manifest | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $backupPath 'manifest.json') -Encoding UTF8
 }
@@ -190,6 +203,50 @@ if ($PSCmdlet.ShouldProcess("Regelgruppe $EdepRuleGroup", 'Neu anlegen')) {
     New-NetFirewallRule -Group $EdepRuleGroup -Enabled True -Profile Public -Direction Inbound -Action Block `
         -DisplayName 'EDEP L1 - Public: SMB/RDP/WinRM/RPC eingehend (EDEP-NET-05)' `
         -Protocol TCP -LocalPort $EdepPublicInboundBlockPorts | Out-Null
+
+    # Schlüsselwörter früherer Läufe entfernen (die Firewall-Sicherung enthält sie nicht, Idempotenz).
+    Remove-EdepUpdateKeyword
+}
+
+# ---------------------------------------------------------------------------
+# 3b. Optional: Update-Domains (EDEP-TEL-04), nur mit -AllowWindowsUpdate
+# ---------------------------------------------------------------------------
+if ($AllowWindowsUpdate) {
+    if (-not (Get-Command New-NetFirewallDynamicKeywordAddress -ErrorAction SilentlyContinue)) {
+        Write-Warning ('-AllowWindowsUpdate: Dieses Windows kennt keine Dynamic Keywords der Firewall ' +
+            '(neuere Windows-11-Builds nötig). Es wurden keine Update-Regeln angelegt.')
+    }
+    elseif ($null -eq (Get-EdepNetworkProtection)) {
+        Write-Warning ('-AllowWindowsUpdate: Der Netzwerkschutz von Defender ist nicht verfügbar ' +
+            '(Defender läuft nicht oder fremder Virenschutz). Es wurden keine Update-Regeln angelegt.')
+    }
+    elseif ($PSCmdlet.ShouldProcess('Update-Domainregeln und Netzwerkschutz', 'Anlegen und Netzwerkschutz auf Audit-Modus stellen')) {
+        Write-Step "Lege Update-Domainregeln an ($($EdepUpdateDomains.Count) Domains, Stand $EdepUpdateDomainDate)"
+        $previousNp = Get-EdepNetworkProtection
+        if ($previousNp -eq 0) {
+            Set-MpPreference -EnableNetworkProtection (Get-EdepNetworkProtectionName 2)
+            $npChanged = $true
+        }
+        else { $npChanged = $false }   # Block (1) oder Audit (2) genügen und bleiben unverändert
+        $ids = @()
+        $svchost = Join-Path $env:SystemRoot 'System32\svchost.exe'
+        foreach ($domain in $EdepUpdateDomains) {
+            $id = '{' + ([guid]::NewGuid()).ToString() + '}'
+            New-NetFirewallDynamicKeywordAddress -Id $id -Keyword $domain -AutoResolve $true | Out-Null
+            New-NetFirewallRule @common -Direction Outbound -Action Allow `
+                -DisplayName "$EdepUpdateRulePrefix$domain (EDEP-TEL-04)" `
+                -Program $svchost -Protocol TCP -RemotePort 80, 443 `
+                -RemoteDynamicKeywordAddresses $id | Out-Null
+            $ids += $id
+        }
+        $manifestPath = Join-Path $backupPath 'manifest.json'
+        if (Test-Path $manifestPath) {
+            $m = Get-Content $manifestPath -Raw | ConvertFrom-Json
+            $m.networkProtectionChanged = $npChanged
+            $m.updateKeywordIds = $ids
+            $m | ConvertTo-Json -Depth 5 | Set-Content -Path $manifestPath -Encoding UTF8
+        }
+    }
 }
 
 # ---------------------------------------------------------------------------

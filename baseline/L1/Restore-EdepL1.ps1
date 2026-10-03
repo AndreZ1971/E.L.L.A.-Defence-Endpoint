@@ -82,6 +82,24 @@ foreach ($id in $policyIds) {
     }
 }
 
+# Update-Domainregeln (-AllowWindowsUpdate): Die Firewall-Sicherung enthält die Schlüsselwörter nicht, sie werden
+# hier entfernt. Den Netzwerkschutz stellt nur zurück, wer ihn selbst geändert hat (in irgendeiner Sicherung vermerkt).
+$allManifests = Get-ChildItem -Path $EdepBackupRoot -Directory -ErrorAction SilentlyContinue |
+    ForEach-Object { Join-Path $_.FullName 'manifest.json' } | Where-Object { Test-Path $_ } |
+    ForEach-Object { Get-Content $_ -Raw | ConvertFrom-Json }
+$hasKeywords = $false
+if (Get-Command Get-NetFirewallDynamicKeywordAddress -ErrorAction SilentlyContinue) {
+    $hasKeywords = @(Select-EdepUpdateKeyword (Get-NetFirewallDynamicKeywordAddress -AllAutoResolve -ErrorAction SilentlyContinue)).Count -gt 0
+}
+if ($hasKeywords -and $PSCmdlet.ShouldProcess('Update-Domain-Schlüsselwörter', 'Entfernen')) {
+    Remove-EdepUpdateKeyword
+}
+$npRestore = Get-EdepNetworkProtectionRestoreValue $allManifests
+if ($null -ne $npRestore -and (Get-EdepNetworkProtection) -ne $npRestore -and
+    $PSCmdlet.ShouldProcess('Netzwerkschutz', "Zurück auf $(Get-EdepNetworkProtectionName $npRestore)")) {
+    Set-MpPreference -EnableNetworkProtection (Get-EdepNetworkProtectionName $npRestore)
+}
+
 Write-Host ''
 if ($WhatIfPreference) { Write-Host 'WhatIf: Es wurde nichts geändert.' -ForegroundColor Yellow; return }
 Write-Host 'Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).' -ForegroundColor Green

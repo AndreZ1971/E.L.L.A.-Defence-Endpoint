@@ -126,6 +126,41 @@ $o = Get-EdepUpdateProbeOutcome -Probed $true -Probe $ok
 Assert-That 'TEL-04: gelungene Messung ergibt nur WARN (Zwischenspeicher möglich)' (($o.Status -eq 'WARN') -and ($o.Key -eq 'tel04.probeok'))
 Assert-That 'TEL-04: Fehlertext nennt den Code' ((Get-EdepText 'tel04.probefail' @('0x8024402F')) -match '0x8024402F')
 
+# ---------------------------------------------------------------------------
+# TEL-04: Update-Domainregeln (-AllowWindowsUpdate, E-88)
+# ---------------------------------------------------------------------------
+Assert-That 'TEL-04: Domainliste ist nicht leer' ($EdepUpdateDomains.Count -ge 5)
+Assert-That 'TEL-04: Domainliste ohne Duplikate' (@($EdepUpdateDomains | Select-Object -Unique).Count -eq $EdepUpdateDomains.Count)
+Assert-That 'TEL-04: Domains sind Hostnamen (kein Schema, kein Pfad, Wildcard nur am Anfang)' (@($EdepUpdateDomains | Where-Object { $_ -notmatch '^(\*\.)?[a-z0-9-]+(\.[a-z0-9-]+)+$' }).Count -eq 0)
+Assert-That 'TEL-04: Domainliste nennt Quelle und Stand' (($EdepUpdateDomainSource -match '^https://learn\.microsoft\.com/') -and ($EdepUpdateDomainDate -match '^\d{4}-\d{2}-\d{2}$'))
+
+Assert-That 'TEL-04: ohne Regeln unter Block: nodomains' ((Get-EdepUpdateDomainStatus -RuleCount 0 -NetworkProtection 2) -eq 'nodomains')
+Assert-That 'TEL-04: Regeln, aber Netzwerkschutz aus: nonp' ((Get-EdepUpdateDomainStatus -RuleCount 9 -NetworkProtection 0) -eq 'nonp')
+Assert-That 'TEL-04: Regeln, Netzwerkschutz nicht verfügbar: nonp' ((Get-EdepUpdateDomainStatus -RuleCount 9 -NetworkProtection $null) -eq 'nonp')
+Assert-That 'TEL-04: Regeln und Netzwerkschutz im Audit-Modus: ok' ((Get-EdepUpdateDomainStatus -RuleCount 9 -NetworkProtection 2) -eq 'ok')
+Assert-That 'TEL-04: Regeln und Netzwerkschutz im Block-Modus: ok' ((Get-EdepUpdateDomainStatus -RuleCount 9 -NetworkProtection 1) -eq 'ok')
+
+$kw = @(
+    [pscustomobject]@{ Id = '{1}'; Keyword = '*.windowsupdate.com'; AutoResolve = $true }
+    [pscustomobject]@{ Id = '{2}'; Keyword = 'contoso.com'; AutoResolve = $true }
+    [pscustomobject]@{ Id = '{3}'; Keyword = 'emdl.ws.microsoft.com'; AutoResolve = $false }
+)
+$sel = @(Select-EdepUpdateKeyword $kw)
+Assert-That 'TEL-04: es werden nur EDEP-Schlüsselwörter (Domain aus der Liste, AutoResolve) gewählt' (($sel.Count -eq 1) -and ($sel[0].Id -eq '{1}'))
+Assert-That 'TEL-04: keine Schlüsselwörter ergibt eine leere Auswahl' (@(Select-EdepUpdateKeyword $null).Count -eq 0)
+Assert-That 'Netzwerkschutz: Werte 0, 1, 2 werden zu Disabled, Enabled, AuditMode' (((Get-EdepNetworkProtectionName 0), (Get-EdepNetworkProtectionName 1), (Get-EdepNetworkProtectionName 2)) -join ',' -eq 'Disabled,Enabled,AuditMode')
+Assert-That 'TEL-04: Texte nennen die Option' ((Get-EdepText 'tel04.nodomains') -match 'AllowWindowsUpdate')
+
+# Restore: Wert für den Netzwerkschutz kommt aus der ältesten Sicherung, die ihn geändert hat (Lauf 2, Nachtest)
+$old = [pscustomobject]@{ edep = '0.1.0' }   # Sicherung aus der Zeit vor der Option: kennt die Felder nicht
+$m1 = [pscustomobject]@{ networkProtection = 0; networkProtectionChanged = $true }
+$m2 = [pscustomobject]@{ networkProtection = 2; networkProtectionChanged = $false }
+$m3 = [pscustomobject]@{ networkProtection = 1; networkProtectionChanged = $true }
+Assert-That 'Restore: ohne Änderung durch EDEP wird nichts zurückgestellt' ($null -eq (Get-EdepNetworkProtectionRestoreValue @($old, $m2)))
+Assert-That 'Restore: Wert der Sicherung, die geändert hat (auch hinter einer Sicherung ohne Feld)' ((Get-EdepNetworkProtectionRestoreValue @($old, $m1, $m2)) -eq 0)
+Assert-That 'Restore: bei mehreren Änderungen zählt die älteste' ((Get-EdepNetworkProtectionRestoreValue @($m1, $m2, $m3)) -eq 0)
+Assert-That 'Restore: keine Manifeste ergibt nichts zurückzustellen' ($null -eq (Get-EdepNetworkProtectionRestoreValue @()))
+
 Write-Host ''
 if ($script:failed) { Write-Host "$script:failed Test(s) fehlgeschlagen." -ForegroundColor Red; exit 1 }
 Write-Host 'Alle Einheitentests bestanden.' -ForegroundColor Green
