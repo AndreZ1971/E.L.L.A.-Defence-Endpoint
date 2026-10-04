@@ -1,0 +1,126 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261004192512
+Benutzername: test\test1
+RunAs-Benutzer: test\test1
+Konfigurationsname: 
+Computer: TEST (Microsoft Windows NT 10.0.26300.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 10916
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+19:25:12  === Ausgangslage ===
+Edition Professional, Build 26300.9457; AllowTelemetry (Richtlinie): '' (leer = nicht gesetzt); EDEP-Regeln: 0 (erwartet 0)
+19:25:14  === P1: ohne EDEP, ohne Richtlinie ===
+19:25:14  --- P1 : DiagTrack neu starten ---
+19:25:18  DiagTrack: Running, PID 5732, Dienste im Prozess: DiagTrack
+19:25:18  dmwappushservice: Stopped, PID 0
+19:25:48  30 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:26:18  60 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:26:48  90 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:27:18  120 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:27:48  150 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:28:18  180 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:28:48  210 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:29:18  240 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:29:48  270 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:30:19  300 s: DiagTrack erlaubt (5156) 2, blockiert (5157) 0; dmwappushservice 0
+
+Count Name                         
+----- ----                         
+    1 5732, 5156, 4.150.223.103:443
+    1 5732, 5156, 4.150.223.115:443
+19:30:19  --- P1 : Ende ---
+19:30:19  === P2: nur Telemetrie-Richtlinie AllowTelemetry=0 (auf Pro wirkt der niedrigste Level, Required), keine Firewallregel ===
+19:30:19  --- P2 : DiagTrack neu starten ---
+19:30:23  DiagTrack: Running, PID 3496, Dienste im Prozess: DiagTrack
+19:30:23  dmwappushservice: Stopped, PID 0
+19:30:53  30 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:31:23  60 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:31:53  90 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:32:23  120 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:32:53  150 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:33:23  180 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:33:53  210 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:34:23  240 s: DiagTrack erlaubt (5156) 1, blockiert (5157) 0; dmwappushservice 0
+19:34:53  270 s: DiagTrack erlaubt (5156) 1, blockiert (5157) 0; dmwappushservice 0
+19:35:23  300 s: DiagTrack erlaubt (5156) 1, blockiert (5157) 0; dmwappushservice 0
+
+Count Name                        
+----- ----                        
+    1 3496, 5156, 20.184.175.5:443
+19:35:23  --- P2 : Ende ---
+19:35:23  Richtlinie wieder entfernt: '' (leer erwartet)
+19:35:23  === P3: EDEP im Audit-Modus (Richtlinie und Dienstregel) ===
+WARNUNG: EDEP L1 wurde schon einmal angewendet. Der Zustand VOR EDEP liegt in der ältesten Sicherung: C:\ProgramData\EDEP\backup\20261003-132020
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261004-193523
+==> Firewall-Profile: eingehend Block, ausgehend Allow, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Setze Telemetrie-Richtlinien
+WARNUNG: Edition 'Professional': AllowTelemetry=0 wirkt wie 1 (Required). Das ist die niedrigste Stufe, die diese Edition zulässt (EDEP-TEL-01).
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+
+EDEP L1 angewendet (Modus: AUDIT).
+Sicherung:      C:\ProgramData\EDEP\backup\20261004-193523
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261004-193523'
+
+Audit-Modus: EDEP-NET-03 ist noch nicht erfüllt. Firewall-Log auswerten, dann mit -Enforce erneut ausführen.
+Dienstregel(n) für DiagTrack: EDEP L1 - Telemetrie DiagTrack (EDEP-TEL-02)
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  18 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+
+WARN    EDEP-TEL-01  AllowTelemetry=0, wirksam auf 'Professional': 1 (Required) — niedrigste Stufe dieser Edition
+WARN    EDEP-TEL-01  AllowTelemetry=0, wirksam auf 'Professional': 1 (Required) — niedrigste Stufe dieser Edition
+WARN    EDEP-TEL-02  Blockregeln und Dienst-SID-Typ in Ordnung (DiagTrack, dmwappushservice), Wirkung nicht belegt:
+DiagTrack verband in der Messung trotz Regel (E-86)
+WARN    EDEP-TEL-02  Blockregeln und Dienst-SID-Typ in Ordnung (DiagTrack, dmwappushservice), Wirkung nicht belegt: DiagTrack verband in der Messung trotz Regel (E-86)
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-132020
+
+EDEP 0.1.0 L1 — geprüft 2026-10-04 — 13/15 erfüllt
+19:35:34  --- P3 : DiagTrack neu starten ---
+19:35:37  DiagTrack: Running, PID 3192, Dienste im Prozess: DiagTrack
+19:35:38  dmwappushservice: Stopped, PID 0
+19:36:08  30 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:36:38  60 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:37:08  90 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:37:38  120 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:38:08  150 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:38:38  180 s: DiagTrack erlaubt (5156) 0, blockiert (5157) 0; dmwappushservice 0
+19:39:08  210 s: DiagTrack erlaubt (5156) 2, blockiert (5157) 0; dmwappushservice 0
+19:39:38  240 s: DiagTrack erlaubt (5156) 3, blockiert (5157) 0; dmwappushservice 0
+19:40:08  270 s: DiagTrack erlaubt (5156) 3, blockiert (5157) 0; dmwappushservice 0
+19:40:38  300 s: DiagTrack erlaubt (5156) 3, blockiert (5157) 0; dmwappushservice 0
+
+Count Name                         
+----- ----                         
+    1 3192, 5156, 48.209.133.15:443
+    1 3192, 5156, 40.79.150.125:443
+    1 3192, 5156, 40.79.167.10:443
+19:40:38  --- P3 : Ende ---
+19:40:38  === Rücknahme ===
+Sicherung vom 2026-10-03T13:20:20.6679314+02:00 (TEST)
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+Vergleich mit dem Ausgangszustand (leer = identisch):
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261004194047
+**********************

@@ -23,14 +23,15 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] Entscheidung 2026-10-03: Die Suche nach einer Umgehung der Update-Sperre ist beendet; Enforce wird nur mit definiertem Update-Weg empfohlen (DD-13)
 - [x] Entwurf der Zuordnung zu BSI-Grundschutz (Edition 2023: SYS.2.2.3, SYS.2.1, OPS.1.1.3, OPS.1.1.5) nach dem Originaltext, mit Hashes der gelesenen PDFs: [BSI-MAPPING.md](BSI-MAPPING.md)
 - [x] E-86 gemessen (Enterprise 25H2): Die Dienstregel gegen `DiagTrack` blockiert nicht; TEL-02 meldet WARN ([Messprotokoll](../conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-E86/run.md))
-- [ ] E-86 weiter: Wirkung auf Pro, bei Telemetrie-Level 0, für `dmwappushservice`; eine Programmregel oder das Abschalten des Dienstes als Ersatz prüfen
+- [x] E-86 auf Pro nachgemessen ([Messprotokoll](../conformance/runs/2026-10-04-Pro26H2-26300.9457-HyperV-E86/run.md)): Dienstregel blockiert auch dort nicht; Telemetrie-Level senkt die Verbindungen nicht erkennbar; `dmwappushservice` war gestoppt
+- [ ] E-86 weiter: eine Programmregel oder das Abschalten des Dienstes als Ersatz prüfen
 - [ ] Zuordnung offen: Kompendium-Edition bei Veröffentlichung erneut prüfen
 - [x] `Test-EdepConformance.ps1` Stufen „nur lesen“ und „Probe“ (lokal und als ZIP-Stand erprobt, Einheitentests, CI-Rauchtest)
 - [ ] `Test-EdepConformance.ps1` Stufe „Destructive“ (nur in einer Test-VM: Install, Enforce, Umgehungstests, Restore, Fingerabdruck-Vergleich) und ein Lauf in der VM
 - [x] Signierter Release `0.1.0-draft.3` (SHA256SUMS, SSH-Signatur, signierter Tag; Anleitung in [SIGNING.md](SIGNING.md)); Authenticode-Signatur der Skripte (SYS.2.2.3.A22) bleibt offen, es fehlt ein anerkanntes Zertifikat
 - [ ] Kontakt zum BSI erst nach vollständiger Zuordnung und signiertem Release; eine Unterstützung durch das BSI ist nicht zugesagt
 - [x] Neustart-Vorfall (E-76) protokolliert nachgemessen ([Lauf 4](../conformance/runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Lauf4/run.md)): Telemetriewert nach hartem Neustart reproduziert und mit Flush in `Restore-EdepL1` behoben (6 von 6); die früheren umfassenderen Vorfälle bleiben ungeklärt
-- [ ] Geänderten `Restore-EdepL1` ohne den Fehlalarm zu SECURITY einmal in einer VM sehen
+- [x] Geänderten `Restore-EdepL1` ohne den Fehlalarm zu SECURITY in einer VM gesehen (Pro, Lauf E-86 vom 2026-10-04); auf Enterprise noch nicht
 - [ ] Windows 11 Home und Windows Server prüfen
 - [ ] E-63/E-64: Vollständiger L1-Durchlauf auf frischer VM (Windows 11 Pro **und** Enterprise); Lauf 1 in Hyper-V mit Evaluierungs-ISO in Vorbereitung:
       Install `-Enforce`, `Test-EdepL1` 15/15, Wirkungstests aus VERIFY-YOURSELF 2.2,
