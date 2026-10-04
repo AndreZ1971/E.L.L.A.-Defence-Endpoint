@@ -144,6 +144,9 @@ allowed programs and compromised signed software are out of scope. Details:
 [SPEC.md, section 3.3](SPEC.md#33-ausdrücklich-nicht-im-geltungsbereich-restrisiken).
 These limits are part of the standard and must not be omitted from any product description.
 
+The **limitations of the reference implementation** (what is measured, what is not, what remains unexplained) are listed in
+[SPEC.md, section 3.6](SPEC.md#36-bekannte-einschränkungen-der-l1-referenzimplementierung) (German).
+
 ## License
 
 [MIT](LICENSE)

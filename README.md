@@ -146,6 +146,9 @@ Missbrauch zugelassener Programme und kompromittierte signierte Software liegen 
 des Geltungsbereichs. Details stehen in [SPEC.md, Abschnitt 3.3](SPEC.md#33-ausdrücklich-nicht-im-geltungsbereich-restrisiken).
 Diese Grenzen sind Teil der Norm und dürfen in keiner Produktbeschreibung fehlen.
 
+Die **Einschränkungen der Referenzimplementierung** (was gemessen ist, was nicht, und was ungeklärt bleibt) stehen in
+[SPEC.md, Abschnitt 3.6](SPEC.md#36-bekannte-einschränkungen-der-l1-referenzimplementierung).
+
 ## Lizenz
 
 [MIT](LICENSE)
