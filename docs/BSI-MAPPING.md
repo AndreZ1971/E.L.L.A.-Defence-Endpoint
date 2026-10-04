@@ -6,7 +6,7 @@ Diese Datei ordnet EDEP-Anforderungen den Anforderungen des IT-Grundschutz-Kompe
 
 ## Quellen und Stand
 
-Gelesen wurden die Einzel-PDFs der **Edition 2023** (Stand der PDFs 01.06.2023), geladen am 2026-10-03 von `https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/IT-GS-Kompendium_Einzel_PDFs_2023/`. Die Download-Seite des BSI für die Bausteine listete am 2026-10-03 **nur die Edition 2023**; Einzel-PDFs mit Namen für 2024 bis 2026 gibt es unter den üblichen Adressen nicht (HTTP 404). Vor einer Veröffentlichung erneut prüfen. Die PDFs liegen nicht im Repository (Rechte beim BSI); wer nachprüfen will, lädt sie selbst und vergleicht die Hashes.
+Gelesen wurden die Einzel-PDFs der **Edition 2023** (Stand der PDFs 01.06.2023), geladen am 2026-10-03 von `https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/IT-GS-Kompendium_Einzel_PDFs_2023/`. Die Download-Seite des BSI für die Bausteine listete am 2026-10-03 und erneut am 2026-10-04 **nur die Edition 2023**; Einzel-PDFs mit Namen für 2024 bis 2026 gibt es unter den üblichen Adressen nicht (HTTP 404). Vor einer Veröffentlichung erneut prüfen. Die PDFs liegen nicht im Repository (Rechte beim BSI); wer nachprüfen will, lädt sie selbst und vergleicht die Hashes.
 
 | Baustein                                 | Datei                                                                      | SHA-256 (geladen 2026-10-03)                                       |
 | ---------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------ |

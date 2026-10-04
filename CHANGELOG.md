@@ -6,6 +6,10 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 
 ## [Unveröffentlicht]
 
+## [0.1.0-draft.4] – 2026-10-04
+
+**Entwurf, kein Konformitätsnachweis.** Die Liste gilt seit `0.0.1`; die Tags `0.1.0-draft.1` bis `0.1.0-draft.3` sind Zwischenstände. Dieser Stand ist signiert (`SHA256SUMS`, `SHA256SUMS.sig`, signierter Tag, [SIGNING.md](docs/SIGNING.md)). Bekannte Einschränkungen: [SPEC.md, Abschnitt 3.6](SPEC.md).
+
 ### Hinzugefügt
 
 - `Invoke-EdepAudit`: kostenloses Audit mit Punktzahl, Erklärungen und HTML-Bericht, auch ohne Adminrechte
