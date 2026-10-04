@@ -16,6 +16,7 @@ $l1 = Join-Path (Split-Path $PSScriptRoot -Parent) 'baseline\L1'
 . (Join-Path $l1 'EdepStrings.ps1')
 . (Join-Path $l1 'EdepL1.Common.ps1')
 . (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) 'conformance') 'EdepConformance.Common.ps1')
+. (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) 'conformance') 'EdepConformance.Destructive.ps1')
 Set-EdepLanguage de
 
 $script:failed = 0
@@ -221,6 +222,28 @@ $flush = Invoke-EdepFlushRegistry
 Assert-That 'E-76: Invoke-EdepFlushRegistry liefert Listen und wirft keinen Fehler' (($null -ne $flush) -and ($null -ne $flush.Flushed) -and ($null -ne $flush.Failed))
 Assert-That 'E-76: SOFTWARE und SYSTEM lassen sich auch ohne Adminrechte schreiben' (($flush.Flushed -contains 'SOFTWARE') -and ($flush.Flushed -contains 'SYSTEM'))
 Assert-That 'E-76: SECURITY und SAM gelten als optional und erzeugen nie einen Fehler (Failed)' (($flush.Failed -notcontains 'SECURITY') -and ($flush.Failed -notcontains 'SAM'))
+
+# ---------------------------------------------------------------------------
+# Stufe "Destructive": Schutz, Fingerabdruck-Vergleich, Statusabgleich (die Stufe selbst ändert das System und läuft hier nicht)
+# ---------------------------------------------------------------------------
+Assert-That 'Destructive-Schutz: VM, Admin, Bestätigung, sauberer Zustand ergibt keinen Ablehnungsgrund' (@(Test-EdepDestructiveGuard -IsVirtualMachine $true -IsAdmin $true -Confirmed $true -EdepRuleCount 0 -OutboundActions @('Allow', 'Allow')).Count -eq 0)
+Assert-That 'Destructive-Schutz: ohne VM wird abgelehnt' ((@(Test-EdepDestructiveGuard -IsVirtualMachine $false -IsAdmin $true -Confirmed $true -EdepRuleCount 0)).Count -ge 1)
+Assert-That 'Destructive-Schutz: ohne Adminrechte wird abgelehnt' ((@(Test-EdepDestructiveGuard -IsVirtualMachine $true -IsAdmin $false -Confirmed $true -EdepRuleCount 0) -join ' ') -match 'Admin')
+Assert-That 'Destructive-Schutz: ohne -ConfirmDestructive wird abgelehnt' ((@(Test-EdepDestructiveGuard -IsVirtualMachine $true -IsAdmin $true -Confirmed $false -EdepRuleCount 0) -join ' ') -match 'ConfirmDestructive')
+Assert-That 'Destructive-Schutz: bereits angewendetes EDEP wird abgelehnt' ((@(Test-EdepDestructiveGuard -IsVirtualMachine $true -IsAdmin $true -Confirmed $true -EdepRuleCount 12) -join ' ') -match 'bereits angewendet')
+Assert-That 'Destructive-Schutz: ausgehend schon auf Block wird abgelehnt' ((@(Test-EdepDestructiveGuard -IsVirtualMachine $true -IsAdmin $true -Confirmed $true -EdepRuleCount 0 -OutboundActions @('Allow', 'Block')) -join ' ') -match 'Block')
+Assert-That 'Destructive-Schutz: mehrere Gründe werden alle genannt' (@(Test-EdepDestructiveGuard -IsVirtualMachine $false -IsAdmin $false -Confirmed $false -EdepRuleCount 3).Count -eq 4)
+$fpA = @('{', '  "erzeugt":  "2026-10-04T10:00:00",', '  "audit5157":  0', '}')
+$fpB = @('{', '  "erzeugt":  "2026-10-04T11:30:00",', '  "audit5157":  0', '}')
+$fpC = @('{', '  "erzeugt":  "2026-10-04T11:30:00",', '  "audit5157":  2', '}')
+Assert-That 'Fingerabdruck: nur der Zeitstempel unterscheidet sich ergibt identisch' (Test-EdepFingerprintIdentical $fpA $fpB)
+Assert-That 'Fingerabdruck: ein anderer Wert ergibt nicht identisch' (-not (Test-EdepFingerprintIdentical $fpA $fpC))
+Assert-That 'Fingerabdruck: leere Eingaben gelten nie als identisch' (-not (Test-EdepFingerprintIdentical @() @()))
+$res = @([pscustomobject]@{ Id = 'EDEP-NET-03'; Status = 'FAIL' }, [pscustomobject]@{ Id = 'EDEP-TEL-02'; Status = 'WARN' }, [pscustomobject]@{ Id = 'EDEP-ID-01'; Status = 'UNKNOWN' }, [pscustomobject]@{ Id = 'EDEP-NET-01'; Status = 'PASS' })
+Assert-That 'Statusabgleich: FAIL und UNKNOWN werden sortiert genannt, WARN und PASS nicht' (((Get-EdepFailedIds $res) -join ',') -eq 'EDEP-ID-01,EDEP-NET-03')
+Assert-That 'Statusabgleich: Status einer Prüfung und fehlende Prüfung' (((Get-EdepStatusOf $res 'EDEP-TEL-02') -eq 'WARN') -and ((Get-EdepStatusOf $res 'EDEP-XXX-99') -eq 'FEHLT'))
+$stp = New-EdepStep 'D-X1' @('T-A', 'T-B') 'Name' 'erwartet' 'beobachtet' 'PASS'
+Assert-That 'Schritt: enthält Kennung, Tests, Erwartung, Beobachtung und Status' (($stp.id -eq 'D-X1') -and ($stp.tests.Count -eq 2) -and ($stp.status -eq 'PASS') -and ($stp.observed -eq 'beobachtet'))
 
 Write-Host ''
 if ($script:failed) { Write-Host "$script:failed Test(s) fehlgeschlagen." -ForegroundColor Red; exit 1 }

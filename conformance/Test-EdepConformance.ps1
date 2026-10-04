@@ -13,12 +13,22 @@
       2. L1: dieselben 15 Prüfungen wie Test-EdepL1.ps1 (ohne Adminrechte sind einige "UNKNOWN").
       3. Audit: Punktzahl und Befunde (Invoke-EdepAudit, ohne HTML).
       4. Mit -Probe zusätzlich: Messung der Update-Erreichbarkeit (EDEP-TEL-04) und die Einheitentests (tools/Test-EdepUnits.ps1).
+    5. Mit -Destructive -ConfirmDestructive: ÄNDERT DAS SYSTEM, nur in einer Test-VM. Install (Audit), Install (Enforce) mit
+       Umgehungstests (curl.exe, umbenannte Kopie, BITS, Authenticated-Bypass-Regel, uneingeschränkte Regel, beschreibbarer Pfad),
+       dann Restore und Fingerabdruck-Vergleich (conformance/EdepConformance.Destructive.ps1). Die Stufe verweigert den Lauf ohne
+       Adminrechte, ohne erkannte VM, ohne Bestätigung oder wenn EDEP schon angewendet ist. Nach dem Lauf ordentlich neu starten.
 
     Exit-Code: 0 = alle automatisch geprüften L1-Anforderungen erfüllt und Integrität bestätigt;
     1 = mindestens eine Abweichung; 2 = Ergebnis unvollständig (UNKNOWN, Integrität nicht prüfbar oder nur Zeilenenden abweichend).
 
 .PARAMETER Probe
     Misst zusätzlich die Update-Erreichbarkeit (Netz nötig, ändert nichts) und führt die Einheitentests aus.
+
+.PARAMETER Destructive
+    Führt zusätzlich die Stufe "Destructive" aus (siehe oben). Braucht -ConfirmDestructive. Die Ausgabe dieser Stufe ist nur deutsch.
+
+.PARAMETER ConfirmDestructive
+    Ausdrückliche Bestätigung, dass das System verändert werden darf (Test-VM mit Prüfpunkt).
 
 .PARAMETER SkipIntegrity
     Überspringt die Prüfung von SHA256SUMS und Signatur (zum Beispiel in einem Arbeitsstand mit eigenen Änderungen).
@@ -41,6 +51,8 @@
 param(
     [switch]$Probe,
     [switch]$SkipIntegrity,
+    [switch]$Destructive,
+    [switch]$ConfirmDestructive,
     [string]$OutputPath = (Get-Location).ProviderPath,
     [ValidateSet('de', 'en')][string]$Language,
     [switch]$PassThru
@@ -53,6 +65,7 @@ $l1 = Join-Path $root 'baseline\L1'
 . (Join-Path $l1 'EdepL1.Common.ps1')
 . (Join-Path $l1 'EdepL1.Checks.ps1')
 . (Join-Path $PSScriptRoot 'EdepConformance.Common.ps1')
+. (Join-Path $PSScriptRoot 'EdepConformance.Destructive.ps1')
 if ($Language) { Set-EdepLanguage $Language }
 $de = ($EdepLanguage -eq 'de')
 function T([string]$German, [string]$English) { if ($de) { $German } else { $English } }
@@ -130,12 +143,38 @@ if ($Probe) {
     else { $unit = [ordered]@{ ran = $false; detail = 'tools\Test-EdepUnits.ps1 nicht gefunden' } }
 }
 
+# 4b. Destructive (nur mit -Destructive; ändert das System)
+$destructiveResult = $null
+if ($Destructive) {
+    $profilesNow = @(Get-NetFirewallProfile -PolicyStore ActiveStore | ForEach-Object { [string]$_.DefaultOutboundAction })
+    $edepRules = @(Get-NetFirewallRule -Group $EdepRuleGroup -ErrorAction SilentlyContinue).Count
+    $refused = @(Test-EdepDestructiveGuard -IsVirtualMachine ([bool]$environment.isVirtualMachine) -IsAdmin $isAdmin -Confirmed ([bool]$ConfirmDestructive) -EdepRuleCount $edepRules -OutboundActions $profilesNow)
+    if ($refused.Count) {
+        Write-Host (T 'Destructive abgelehnt:' 'Destructive refused:') -ForegroundColor Red
+        $refused | ForEach-Object { Write-Host "  - $_" -ForegroundColor Red }
+        $destructiveResult = [ordered]@{ ran = $false; refused = $refused }
+    }
+    else {
+        Write-Host (T 'Destructive: das System wird verändert und am Ende zurückgenommen ...' 'Destructive: the system will be changed and rolled back ...') -ForegroundColor Yellow
+        $destructiveResult = Invoke-EdepDestructiveRun -L1 $l1 -FingerprintScript (Join-Path $PSScriptRoot 'Get-EdepFingerprint.ps1') -WorkDir $OutputPath
+        foreach ($st in $destructiveResult.steps) {
+            $color = switch ($st.status) { 'PASS' { 'Green' } 'FAIL' { 'Red' } default { 'Yellow' } }
+            Write-Host ('{0,-14} {1,-6} {2}  [{3}]' -f $st.status, $st.id, $st.name, $st.observed) -ForegroundColor $color
+        }
+        foreach ($e in $destructiveResult.errors) { Write-Host "FEHLER $e" -ForegroundColor Red }
+        Write-Host (T 'Bitte jetzt ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6).' 'Please restart normally now and run Test-EdepL1 (SPEC 3.6).') -ForegroundColor Yellow
+    }
+}
+
 # 5. Nicht ausgeführt
-$notRun = @(Get-EdepManualTest -ReadmePath (Join-Path $PSScriptRoot 'README.md') | ForEach-Object {
+$executedTests = @(); if ($destructiveResult -and $destructiveResult.ran) { $executedTests = @($destructiveResult.steps | Where-Object { $_.status -in 'PASS', 'FAIL' } | ForEach-Object { $_.tests } | Select-Object -Unique) }
+$notRun = @(Get-EdepManualTest -ReadmePath (Join-Path $PSScriptRoot 'README.md') | Where-Object { $executedTests -notcontains $_.Test } | ForEach-Object {
     [ordered]@{ test = $_.Test; requirement = $_.Requirement; art = $_.Art
                 reason = $(if ($_.Art -eq 'aktiv') { 'Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)' } else { 'Prüfung von Code oder Dokumentation (Review)' }) } })
 
 $exitCode = Get-EdepConformanceExitCode -L1Results $l1Raw -IntegrityStatus $integrity.checksums.status -SignatureStatus $integrity.signature.status
+if ($destructiveResult -and $destructiveResult.ran -and $destructiveResult.failed -gt 0) { $exitCode = 1 }
+if ($destructiveResult -and -not $destructiveResult.ran -and $exitCode -eq 0) { $exitCode = 2 }
 $verdictText = switch ($exitCode) {
     0 { T 'Alle automatisch geprüften L1-Anforderungen erfüllt, Integrität bestätigt. Kein Konformitätsnachweis: die Tests unter "notRun" liefen nicht.' 'All automatically checked L1 requirements met, integrity confirmed. Not a conformance proof: the tests under "notRun" did not run.' }
     1 { T 'Abweichungen gefunden (FAIL).' 'Deviations found (FAIL).' }
@@ -147,7 +186,7 @@ $report = [ordered]@{
     generated = (Get-Date).ToString('o'); mode = [ordered]@{ probe = [bool]$Probe; skipIntegrity = [bool]$SkipIntegrity }
     environment = $environment; integrity = $integrity
     l1 = [ordered]@{ total = $l1Raw.Count; passed = ($l1Raw.Count - $failed); conform = ($failed -eq 0); results = $l1Results }
-    unitTests = $unit; audit = $audit; notRun = $notRun
+    unitTests = $unit; audit = $audit; destructive = $destructiveResult; notRun = $notRun
     verdict = [ordered]@{ exitCode = $exitCode; text = $verdictText }
     note = 'Dieses Protokoll hält fest, was gemessen wurde. Es ist kein Konformitätsnachweis. Siehe SPEC.md Abschnitt 5 und docs/EVIDENCE.md.'
 }

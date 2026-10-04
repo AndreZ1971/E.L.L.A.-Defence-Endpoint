@@ -14,7 +14,8 @@ Windows 11 Enterprise als Evaluierungsversion oder Windows 11 Pro.
 Wer nur einen Befehl will: [Test-EdepConformance.ps1](../conformance/Test-EdepConformance.ps1) prüft die Integrität des Standes
 ([SIGNING.md](SIGNING.md)), die 15 L1-Anforderungen und das Audit und schreibt ein Protokoll als JSON. Es ändert nichts am System
 und ist **kein Konformitätsnachweis** (die Tests „aktiv“ und „Review“ laufen nicht, sie stehen im Protokoll unter `notRun`).
-Einzelheiten und Exit-Codes: [conformance/README.md](../conformance/README.md).
+Einzelheiten und Exit-Codes: [conformance/README.md](../conformance/README.md). Mit `-Destructive -ConfirmDestructive` führt das Skript in einer **Test-VM** zusätzlich
+Install, Enforce, Umgehungstests und Restore aus (ändert das System, verweigert den Lauf ohne VM).
 
 ```powershell
 # ZIP des Tags von GitHub laden, entpacken, als Administrator:

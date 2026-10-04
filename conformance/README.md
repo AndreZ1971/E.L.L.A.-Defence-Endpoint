@@ -26,9 +26,28 @@ Als Administrator ausführen; ohne Adminrechte sind einige Prüfungen „UNKNOWN
 | `integrity` | `checksums` (SHA256SUMS gegen die Dateien) und `signature` (SSH-Signatur, siehe [SIGNING.md](../docs/SIGNING.md)); Status PASS, WARN (nur Zeilenenden), FAIL oder SKIPPED |
 | `l1` | die 15 Prüfungen mit Status und Detail (Anforderung, Testkennung, Art `auto`) |
 | `unitTests` | nur mit `-Probe`: bestanden, fehlgeschlagen |
+| `destructive` | nur mit `-Destructive`: Schritte mit Erwartung und Beobachtung, `fingerprintIdentical`, oder `refused` mit den Gründen |
 | `audit` | Punktzahl, Stufe und Zähler des Audits |
 | `notRun` | die Tests dieser Stufe, die **nicht** laufen (Art `aktiv` und `Review`, Umgehungstests T-BYP) |
 | `verdict` | Exit-Code und Text |
+
+**Stufe „Destructive“ (`-Destructive -ConfirmDestructive`): ändert das System, nur in einer Test-VM.**
+
+```powershell
+# in einer Hyper-V-VM mit Prüfpunkt, als Administrator, ohne angewendetes EDEP:
+.\conformance\Test-EdepConformance.ps1 -Destructive -ConfirmDestructive -SkipIntegrity
+```
+
+Die Stufe verweigert den Lauf (Exit-Code nicht 0, Gründe im Protokoll unter `destructive.refused`), wenn Adminrechte fehlen,
+keine virtuelle Maschine erkannt wird, `-ConfirmDestructive` fehlt, EDEP schon angewendet ist oder ausgehend schon auf `Block`
+steht. Sie führt aus: Fingerabdruck sichern, Install im Audit-Modus (Prüfung: nur EDEP-NET-03 nicht erfüllt, `curl.exe` blockiert,
+umbenannte Kopie kommt durch), Install im Enforce-Modus mit `-AllowWindowsUpdate` (alle 15 Prüfungen erfüllt, `curl.exe` und die
+Kopie blockiert, BITS zu `example.org` gelingt nicht), Umgehungen (beschreibbarer Pfad bei `-AllowProgram`, Authenticated-Bypass-Regel,
+uneingeschränkte Erlaubnisregel, jeweils mit Prüfung und Entfernen), dann `Restore-EdepL1` und Fingerabdruck-Vergleich. Ein
+Abbruch löst `Restore-EdepL1` aus, angelegte Testregeln werden entfernt. Das Protokoll enthält den Abschnitt `destructive` mit
+einem Eintrag je Schritt (Erwartung, Beobachtung, Status `PASS`, `FAIL` oder `NOT_ASSESSABLE`); die ausgeführten Tests verschwinden
+aus `notRun`. **Gemessen:** Enterprise-VM, 13 von 13 Schritten ([Protokoll](runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Destructive/run.md)); Pro noch nicht. **Danach ordentlich neu starten und `Test-EdepL1` ausführen** ([E-76](../docs/EVIDENCE.md)). Die Ausgabe dieser Stufe
+ist nur deutsch.
 
 **Exit-Code:** 0 = alle automatisch geprüften L1-Anforderungen erfüllt und Integrität bestätigt; 1 = mindestens eine
 Abweichung; 2 = Ergebnis unvollständig (UNKNOWN, Integrität nicht prüfbar oder nur Zeilenenden abweichend).

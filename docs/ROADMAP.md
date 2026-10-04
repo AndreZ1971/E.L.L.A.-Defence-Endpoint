@@ -27,7 +27,9 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [ ] E-86 weiter: eine Programmregel oder das Abschalten des Dienstes als Ersatz prüfen
 - [ ] Zuordnung offen: Kompendium-Edition bei Veröffentlichung erneut prüfen
 - [x] `Test-EdepConformance.ps1` Stufen „nur lesen“ und „Probe“ (lokal und als ZIP-Stand erprobt, Einheitentests, CI-Rauchtest)
-- [ ] `Test-EdepConformance.ps1` Stufe „Destructive“ (nur in einer Test-VM: Install, Enforce, Umgehungstests, Restore, Fingerabdruck-Vergleich) und ein Lauf in der VM
+- [x] `Test-EdepConformance.ps1` Stufe „Destructive“ geschrieben (Schutz gegen Fehlbedienung, Einheitentests für die Auswertung)
+- [x] Stufe „Destructive“ in der Enterprise-VM gelaufen: 13 von 13 Schritten, Rücknahme identisch ([Protokoll](../conformance/runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Destructive/run.md))
+- [ ] Stufe „Destructive“ auch in der Pro-VM laufen lassen
 - [x] Signierter Release `0.1.0-draft.3` (SHA256SUMS, SSH-Signatur, signierter Tag; Anleitung in [SIGNING.md](SIGNING.md)); Authenticode-Signatur der Skripte (SYS.2.2.3.A22) bleibt offen, es fehlt ein anerkanntes Zertifikat
 - [ ] Kontakt zum BSI erst nach vollständiger Zuordnung und signiertem Release; eine Unterstützung durch das BSI ist nicht zugesagt
 - [x] Neustart-Vorfall (E-76) protokolliert nachgemessen ([Lauf 4](../conformance/runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Lauf4/run.md)): Telemetriewert nach hartem Neustart reproduziert und mit Flush in `Restore-EdepL1` behoben (6 von 6); die früheren umfassenderen Vorfälle bleiben ungeklärt
