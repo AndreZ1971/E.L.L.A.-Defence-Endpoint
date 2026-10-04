@@ -6,7 +6,7 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 
 ## [Unveröffentlicht]
 
-- **Bitcoin-Zeitstempel (OpenTimestamps)** für Releases: `tools/ots.py` (`stamp`, `upgrade`, `verify`, braucht nur `pip install opentimestamps`), `SHA256SUMS.ots` für `0.1.0-draft.4` (bei vier Kalendern eingereicht, Bitcoin-Bestätigung folgt), Beschreibung in [docs/SIGNING.md](docs/SIGNING.md). Das Werkzeug wurde an einem echten Zeitstempel geprüft (Bestätigung: Bitcoin-Block 952238, 2026-06-03 16:29 UTC).
+- **Bitcoin-Zeitstempel (OpenTimestamps)** für Releases: `tools/ots.py` (`stamp`, `upgrade`, `verify`, braucht nur `pip install opentimestamps`), `SHA256SUMS.ots` für `0.1.0-draft.4` (bei vier Kalendern eingereicht; **bestätigt in Bitcoin-Block 969890, 2026-10-04 19:35:29 UTC**), Beschreibung in [docs/SIGNING.md](docs/SIGNING.md). Das Werkzeug wurde an einem echten Zeitstempel geprüft (Test an einem Zeitstempel eines anderen Projekts, Bitcoin-Block 952238, 2026-06-03 16:29 UTC).
 
 ## [0.1.0-draft.4] – 2026-10-04
 

@@ -91,7 +91,7 @@ oder `SHA256SUMS` und `SHA256SUMS.ots` auf https://opentimestamps.org hochladen.
 
 Die Prüfung erfolgte jeweils am heruntergeladenen ZIP des Tags, nicht am lokalen Arbeitsordner.
 
-Zeitstempel: `0.1.0-draft.4` am 2026-10-04 bei vier Kalendern eingereicht (ausstehend); der Stand der Bestätigung steht in der Datei `SHA256SUMS.ots` und wird mit `python tools/ots.py verify SHA256SUMS SHA256SUMS.ots` geprüft.
+Zeitstempel: `0.1.0-draft.4` am 2026-10-04 bei vier Kalendern eingereicht und **in Bitcoin-Block 969890 bestätigt** (Blockzeit 2026-10-04 19:35:29 UTC; Blockhash `00000000000000000001f9e68e09444640488e0b12c57ecc06fa7d79df87bedf`, mit zwei unabhängigen Block-Schnittstellen abgeglichen). Zwei Kalender (catallaxy, eternitywall) waren zum Zeitpunkt der Prüfung noch ausstehend. Prüfen: `python tools/ots.py verify SHA256SUMS SHA256SUMS.ots`. Der Beweis lautet: Dieser Stand von `SHA256SUMS` existierte spätestens zur Blockzeit.
 
 ## Für den Herausgeber: so wird ein Release erzeugt
 
