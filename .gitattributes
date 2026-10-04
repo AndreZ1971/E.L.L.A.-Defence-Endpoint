@@ -4,3 +4,4 @@
 SHA256SUMS -text
 SHA256SUMS.sig -text
 allowed_signers -text
+*.ots -text

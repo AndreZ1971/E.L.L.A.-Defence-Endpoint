@@ -63,6 +63,36 @@ Keine Ausgabe bedeutet: alle Hashes stimmen.
 git -c gpg.ssh.allowedSignersFile=allowed_signers tag -v <TAG>
 ```
 
+## Bitcoin-Zeitstempel (OpenTimestamps)
+
+Zusätzlich zur Signatur wird `SHA256SUMS` mit [OpenTimestamps](https://opentimestamps.org) in der Bitcoin-Blockchain verankert
+(`SHA256SUMS.ots`). Das belegt unabhängig von GitHub und vom Herausgeber, dass genau dieser Stand **spätestens zum Zeitpunkt des
+Blocks** existierte. Es sagt nichts über die Richtigkeit des Inhalts. Gesendet wird nur ein Hash, nie Dateiinhalt.
+
+Der Zeitstempel kommt **nach** dem signierten Tag in einem eigenen Commit (er kann nicht Teil des Standes sein, den er bestätigt).
+Er ist zunächst **ausstehend**; nach einigen Stunden wird er mit `upgrade` um die Bitcoin-Bestätigung ergänzt.
+
+**Prüfen** (eine der drei Möglichkeiten):
+
+```
+ots verify SHA256SUMS.ots                                  # Standardclient (pip install opentimestamps-client), braucht einen Bitcoin-Zugang
+python tools/ots.py verify SHA256SUMS SHA256SUMS.ots        # nur pip install opentimestamps; prüft über die öffentliche Blockstream-API
+```
+
+oder `SHA256SUMS` und `SHA256SUMS.ots` auf https://opentimestamps.org hochladen. Erwartet: ein Bitcoin-Block mit Höhe und Zeit.
+`tools/ots.py` hat zusätzlich `stamp DATEI` (zeitstempeln) und `upgrade DATEI.ots` (Bestätigung nachholen).
+
+## Geprüfte Releases
+
+| Tag | Commit | Dateien in `SHA256SUMS` | Geprüft am | Ergebnis |
+| --- | --- | --- | --- | --- |
+| `0.1.0-draft.3` | `6d5556c` | 120 | 2026-10-03 | Signatur gültig, 120 von 120 Hashes, Tag bei GitHub „Verified“, Schlüssel in der GitHub-Liste |
+| `0.1.0-draft.4` | `d1975c8` | 141 | 2026-10-04 | Signatur gültig, 141 von 141 Hashes, Tag bei GitHub „Verified“, Schlüssel in der GitHub-Liste; `Test-EdepConformance.ps1` auf dem ZIP-Stand meldet `Prüfsummen PASS` und `Signatur PASS` |
+
+Die Prüfung erfolgte jeweils am heruntergeladenen ZIP des Tags, nicht am lokalen Arbeitsordner.
+
+Zeitstempel: `0.1.0-draft.4` am 2026-10-04 bei vier Kalendern eingereicht (ausstehend); der Stand der Bestätigung steht in der Datei `SHA256SUMS.ots` und wird mit `python tools/ots.py verify SHA256SUMS SHA256SUMS.ots` geprüft.
+
 ## Für den Herausgeber: so wird ein Release erzeugt
 
 1. Alles committen, was ins Release gehört.
@@ -70,6 +100,7 @@ git -c gpg.ssh.allowedSignersFile=allowed_signers tag -v <TAG>
 3. `ssh-keygen -Y sign -f <Schlüsseldatei> -n edep-release SHA256SUMS` erzeugt `SHA256SUMS.sig`.
 4. `SHA256SUMS` und `SHA256SUMS.sig` committen (sie ändern keine andere Datei).
 5. Tag signieren: `git -c gpg.format=ssh -c user.signingkey=<öffentlicher Schlüssel> tag -s <TAG> -m "<Text>"`, danach Commit und Tag pushen.
+6. Nach dem Push: `python tools/ots.py stamp SHA256SUMS`, die `.ots`-Datei in einem eigenen Commit festhalten; einige Stunden später `python tools/ots.py upgrade SHA256SUMS.ots` und die vervollständigte Datei erneut committen.
 
 Der private Schlüssel gehört auf einen Rechner unter Kontrolle des Herausgebers, mit Passphrase, und in eine Sicherungskopie. Geht er
 verloren oder wird er offengelegt, wird der Schlüssel bei GitHub entfernt, ein neuer angelegt und dieses Dokument mit Datum nachgeführt;
