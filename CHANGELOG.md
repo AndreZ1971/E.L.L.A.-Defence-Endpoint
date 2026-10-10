@@ -6,6 +6,12 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 
 ## [Unveröffentlicht]
 
+## [0.1.0-draft.5] – 2026-10-10
+
+**Entwurf, kein Konformitätsnachweis.** Ergänzt `0.1.0-draft.4`: Messungen auf Windows 11 Pro 26H2, eine Korrektur der Prüfstufe „Destructive“ und die BSI-Zuordnung zu Grundschutz++. Dieser Stand ist signiert (`SHA256SUMS`, `SHA256SUMS.sig`, signierter Tag, [SIGNING.md](docs/SIGNING.md)). Bekannte Einschränkungen: [SPEC.md, Abschnitt 3.6](SPEC.md).
+
+### Geändert und hinzugefügt
+
 - **`docs/BSI-MAPPING.md`: Abschnitt Grundschutz++** (Stand-der-Technik-Bibliothek, Katalog Version 2026-09-24, Zuordnung IT-GS 2023 → GS++ als Entwurf des BSI). Neu: KONF.7.15 „Lokale Firewall“, TEST.5.4 „Persistenz“, die BSI-Aussage zur Ablösung des Kompendiums mit Terminen, Abgrenzung Windows 10 und 11 (E-86).
 - **Stufe „Destructive“ in der Pro-VM gemessen** ([Protokoll](conformance/runs/2026-10-10-Pro26H2-26300.9457-HyperV-Destructive/run.md), E-91): 12 von 13 Schritten, `D-E1` (Rücknahme identisch) schlug fehl, weil `Restore-EdepL1` ohne `-BackupPath` die älteste von 19 Sicherungen früherer Läufe nahm.
 - **`docs/BSI-MAPPING.md`, Abschnitt C:** Zuordnung der 15 L1-Prüfungen zu den Anforderungen von Grundschutz++ (Katalog von 1000 Anforderungen, Gesichtetes und im Wortlaut Gelesenes ausgewiesen), stärkste Entsprechung KONF.2.5, Definition von „SOLLTE“ nach den Namensräumen des BSI, nicht behandelte Anforderungen, zwei Falsche Freunde (ASST.6.3, ASST.6.4). Einschätzung des Projekts, nicht bestätigt.
