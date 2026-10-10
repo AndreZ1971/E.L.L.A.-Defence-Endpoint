@@ -16,7 +16,7 @@ EDEP legt fest, was ein Windows-Rechner technisch erzwingen muss, damit gilt:
 EDEP ist **kein Antivirus**. Es ist als Ergänzung zu Microsoft Defender oder einem anderen AV-Produkt
 gedacht.
 
-> **Status:** Entwurf 0.1.0. Die Spezifikation ist noch nicht versiegelt. Letzter signierter Entwurf: `0.1.0-draft.5`
+> **Status:** Entwurf 0.1.0. Die Spezifikation ist noch nicht versiegelt. Letzter signierter Entwurf: `0.1.0-draft.6`
 > ([SIGNING.md](docs/SIGNING.md)). Gemessen ist L1 in Hyper-V-VMs mit Windows 11 Enterprise, Pro und Home; was dabei offen
 > blieb, steht in [SPEC.md, Abschnitt 3.6](SPEC.md). Eine Unterstützung durch das BSI besteht nicht.
 

@@ -95,7 +95,7 @@ oder `SHA256SUMS` und die `.ots`-Datei auf https://opentimestamps.org hochladen.
 
 Die Prüfung erfolgte jeweils am heruntergeladenen ZIP des Tags, nicht am lokalen Arbeitsordner.
 
-Zeitstempel `0.1.0-draft.5`: am 2026-10-10 bei vier Kalendern eingereicht, **ausstehend** (`timestamps/SHA256SUMS-0.1.0-draft.5.ots`, SHA-256 der Prüfsummen `7e1dcd6f1cc94b4464639d696473189ab6dec575f753bc4b3795fb2291f393d2`); die Bestätigung wird nach einigen Stunden nachgetragen.
+Zeitstempel `0.1.0-draft.5`: am 2026-10-10 bei vier Kalendern eingereicht und **in Bitcoin-Block 970810 bestätigt** (Blockzeit 2026-10-10 18:52:54 UTC; Blockhash `000000000000000000017abb21f32af7cd1bc8bf8ae33cf27669c4c0916d490b`), eine zweite Bestätigung steht im Block 970813 (19:31:06 UTC; `0000000000000000000057cd30519d10ddb220986ec7466f67fe350288bc41ec`); Blockhashes und Zeiten mit Blockstream und mempool.space abgeglichen. Zwei Kalender (catallaxy, eternitywall) waren noch ausstehend. SHA-256 der Prüfsummen `7e1dcd6f1cc94b4464639d696473189ab6dec575f753bc4b3795fb2291f393d2`; Datei `timestamps/SHA256SUMS-0.1.0-draft.5.ots`.
 
 Zeitstempel: `0.1.0-draft.4` am 2026-10-04 bei vier Kalendern eingereicht und **in Bitcoin-Block 969890 bestätigt** (Blockzeit 2026-10-04 19:35:29 UTC; Blockhash `00000000000000000001f9e68e09444640488e0b12c57ecc06fa7d79df87bedf`, mit zwei unabhängigen Block-Schnittstellen abgeglichen). Zwei Kalender (catallaxy, eternitywall) waren zum Zeitpunkt der Prüfung noch ausstehend. Prüfen: `python tools/ots.py verify SHA256SUMS SHA256SUMS.ots`. Der Beweis lautet: Dieser Stand von `SHA256SUMS` existierte spätestens zur Blockzeit.
 
