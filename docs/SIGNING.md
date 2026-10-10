@@ -27,7 +27,7 @@ Stand, dem du bereits vertraust.
 
 ## Prüfen
 
-Lade den **ZIP-Stand des Tags** von GitHub (`https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/archive/refs/tags/<TAG>.zip`)
+Lade den **ZIP-Stand des Tags** von GitHub (`https://github.com/AndreZ1971/EDEP/archive/refs/tags/<TAG>.zip`)
 und entpacke ihn. Ein `git clone` unter Windows wandelt Zeilenenden um (`core.autocrlf`) und liefert dann andere Hashes. Die Prüfsummen
 gelten für den ZIP-Stand und für `git -c core.autocrlf=false -c core.eol=lf archive <TAG>`.
 

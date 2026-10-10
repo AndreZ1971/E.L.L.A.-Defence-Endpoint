@@ -21,7 +21,7 @@
           <a href="#verify">Evidence</a>
           <a href="#levels">Levels</a>
           <a href="#limits">Limits</a>
-          <a href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint"
+          <a href="https://github.com/AndreZ1971/EDEP"
             >GitHub</a
           >
           <a class="lang" href="../" hreflang="de" lang="de">Deutsch</a>
@@ -45,7 +45,7 @@
           <a class="btn primary" href="#audit">Run the free audit</a>
           <a
             class="btn"
-            href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint"
+            href="https://github.com/AndreZ1971/EDEP"
             >Source on GitHub</a
           >
         </div>
@@ -124,20 +124,20 @@
                 <pre
                   id="audit-cmd"
                 ><span class="c"># In PowerShell (run as administrator for the complete result)</span>
-git clone https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint
-cd E.L.L.A.-Defence-Endpoint\baseline\L1
+git clone https://github.com/AndreZ1971/EDEP
+cd EDEP\baseline\L1
 .\Invoke-EdepAudit.ps1 -Open</pre>
               </div>
               <p class="note">
                 Without Git:
                 <a
-                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/archive/refs/heads/main.zip"
+                  href="https://github.com/AndreZ1971/EDEP/archive/refs/heads/main.zip"
                   >download the ZIP</a
                 >, extract it and run
                 <code>Set-ExecutionPolicy -Scope Process Bypass</code> first.
                 The scripts are not signed yet; that is on the
                 <a
-                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/ROADMAP.md"
+                  href="https://github.com/AndreZ1971/EDEP/blob/main/docs/ROADMAP.md"
                   >roadmap</a
                 >. Anyone can read the code beforehand, it is short.
               </p>
@@ -204,13 +204,13 @@ cd E.L.L.A.-Defence-Endpoint\baseline\L1
           <div class="stats">
             <a
               class="stat"
-              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/SPEC.md#4-anforderungen"
+              href="https://github.com/AndreZ1971/EDEP/blob/main/SPEC.md#4-anforderungen"
               ><b data-check="requirements">44</b
               ><span>requirements with MUST/SHOULD and a unique ID</span></a
             >
             <a
               class="stat"
-              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/SPEC.md#anhang-b--quellen"
+              href="https://github.com/AndreZ1971/EDEP/blob/main/SPEC.md#anhang-b--quellen"
               ><b data-check="sources">28</b
               ><span
                 >linked sources, mostly Microsoft Learn and MITRE
@@ -219,25 +219,25 @@ cd E.L.L.A.-Defence-Endpoint\baseline\L1
             >
             <a
               class="stat"
-              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/conformance/README.md"
+              href="https://github.com/AndreZ1971/EDEP/blob/main/conformance/README.md"
               ><b data-check="tests">61</b
               ><span>conformance tests, including for bypasses</span></a
             >
             <a
               class="stat"
-              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/SPEC.md#34-bekannte-umgehungen-normativ"
+              href="https://github.com/AndreZ1971/EDEP/blob/main/SPEC.md#34-bekannte-umgehungen-normativ"
               ><b data-check="bypasses">8</b
               ><span>known bypasses, openly documented</span></a
             >
             <a
               class="stat"
-              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/EVIDENCE.md#errata"
+              href="https://github.com/AndreZ1971/EDEP/blob/main/docs/EVIDENCE.md#errata"
               ><b data-check="errata">16</b
               ><span>own mistakes found, fixed and recorded</span></a
             >
             <a
               class="stat open"
-              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/EVIDENCE.md"
+              href="https://github.com/AndreZ1971/EDEP/blob/main/docs/EVIDENCE.md"
               ><b data-check="evidence-open">8</b
               ><span
                 >of <span data-check="evidence-total">80</span> pieces of
@@ -249,7 +249,7 @@ cd E.L.L.A.-Defence-Endpoint\baseline\L1
             Open means: not yet measured, not reproduced, or (Rust agent) not yet
             built. The
             <a
-              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/EVIDENCE.md"
+              href="https://github.com/AndreZ1971/EDEP/blob/main/docs/EVIDENCE.md"
               >evidence register</a
             >
             gives the verification path for each open item. The detailed
@@ -368,7 +368,7 @@ cd E.L.L.A.-Defence-Endpoint\baseline\L1
           <p class="note">
             Reasoning:
             <a
-              href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/DESIGN-DECISIONS.md"
+              href="https://github.com/AndreZ1971/EDEP/blob/main/docs/DESIGN-DECISIONS.md"
               >design decisions, DD-12</a
             >
             (German).
@@ -387,12 +387,12 @@ cd E.L.L.A.-Defence-Endpoint\baseline\L1
                 VM) and found defects that are documented openly. Wanted: a repeat
                 by third parties, also on real hardware. The
                 <a
-                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/VERIFY-YOURSELF.md"
+                  href="https://github.com/AndreZ1971/EDEP/blob/main/docs/VERIFY-YOURSELF.md"
                   >guide</a
                 >
                 lists every command and every expected result;
                 <a
-                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/WIEDERHOLUNG.md"
+                  href="https://github.com/AndreZ1971/EDEP/blob/main/docs/WIEDERHOLUNG.md"
                   >how to report a repeat</a
                 >
                 (German).
@@ -403,7 +403,7 @@ cd E.L.L.A.-Defence-Endpoint\baseline\L1
               <p>
                 Please report it privately:
                 <a
-                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/security/advisories/new"
+                  href="https://github.com/AndreZ1971/EDEP/security/advisories/new"
                   >report a vulnerability</a
                 >. Confirmed findings are recorded in the errata with credit.
               </p>
@@ -414,7 +414,7 @@ cd E.L.L.A.-Defence-Endpoint\baseline\L1
                 Every source is linked. If an attribution is wrong, that is a
                 bug in EDEP:
                 <a
-                  href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/issues"
+                  href="https://github.com/AndreZ1971/EDEP/issues"
                   >open an issue</a
                 >.
               </p>
@@ -429,7 +429,7 @@ cd E.L.L.A.-Defence-Endpoint\baseline\L1
         <p>
           EDEP – E.D. Endpoint Profile · © 2026 Andre Zabel ·
           <a
-            href="https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/LICENSE"
+            href="https://github.com/AndreZ1971/EDEP/blob/main/LICENSE"
             >MIT license</a
           >
         </p>

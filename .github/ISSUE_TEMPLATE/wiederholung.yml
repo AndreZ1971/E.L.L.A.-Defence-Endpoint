@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         Danke. Gesucht ist auch, was **abweicht**. Bitte schicke keine Kennwörter, Schlüssel oder Kontodaten und nichts aus einer echten Umgebung.
-        Anleitung: [docs/WIEDERHOLUNG.md](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/WIEDERHOLUNG.md).
+        Anleitung: [docs/WIEDERHOLUNG.md](https://github.com/AndreZ1971/EDEP/blob/main/docs/WIEDERHOLUNG.md).
   - type: input
     id: release
     attributes:

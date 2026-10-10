@@ -29,8 +29,8 @@ Install, Enforce, Umgehungstests und Restore aus (ändert das System, verweigert
 Auf jedem Windows-Rechner, ohne Adminrechte. Es wird nichts verändert.
 
 ```powershell
-git clone https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint
-cd E.L.L.A.-Defence-Endpoint\baseline\L1
+git clone https://github.com/AndreZ1971/EDEP
+cd EDEP\baseline\L1
 .\Invoke-EdepAudit.ps1 -Open
 ```
 

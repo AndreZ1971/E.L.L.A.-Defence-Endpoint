@@ -1,8 +1,8 @@
 # E.D. Endpoint Profile (EDEP)
 
-[![CI](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Specification](https://img.shields.io/badge/SPEC-0.1.0_draft-orange.svg)](SPEC.md)
+[![CI](https://github.com/AndreZ1971/EDEP/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreZ1971/EDEP/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Specification](https://img.shields.io/badge/SPEC-0.1.0_draft-orange.svg)](SPEC.md)
 
-**[Deutsch](README.md) · English** · [Project page](https://andrez1971.github.io/E.L.L.A.-Defence-Endpoint/en/)
+**[Deutsch](README.md) · English** · [Project page](https://andrez1971.github.io/EDEP/en/)
 
 **Open security profile for Windows endpoints: outbound zero trust, telemetry sovereignty and deterministic isolation.**
 
@@ -20,6 +20,11 @@ EDEP is **not an antivirus**. It is designed to complement Microsoft Defender or
 > listed in [SPEC.md, section 3.6](SPEC.md) (German). The BSI does not support this project. The normative specification
 > and the detailed documentation are currently written in German; the audit tool and this
 > page are available in English.
+
+**Name:** EDEP stands for *E.D. Endpoint Profile*, where "E.D." means *E.L.L.A. Defence*. The idea grew out of the author's
+E.L.L.A. projects. EDEP is technically independent, though: it needs no other E.L.L.A. component and is not a prerequisite
+for any of them (see the last paragraph of [SPEC.md](SPEC.md), German). The repository was named
+"E.L.L.A.-Defence-Endpoint" until 2026-10-11; the old address redirects.
 
 ## Free audit: how open is your Windows?
 

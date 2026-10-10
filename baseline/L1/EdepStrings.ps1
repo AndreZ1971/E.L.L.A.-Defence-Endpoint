@@ -129,7 +129,7 @@ $script:EdepText = @{
         'html.catline'    = '{0} % · {1} offen'
         'html.why'        = 'Warum:'
         'html.fix'        = 'Empfehlung:'
-        'html.footer'     = 'Dieses Audit hat nichts am System verändert. Punktzahl: gewichtete Summe (Erfüllt = volles, Teilweise = halbes Gewicht; nicht prüfbare und informative Punkte zählen nicht). EDEP ist ein offener Standard: https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint'
+        'html.footer'     = 'Dieses Audit hat nichts am System verändert. Punktzahl: gewichtete Summe (Erfüllt = volles, Teilweise = halbes Gewicht; nicht prüfbare und informative Punkte zählen nicht). EDEP ist ein offener Standard: https://github.com/AndreZ1971/EDEP'
         'date.format'     = 'dd.MM.yyyy HH:mm'
         # --- Kategorien --------------------------------------------------------
         'cat.out'         = 'Ausgehender Verkehr'
@@ -247,7 +247,7 @@ $script:EdepText = @{
         'html.catline'    = '{0} % · {1} open'
         'html.why'        = 'Why:'
         'html.fix'        = 'Recommendation:'
-        'html.footer'     = 'This audit did not change the system. Score: weighted sum (passed = full, partial = half weight; not checkable and informational items do not count). EDEP is an open standard: https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint'
+        'html.footer'     = 'This audit did not change the system. Score: weighted sum (passed = full, partial = half weight; not checkable and informational items do not count). EDEP is an open standard: https://github.com/AndreZ1971/EDEP'
         'date.format'     = 'yyyy-MM-dd HH:mm'
         'cat.out'         = 'Outbound traffic'
         'cat.in'          = 'Inbound traffic'

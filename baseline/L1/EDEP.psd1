@@ -19,8 +19,8 @@
     PrivateData          = @{
         PSData = @{
             Tags         = @('Security', 'Firewall', 'Hardening', 'Audit', 'Windows', 'ZeroTrust', 'Telemetry', 'WFP', 'WDAC')
-            LicenseUri   = 'https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/LICENSE'
-            ProjectUri   = 'https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint'
+            LicenseUri   = 'https://github.com/AndreZ1971/EDEP/blob/main/LICENSE'
+            ProjectUri   = 'https://github.com/AndreZ1971/EDEP'
             ReleaseNotes = 'Erste Version: Invoke-EdepAudit mit Punktzahl und HTML-Bericht; L1-Skripte.'
         }
     }

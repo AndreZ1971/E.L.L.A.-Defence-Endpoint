@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/main/schema/edep-policy.schema.json",
+  "$id": "https://raw.githubusercontent.com/AndreZ1971/EDEP/main/schema/edep-policy.schema.json",
   "title": "EDEP Policy",
   "description": "Maschinenlesbare Richtlinie des E.D. Endpoint Profile (EDEP) 0.1.0. Siehe SPEC.md, EDEP-POL-01.",
   "type": "object",

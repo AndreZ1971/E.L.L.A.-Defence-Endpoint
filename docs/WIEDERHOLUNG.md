@@ -17,7 +17,7 @@ Du hast an der Entwicklung, den Tests und der Dokumentation von EDEP nicht mitge
 
 ## Ablauf
 
-**1. Den Release holen.** Lade das ZIP des Tags `0.1.0-draft.6` von GitHub (`https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/archive/refs/tags/0.1.0-draft.6.zip`) und entpacke es in der VM. **Kein `git clone`:** Unter Windows wandelt es Zeilenenden um, dann stimmen die Prüfsummen nicht.
+**1. Den Release holen.** Lade das ZIP des Tags `0.1.0-draft.6` von GitHub (`https://github.com/AndreZ1971/EDEP/archive/refs/tags/0.1.0-draft.6.zip`) und entpacke es in der VM. **Kein `git clone`:** Unter Windows wandelt es Zeilenenden um, dann stimmen die Prüfsummen nicht.
 
 **2. Integrität prüfen** (Administrator-PowerShell im entpackten Ordner):
 
@@ -44,7 +44,7 @@ Erwartet (so haben wir es gemessen): 13 Schritte `D-A1` bis `D-E1`, alle `PASS`,
 
 ## Was du einsendest
 
-Eröffne ein [Issue mit der Vorlage „Wiederholung melden“](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/issues/new?template=wiederholung.yml) und hänge an:
+Eröffne ein [Issue mit der Vorlage „Wiederholung melden“](https://github.com/AndreZ1971/EDEP/issues/new?template=wiederholung.yml) und hänge an:
 
 1. **Das Protokoll** `edep-conformance-<Rechner>-<Datum>.json` aus Schritt 4. Es enthält den **Rechnernamen**. Ersetze ihn vor dem Hochladen durch einen beliebigen Namen, wenn du ihn nicht veröffentlichen willst.
 2. **Edition und Build** (`winver`), die **Art der VM** (Hypervisor und Version).

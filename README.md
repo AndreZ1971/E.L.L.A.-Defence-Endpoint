@@ -1,8 +1,8 @@
 # E.D. Endpoint Profile (EDEP)
 
-[![CI](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/actions/workflows/ci.yml) [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg)](LICENSE) [![Spezifikation](https://img.shields.io/badge/SPEC-0.1.0_Entwurf-orange.svg)](SPEC.md)
+[![CI](https://github.com/AndreZ1971/EDEP/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreZ1971/EDEP/actions/workflows/ci.yml) [![Lizenz: MIT](https://img.shields.io/badge/Lizenz-MIT-blue.svg)](LICENSE) [![Spezifikation](https://img.shields.io/badge/SPEC-0.1.0_Entwurf-orange.svg)](SPEC.md)
 
-**Deutsch · [English](README.en.md)** · [Projektseite](https://andrez1971.github.io/E.L.L.A.-Defence-Endpoint/)
+**Deutsch · [English](README.en.md)** · [Projektseite](https://andrez1971.github.io/EDEP/)
 
 **Offenes Sicherheitsprofil für Windows-Endgeräte: Outbound-Zero-Trust, Telemetrie-Souveränität und deterministische Isolation.**
 
@@ -19,6 +19,11 @@ gedacht.
 > **Status:** Entwurf 0.1.0. Die Spezifikation ist noch nicht versiegelt. Letzter signierter Entwurf: `0.1.0-draft.6`
 > ([SIGNING.md](docs/SIGNING.md)). Gemessen ist L1 in Hyper-V-VMs mit Windows 11 Enterprise, Pro und Home; was dabei offen
 > blieb, steht in [SPEC.md, Abschnitt 3.6](SPEC.md). Eine Unterstützung durch das BSI besteht nicht.
+
+**Name:** EDEP steht für *E.D. Endpoint Profile*, „E.D.“ für *E.L.L.A. Defence*. Die Idee entstand im Umfeld der
+E.L.L.A.-Projekte des Autors. EDEP ist aber technisch eigenständig: Es braucht keine andere E.L.L.A.-Komponente und ist
+keine Voraussetzung für eine davon (siehe letzter Absatz der [SPEC.md](SPEC.md)). Das Repository hieß bis 2026-10-11
+„E.L.L.A.-Defence-Endpoint“; die alte Adresse leitet weiter.
 
 ## Kostenloses Audit: Wie offen ist dein Windows?
 
