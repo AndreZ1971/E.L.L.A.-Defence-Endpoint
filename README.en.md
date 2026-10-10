@@ -115,6 +115,10 @@ attempt is rejected (E-12 to E-14, E-89). **Costs and limits:**
   with an empty cache, long-term operation.
 - Use enforce mode only with a maintenance window and keep `Restore-EdepL1.ps1` ready. After a restore, verify the
   state with `Test-EdepL1.ps1`.
+- `Restore-EdepL1.ps1` without `-BackupPath` uses the **oldest** backup under `C:\ProgramData\EDEP\backup`, that is the state
+  before the very first application. If backups from earlier applications exist, the restore goes back to that state, not to
+  the state before the most recent application; in the measurement the number of allowing firewall rules differed by one each
+  ([E-91](docs/EVIDENCE.md)). For a specific state, pass `-BackupPath` with the folder of the backup you want.
 
 The installer and `Restore-EdepL1` ask before every step (installer: five, six with
 `-DeployAppControlAudit`, one more with `-AllowWindowsUpdate`; restore: four plus one each for App Control policies,

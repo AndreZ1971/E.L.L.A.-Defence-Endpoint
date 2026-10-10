@@ -44,6 +44,21 @@
 
 Rohdaten: [beweise/lauf2/](beweise/lauf2/) mit Prüfsummen in `beweise/lauf2/SHA256SUMS-lauf2.txt`.
 
+## Lauf 3: Edge-Laden im Ausgangszustand und unter Enforce (19:45 bis 19:53)
+
+Zweck: die seit Lauf 3 und 4 auf Enterprise offene Frage, ob Edge unter Enforce mit `-AllowProgram` eine Seite lädt (R-A7 im Ausgangszustand, R-C6 unter Enforce), auf Pro mit einer **Sichtprüfung des Testers** zu beantworten. Teststand und VM wie in Lauf 2 (Commit `e9babc3`), Edge 155.0.4283.45. Der Tester sah die Konsole der VM; Install und Restore liefen vom Host per PowerShell Direct.
+
+**Erwartung vorab:** Edge lädt in beiden Zuständen eine Seite; die Rücknahme mit der eigenen Sicherung stellt den Fingerabdruck her.
+
+| Nr. | Messwert (wörtlich) | Einordnung |
+|---|---|---|
+| 3-1 | Ausgangszustand (VM-Uhr 19:45:24): `Ausgehend: Domain=Allow, Private=Allow, Public=Allow`, `Edge vorhanden: True`. Tester: „edge geöffnet und eine seite mit verschiedenen spracigen“ (Seite `https://example.com`, Text „This domain is for use in documentation examples without needing permission …“ in mehreren Sprachen) | **R-A7 bestätigt**: Edge lädt im Ausgangszustand |
+| 3-2 | `Install-EdepL1 -Enforce -DeployAppControlAudit -AllowWindowsUpdate -AllowProgram <msedge.exe>` (19:49:57 bis 19:50:04); `Neue Sicherung(en): 20261010-194957`; `EDEP 0.1.0 L1 — geprüft 2026-10-10 — 15/15 erfüllt` (TEL-01, TEL-02, TEL-04 WARN); `Ausgehend: Domain=Block, Private=Block, Public=Block` | Enforce wie in der Stufe |
+| 3-3 | Unter Enforce, Edge ganz geschlossen und neu gestartet, Adresse `https://example.org`. Tester: „selbes ergebnis, die seite mit den mehrsprachigen hinweisen“ | **R-C6 bestätigt**: Edge lädt unter Enforce mit `-AllowProgram`. Gemessen ist nur Edge; dass andere Programme blockiert sind, zeigen `D-C2` und `D-C3` in Lauf 2 |
+| 3-4 | Rücknahme `Restore-EdepL1 -BackupPath C:\ProgramData\EDEP\backup\20261010-194957` (19:53:13 bis 19:53:20): `KEINE Unterschiede` zum Fingerabdruck vor Enforce; `7/15 erfüllt`; `Ausgehend: Domain=Allow, Private=Allow, Public=Allow` | Rücknahme mit der eigenen Sicherung stellt den Zustand wieder her |
+
+**Grenzen:** Je eine Sichtprüfung eines Testers in einer VM, je eine Seite (`example.com`, `example.org`); keine Zeitmessung, kein Mitschnitt, kein Enterprise. Die Rücknahme wurde in diesem Teil nicht mit einem Neustart wiederholt. Rohdaten: [beweise/edge/](beweise/edge/) mit Prüfsummen in `beweise/edge/SHA256SUMS-edge.txt`.
+
 ## Abweichungen (Lauf 1)
 
 | Nr. | Was weicht ab                           | Befund                                                                                                                                                                                                                                                                                                                                                                                                         |

@@ -121,6 +121,8 @@ dir, ist das eine neue Messung und bitte zu melden.
 Früher kam in zwei von fünf Versuchen der EDEP-Zustand nach dem Neustart zurück; nach einem **harten** Neustart direkt nach der Rücknahme kam zuletzt der Telemetriewert zurück ([E-76](EVIDENCE.md)). Starte nach der Rücknahme **ordentlich** neu.
 Prüfe daher nach der Rücknahme und einem Neustart noch einmal.
 
+`Restore-EdepL1.ps1` ohne `-BackupPath` nimmt die **älteste** Sicherung, also den Zustand vor der ersten Anwendung überhaupt. Hast du EDEP schon früher angewendet (Ordner `C:\ProgramData\EDEP\backup` enthält mehrere Sicherungen), kann sich der Zustand danach in einzelnen Firewallregeln vom Zustand direkt vor dieser Anwendung unterscheiden ([E-91](EVIDENCE.md)). Willst du genau diesen Stand, gib `-BackupPath` mit dem Ordner der Sicherung an, die der Installer beim letzten Mal ausgegeben hat.
+
 Snapshot zurücksetzen.
 
 ---

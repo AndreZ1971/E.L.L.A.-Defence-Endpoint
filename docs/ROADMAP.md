@@ -49,7 +49,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 
 - [x] `Invoke-EdepAudit`: Punktzahl, Erklärungen, HTML-Bericht, läuft ohne Adminrechte
 - [x] PowerShell-Modul `EDEP` mit Manifest, Build-Skript
-- [x] CI: Syntax, BOM, Einheitentests (23), Sperre für fehlerhafte native Argumente, PSScriptAnalyzer, Rauchtests, Schema-Validierung, Prüfung der Seitenzahlen
+- [x] CI: Syntax, BOM, Einheitentests (81), Sperre für fehlerhafte native Argumente, PSScriptAnalyzer, Rauchtests, Schema-Validierung, Prüfung der Seitenzahlen
 - [ ] Signiert in der PowerShell Gallery veröffentlichen: `Install-Module EDEP`
 - [x] Englische Texte: Audit, Prüfdetails, HTML-Bericht, `README.en.md`; Sprache nach Windows-Anzeigesprache oder `-Language`
 - [ ] Englische Texte für `Install-EdepL1`/`Restore-EdepL1` und die Spezifikation

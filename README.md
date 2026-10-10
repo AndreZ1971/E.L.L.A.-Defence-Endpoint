@@ -113,6 +113,10 @@ erreicht sonst nichts ([E-88](docs/EVIDENCE.md)). **Auf Enterprise (Lauf 3) sche
   Neustart mit leerem Cache, Dauerbetrieb.
 - Den Enforce-Modus nur mit einem Wartungsfenster einsetzen und `Restore-EdepL1.ps1` bereithalten. Nach einer
   Wiederherstellung den Zustand mit `Test-EdepL1.ps1` prüfen.
+- `Restore-EdepL1.ps1` ohne `-BackupPath` nimmt die **älteste** Sicherung unter `C:\ProgramData\EDEP\backup`, also den Zustand
+  vor der ersten Anwendung überhaupt. Liegen Sicherungen früherer Anwendungen vor, geht die Rücknahme auf deren Stand zurück,
+  nicht auf den von vor der letzten Anwendung; gemessen unterschied sich dabei die Zahl der erlaubenden Firewallregeln um je
+  eine ([E-91](docs/EVIDENCE.md)). Für einen bestimmten Stand `-BackupPath` mit dem Ordner der gewünschten Sicherung angeben.
 
 Installer und `Restore-EdepL1` fragen vor jedem Schritt nach (Installer: fünf, mit
 `-DeployAppControlAudit` sechs, mit `-AllowWindowsUpdate` eine weitere; `Restore`: vier plus je eine für App-Control-Richtlinien,
