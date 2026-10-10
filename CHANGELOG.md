@@ -6,6 +6,8 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 
 ## [Unveröffentlicht]
 
+- **Zeitstempel je Release unter `timestamps/`** (`SHA256SUMS-<TAG>.ots`): Der bestätigte Beweis von draft.4 (Bitcoin-Block 969890) und der ausstehende von draft.5 liegen dort; die Datei `SHA256SUMS.ots` im Wurzelordner entfällt (das ZIP von draft.5 enthält sie noch, sie gehört zu draft.4, siehe [SIGNING.md](docs/SIGNING.md)).
+
 ## [0.1.0-draft.5] – 2026-10-10
 
 **Entwurf, kein Konformitätsnachweis.** Ergänzt `0.1.0-draft.4`: Messungen auf Windows 11 Pro 26H2, eine Korrektur der Prüfstufe „Destructive“ und die BSI-Zuordnung zu Grundschutz++. Dieser Stand ist signiert (`SHA256SUMS`, `SHA256SUMS.sig`, signierter Tag, [SIGNING.md](docs/SIGNING.md)). Bekannte Einschränkungen: [SPEC.md, Abschnitt 3.6](SPEC.md).

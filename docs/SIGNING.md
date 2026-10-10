@@ -66,7 +66,7 @@ git -c gpg.ssh.allowedSignersFile=allowed_signers tag -v <TAG>
 ## Bitcoin-Zeitstempel (OpenTimestamps)
 
 Zusätzlich zur Signatur wird `SHA256SUMS` mit [OpenTimestamps](https://opentimestamps.org) in der Bitcoin-Blockchain verankert
-(`SHA256SUMS.ots`). Das belegt unabhängig von GitHub und vom Herausgeber, dass genau dieser Stand **spätestens zum Zeitpunkt des
+(je Release eine Datei `timestamps/SHA256SUMS-<TAG>.ots`). Das belegt unabhängig von GitHub und vom Herausgeber, dass genau dieser Stand **spätestens zum Zeitpunkt des
 Blocks** existierte. Es sagt nichts über die Richtigkeit des Inhalts. Gesendet wird nur ein Hash, nie Dateiinhalt.
 
 Der Zeitstempel kommt **nach** dem signierten Tag in einem eigenen Commit (er kann nicht Teil des Standes sein, den er bestätigt).
@@ -75,12 +75,14 @@ Er ist zunächst **ausstehend**; nach einigen Stunden wird er mit `upgrade` um d
 **Prüfen** (eine der drei Möglichkeiten):
 
 ```
-ots verify SHA256SUMS.ots                                  # Standardclient (pip install opentimestamps-client), braucht einen Bitcoin-Zugang
-python tools/ots.py verify SHA256SUMS SHA256SUMS.ots        # nur pip install opentimestamps; prüft über die öffentliche Blockstream-API
+ots verify timestamps/SHA256SUMS-<TAG>.ots                  # Standardclient (pip install opentimestamps-client), braucht einen Bitcoin-Zugang
+python tools/ots.py verify SHA256SUMS timestamps/SHA256SUMS-<TAG>.ots   # nur pip install opentimestamps; prüft über die öffentliche Blockstream-API
 ```
 
-oder `SHA256SUMS` und `SHA256SUMS.ots` auf https://opentimestamps.org hochladen. Erwartet: ein Bitcoin-Block mit Höhe und Zeit.
+oder `SHA256SUMS` und die `.ots`-Datei auf https://opentimestamps.org hochladen. `SHA256SUMS` ist dabei die Datei **des Tags** (aus dem ZIP des Tags), die `.ots`-Datei kommt aus dem Ordner `timestamps/` auf `main`; sie wird erst nach dem Tag hinzugefügt und ist deshalb nicht im ZIP des eigenen Releases. Erwartet: ein Bitcoin-Block mit Höhe und Zeit.
 `tools/ots.py` hat zusätzlich `stamp DATEI` (zeitstempeln) und `upgrade DATEI.ots` (Bestätigung nachholen).
+
+**Ablage.** Bis `0.1.0-draft.4` lag die Datei als `SHA256SUMS.ots` im Wurzelordner. Weil sie in die Prüfsummen des nächsten Standes einging, enthält das ZIP von `0.1.0-draft.5` im Wurzelordner noch diese Datei; **sie gehört zu draft.4** und passt nicht zur `SHA256SUMS` von draft.5. Seit draft.5 liegt je Release eine Datei unter `timestamps/`.
 
 ## Geprüfte Releases
 
@@ -89,7 +91,11 @@ oder `SHA256SUMS` und `SHA256SUMS.ots` auf https://opentimestamps.org hochladen.
 | `0.1.0-draft.3` | `6d5556c` | 120 | 2026-10-03 | Signatur gültig, 120 von 120 Hashes, Tag bei GitHub „Verified“, Schlüssel in der GitHub-Liste |
 | `0.1.0-draft.4` | `d1975c8` | 141 | 2026-10-04 | Signatur gültig, 141 von 141 Hashes, Tag bei GitHub „Verified“, Schlüssel in der GitHub-Liste; `Test-EdepConformance.ps1` auf dem ZIP-Stand meldet `Prüfsummen PASS` und `Signatur PASS` |
 
+| `0.1.0-draft.5` | `60a2547` | 172 | 2026-10-10 | Signatur gültig, 172 von 172 Hashes, Tag bei GitHub „Verified“ (Grund `valid`), Schlüssel in der GitHub-Liste; `Test-EdepConformance.ps1` auf dem ZIP-Stand meldet `Prüfsummen PASS` und `Signatur PASS` |
+
 Die Prüfung erfolgte jeweils am heruntergeladenen ZIP des Tags, nicht am lokalen Arbeitsordner.
+
+Zeitstempel `0.1.0-draft.5`: am 2026-10-10 bei vier Kalendern eingereicht, **ausstehend** (`timestamps/SHA256SUMS-0.1.0-draft.5.ots`, SHA-256 der Prüfsummen `7e1dcd6f1cc94b4464639d696473189ab6dec575f753bc4b3795fb2291f393d2`); die Bestätigung wird nach einigen Stunden nachgetragen.
 
 Zeitstempel: `0.1.0-draft.4` am 2026-10-04 bei vier Kalendern eingereicht und **in Bitcoin-Block 969890 bestätigt** (Blockzeit 2026-10-04 19:35:29 UTC; Blockhash `00000000000000000001f9e68e09444640488e0b12c57ecc06fa7d79df87bedf`, mit zwei unabhängigen Block-Schnittstellen abgeglichen). Zwei Kalender (catallaxy, eternitywall) waren zum Zeitpunkt der Prüfung noch ausstehend. Prüfen: `python tools/ots.py verify SHA256SUMS SHA256SUMS.ots`. Der Beweis lautet: Dieser Stand von `SHA256SUMS` existierte spätestens zur Blockzeit.
 
@@ -100,7 +106,7 @@ Zeitstempel: `0.1.0-draft.4` am 2026-10-04 bei vier Kalendern eingereicht und **
 3. `ssh-keygen -Y sign -f <Schlüsseldatei> -n edep-release SHA256SUMS` erzeugt `SHA256SUMS.sig`.
 4. `SHA256SUMS` und `SHA256SUMS.sig` committen (sie ändern keine andere Datei).
 5. Tag signieren: `git -c gpg.format=ssh -c user.signingkey=<öffentlicher Schlüssel> tag -s <TAG> -m "<Text>"`, danach Commit und Tag pushen.
-6. Nach dem Push: `python tools/ots.py stamp SHA256SUMS`, die `.ots`-Datei in einem eigenen Commit festhalten; einige Stunden später `python tools/ots.py upgrade SHA256SUMS.ots` und die vervollständigte Datei erneut committen.
+6. Nach dem Push: `python tools/ots.py stamp SHA256SUMS`, die entstandene `SHA256SUMS.ots` nach `timestamps/SHA256SUMS-<TAG>.ots` verschieben und in einem eigenen Commit festhalten; einige Stunden später `python tools/ots.py upgrade timestamps/SHA256SUMS-<TAG>.ots` und die vervollständigte Datei erneut committen.
 
 Der private Schlüssel gehört auf einen Rechner unter Kontrolle des Herausgebers, mit Passphrase, und in eine Sicherungskopie. Geht er
 verloren oder wird er offengelegt, wird der Schlüssel bei GitHub entfernt, ein neuer angelegt und dieses Dokument mit Datum nachgeführt;
