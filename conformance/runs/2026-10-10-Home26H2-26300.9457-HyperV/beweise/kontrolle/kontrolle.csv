@@ -1,0 +1,5 @@
+﻿"Messung","Start","AusErlauben","EinErlauben","AusBlock","EdepRegeln","Gesamt","PSComputerName","RunspaceId","PSShowComputerName"
+"A-nach-Prüfpunkt","21:28:15","106","96","0","0","442","EDEP-Test-Home","9d9c2416-1379-4e00-9eee-cc12456cf75f","True"
+"B-nach-Neustart-1","22:15:08","104","96","0","0","446","EDEP-Test-Home","154b6b11-edd6-4f72-b4ab-b284971cb787","True"
+"C-nach-Neustart-2","22:16:18","118","102","0","0","460","EDEP-Test-Home","3d816cab-3d72-4881-87dc-d0ef4a554186","True"
+"D-5-Minuten-Ruhe","22:16:18","121","105","0","0","466","EDEP-Test-Home","f97fd1b5-f9c6-4be4-9734-2f1fbdd91b81","True"

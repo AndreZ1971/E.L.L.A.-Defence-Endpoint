@@ -246,6 +246,15 @@ Assert-That 'Eigene Sicherung: nur neu angelegte zählen, die älteste neue gewi
 Assert-That 'Eigene Sicherung: ohne neue Sicherung kommt $null' ($null -eq (Get-EdepOwnFirstBackup -Before @('20261003-132020') -After @('20261003-132020')))
 Assert-That 'Eigene Sicherung: ohne vorherige Sicherungen gilt die erste neue' ((Get-EdepOwnFirstBackup -Before @() -After @('20261010-191724', '20261010-191717')) -eq '20261010-191717')
 Assert-That 'Eigene Sicherung: leere Eingaben ergeben $null' ($null -eq (Get-EdepOwnFirstBackup))
+Assert-That 'Rücknahme nötig: weder angewendet noch eigene Sicherung ergibt nein' (-not (Test-EdepRestoreNeeded -Applied $false -OwnBackup ''))
+Assert-That 'Rücknahme nötig: angewendet ergibt ja' (Test-EdepRestoreNeeded -Applied $true -OwnBackup '')
+Assert-That 'Rücknahme nötig: eigene Sicherung nach abgebrochenem Install ergibt ja' (Test-EdepRestoreNeeded -Applied $false -OwnBackup '20261010-214004')
+Assert-That 'Erwartung Audit mit App Control: nur EDEP-NET-03' (((Get-EdepExpectedAuditFailures -AppControl $true) -join ',') -eq 'EDEP-NET-03')
+Assert-That 'Erwartung Audit ohne App Control: EDEP-ID-01 und EDEP-NET-03, sortiert' (((Get-EdepExpectedAuditFailures -AppControl $false) -join ',') -eq 'EDEP-ID-01,EDEP-NET-03')
+Assert-That 'Erwartung Enforce mit App Control: keine' (@(Get-EdepExpectedEnforceFailures -AppControl $true).Count -eq 0)
+Assert-That 'Erwartung Enforce ohne App Control: nur EDEP-ID-01' (((Get-EdepExpectedEnforceFailures -AppControl $false) -join ',') -eq 'EDEP-ID-01')
+$instText = Get-Content (Join-Path (Join-Path (Join-Path (Split-Path $PSScriptRoot -Parent) 'baseline') 'L1') 'Install-EdepL1.ps1') -Raw
+Assert-That 'Installer prüft die App-Control-Vorlage vor dem ersten Eingriff (vor der Sicherung)' (($instText.IndexOf('EdepAppControlTemplate') -ge 0) -and ($instText.IndexOf('EdepAppControlTemplate') -lt $instText.IndexOf('Sichere aktuellen Zustand')))
 $stp = New-EdepStep 'D-X1' @('T-A', 'T-B') 'Name' 'erwartet' 'beobachtet' 'PASS'
 Assert-That 'Schritt: enthält Kennung, Tests, Erwartung, Beobachtung und Status' (($stp.id -eq 'D-X1') -and ($stp.tests.Count -eq 2) -and ($stp.status -eq 'PASS') -and ($stp.observed -eq 'beobachtet'))
 

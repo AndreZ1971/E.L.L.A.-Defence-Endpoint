@@ -6,6 +6,9 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 
 ## [Unveröffentlicht]
 
+- **Windows 11 Home gemessen** ([Protokoll](conformance/runs/2026-10-10-Home26H2-26300.9457-HyperV/run.md), E-94 bis E-96): Die Beispielvorlage für App Control fehlt, `EDEP-ID-01` ist dort nicht prüfbar; Stufe „Destructive“ 13 von 13 im Home-Modus, Enforce 14 von 15, Edge ohne Fenster lädt im Ausgangszustand und unter Enforce; die Zahl der erlaubenden Firewallregeln wächst dort ohne EDEP von selbst (Kontrollmessung).
+- **`Install-EdepL1`:** Fehlt die Vorlage für `-DeployAppControlAudit`, bricht der Installer jetzt **vor dem ersten Eingriff** ab („Es wurde nichts geändert“). Vorher brach er in Schritt 7 ab, nachdem die Schritte 1 bis 5 angewendet waren.
+- **Stufe „Destructive“:** nimmt zurück, sobald der Install eine eigene Sicherung angelegt hat (auch bei Abbruch); läuft auf Systemen ohne die App-Control-Vorlage ohne `-DeployAppControlAudit` (Erwartungen angepasst, `appControlAvailable` im Protokoll); 8 neue Einheitentests (89). Noch in keinem Release (E-97).
 - **`SPEC.md`, Abschnitt 3.5: Vorlage für die Festlegung und Begründung** (informativ) des Update-Wegs und von Abweichungen, nach der Definition von „SOLLTE“ in den Namensräumen des BSI und dem Leitfaden zur Methodik Grundschutz++ (Abschnitt 4.5). Vorschlag des Projekts, vom BSI nicht geprüft; das Normative von 3.5 bleibt unverändert.
 - **Zeitstempel je Release unter `timestamps/`** (`SHA256SUMS-<TAG>.ots`): Der bestätigte Beweis von draft.4 (Bitcoin-Block 969890) und der ausstehende von draft.5 liegen dort; die Datei `SHA256SUMS.ots` im Wurzelordner entfällt (das ZIP von draft.5 enthält sie noch, sie gehört zu draft.4, siehe [SIGNING.md](docs/SIGNING.md)).
 

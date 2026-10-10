@@ -1,0 +1,314 @@
+﻿{
+    "profile":  "EDEP-Conformance",
+    "schemaVersion":  1,
+    "edepVersion":  "0.1.0",
+    "generated":  "2026-10-10T21:40:13.5677511+02:00",
+    "mode":  {
+                 "probe":  false,
+                 "skipIntegrity":  false
+             },
+    "environment":  {
+                        "computer":  "DESKTOP-73J5TGL",
+                        "os":  "Microsoft Windows 11 Home 10.0.26300",
+                        "edition":  "Core",
+                        "displayVersion":  "26H2",
+                        "build":  "26300.9457",
+                        "powershell":  "5.1.26100.9444",
+                        "isAdmin":  true,
+                        "isVirtualMachine":  true
+                    },
+    "integrity":  {
+                      "checksums":  {
+                                        "status":  "PASS",
+                                        "total":  172,
+                                        "ok":  172,
+                                        "lineEndings":  [
+
+                                                        ],
+                                        "mismatch":  [
+
+                                                     ],
+                                        "missing":  [
+
+                                                    ],
+                                        "invalidLines":  0,
+                                        "detail":  null
+                                    },
+                      "signature":  {
+                                        "status":  "PASS",
+                                        "detail":  "Signatur gültig",
+                                        "fingerprint":  "SHA256:26hgKYeEbL+2ryTJ2Q5Otc/Af93f+8ModNBheF2/pas"
+                                    }
+                  },
+    "l1":  {
+               "total":  15,
+               "passed":  6,
+               "conform":  false,
+               "results":  [
+                               {
+                                   "requirement":  "EDEP-NET-01",
+                                   "test":  "T-NET-01",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "Alle Profile aktiv, eingehend Block"
+                               },
+                               {
+                                   "requirement":  "EDEP-NET-02",
+                                   "test":  "T-NET-02",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "Stealth-Modus aktiv (Standard)"
+                               },
+                               {
+                                   "requirement":  "EDEP-NET-03",
+                                   "test":  "T-NET-03",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz."
+                               },
+                               {
+                                   "requirement":  "EDEP-NET-04",
+                                   "test":  "T-NET-04",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere"
+                               },
+                               {
+                                   "requirement":  "EDEP-NET-05",
+                                   "test":  "T-NET-05",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986"
+                               },
+                               {
+                                   "requirement":  "EDEP-NET-10",
+                                   "test":  "T-NET-10",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "14 freigegebene Programmpfade nur durch Admins änderbar"
+                               },
+                               {
+                                   "requirement":  "EDEP-ID-01",
+                                   "test":  "T-ID-01",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Keine aktive, nicht-systemeigene App-Control-Richtlinie"
+                               },
+                               {
+                                   "requirement":  "EDEP-TEL-01",
+                                   "test":  "T-TEL-01",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)"
+                               },
+                               {
+                                   "requirement":  "EDEP-TEL-02",
+                                   "test":  "T-TEL-02",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Ohne ausgehende Blockregel: DiagTrack, dmwappushservice"
+                               },
+                               {
+                                   "requirement":  "EDEP-TEL-03",
+                                   "test":  "T-TEL-03",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed"
+                               },
+                               {
+                                   "requirement":  "EDEP-TEL-04",
+                                   "test":  "T-TEL-04",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "Update- und Schutzdienste erreichbar"
+                               },
+                               {
+                                   "requirement":  "EDEP-LOG-01",
+                                   "test":  "T-LOG-01",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert"
+                               },
+                               {
+                                   "requirement":  "EDEP-LOG-02",
+                                   "test":  "T-LOG-02",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "Firewall-Log lokal"
+                               },
+                               {
+                                   "requirement":  "EDEP-LOG-06",
+                                   "test":  "T-LOG-06",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)"
+                               },
+                               {
+                                   "requirement":  "EDEP-OPS-01",
+                                   "test":  "T-OPS-01",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Keine EDEP-Sicherung unter C:\\ProgramData\\EDEP\\backup"
+                               }
+                           ]
+           },
+    "unitTests":  {
+                      "ran":  false
+                  },
+    "audit":  {
+                  "score":  41,
+                  "grade":  "D",
+                  "counts":  {
+                                 "INFO":  2,
+                                 "PASS":  9,
+                                 "FAIL":  13,
+                                 "WARN":  0,
+                                 "UNKNOWN":  0
+                             }
+              },
+    "destructive":  {
+                        "ran":  true,
+                        "failed":  2,
+                        "passed":  1,
+                        "notAssessable":  0,
+                        "restored":  false,
+                        "fingerprintIdentical":  false,
+                        "errors":  [
+                                       "Vorlage fehlt: C:\\WINDOWS\\schemas\\CodeIntegrity\\ExamplePolicies\\DefaultWindows_Audit.xml"
+                                   ],
+                        "steps":  [
+                                      {
+                                          "id":  "D-A1",
+                                          "tests":  [
+                                                        "T-NET-03a"
+                                                    ],
+                                          "name":  "Ausgangszustand: Netz und unbekanntes Programm erreichen das Ziel",
+                                          "expected":  "200 und 200",
+                                          "observed":  "curl.exe 200, x.exe 200",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-E1",
+                                          "tests":  [
+                                                        "T-OPS-01a"
+                                                    ],
+                                          "name":  "Rücknahme: Fingerabdruck identisch zum Ausgangszustand",
+                                          "expected":  "identisch",
+                                          "observed":  "Rücknahme nicht ausgeführt",
+                                          "status":  "FAIL"
+                                      }
+                                  ],
+                        "olderBackups":  0,
+                        "restoreMode":  "älteste Sicherung (Standard)",
+                        "note":  "Nach der Rücknahme ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6, E-76)."
+                    },
+    "notRun":  [
+                   {
+                       "test":  "T-NET-02a",
+                       "requirement":  "EDEP-NET-02",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-NET-03b",
+                       "requirement":  "EDEP-NET-03",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-NET-04a",
+                       "requirement":  "EDEP-NET-04",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-NET-04b",
+                       "requirement":  "EDEP-NET-04",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-NET-10a",
+                       "requirement":  "EDEP-NET-10",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-TEL-02a",
+                       "requirement":  "EDEP-TEL-02",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-TEL-04a",
+                       "requirement":  "EDEP-TEL-04",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-OPS-02",
+                       "requirement":  "EDEP-OPS-02",
+                       "art":  "Review",
+                       "reason":  "Prüfung von Code oder Dokumentation (Review)"
+                   },
+                   {
+                       "test":  "T-OPS-05",
+                       "requirement":  "EDEP-OPS-05",
+                       "art":  "Review",
+                       "reason":  "Prüfung von Code oder Dokumentation (Review)"
+                   },
+                   {
+                       "test":  "T-INF-04",
+                       "requirement":  "EDEP-INF-04",
+                       "art":  "Review",
+                       "reason":  "Prüfung von Code oder Dokumentation (Review)"
+                   },
+                   {
+                       "test":  "T-BYP-01",
+                       "requirement":  "B-01 BITS",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-BYP-02",
+                       "requirement":  "B-02 DNS",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-BYP-03",
+                       "requirement":  "B-03 erlaubtes Programm",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-BYP-04",
+                       "requirement":  "B-04 ersetzbarer Pfad",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-BYP-05",
+                       "requirement":  "B-05 Authenticated Bypass",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-BYP-07",
+                       "requirement":  "B-07 umbenannte LOLBin",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-BYP-08",
+                       "requirement":  "B-08 uneingeschränkte Regel",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   }
+               ],
+    "verdict":  {
+                    "exitCode":  1,
+                    "text":  "Abweichungen gefunden (FAIL)."
+                },
+    "note":  "Dieses Protokoll hält fest, was gemessen wurde. Es ist kein Konformitätsnachweis. Siehe SPEC.md Abschnitt 5 und docs/EVIDENCE.md."
+}

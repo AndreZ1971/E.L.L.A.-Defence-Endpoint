@@ -1,0 +1,359 @@
+﻿{
+    "profile":  "EDEP-Conformance",
+    "schemaVersion":  1,
+    "edepVersion":  "0.1.0",
+    "generated":  "2026-10-10T21:49:07.6437178+02:00",
+    "mode":  {
+                 "probe":  false,
+                 "skipIntegrity":  true
+             },
+    "environment":  {
+                        "computer":  "DESKTOP-73J5TGL",
+                        "os":  "Microsoft Windows 11 Home 10.0.26300",
+                        "edition":  "Core",
+                        "displayVersion":  "26H2",
+                        "build":  "26300.9457",
+                        "powershell":  "5.1.26100.9444",
+                        "isAdmin":  true,
+                        "isVirtualMachine":  true
+                    },
+    "integrity":  {
+                      "checksums":  {
+                                        "status":  "SKIPPED",
+                                        "detail":  "übersprungen (-SkipIntegrity)"
+                                    },
+                      "signature":  {
+                                        "status":  "SKIPPED",
+                                        "detail":  null,
+                                        "fingerprint":  null
+                                    }
+                  },
+    "l1":  {
+               "total":  15,
+               "passed":  7,
+               "conform":  false,
+               "results":  [
+                               {
+                                   "requirement":  "EDEP-NET-01",
+                                   "test":  "T-NET-01",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "Alle Profile aktiv, eingehend Block"
+                               },
+                               {
+                                   "requirement":  "EDEP-NET-02",
+                                   "test":  "T-NET-02",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "Stealth-Modus aktiv (Standard)"
+                               },
+                               {
+                                   "requirement":  "EDEP-NET-03",
+                                   "test":  "T-NET-03",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz."
+                               },
+                               {
+                                   "requirement":  "EDEP-NET-04",
+                                   "test":  "T-NET-04",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere"
+                               },
+                               {
+                                   "requirement":  "EDEP-NET-05",
+                                   "test":  "T-NET-05",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986"
+                               },
+                               {
+                                   "requirement":  "EDEP-NET-10",
+                                   "test":  "T-NET-10",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "14 freigegebene Programmpfade nur durch Admins änderbar"
+                               },
+                               {
+                                   "requirement":  "EDEP-ID-01",
+                                   "test":  "T-ID-01",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Keine aktive, nicht-systemeigene App-Control-Richtlinie"
+                               },
+                               {
+                                   "requirement":  "EDEP-TEL-01",
+                                   "test":  "T-TEL-01",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)"
+                               },
+                               {
+                                   "requirement":  "EDEP-TEL-02",
+                                   "test":  "T-TEL-02",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Ohne ausgehende Blockregel: DiagTrack, dmwappushservice"
+                               },
+                               {
+                                   "requirement":  "EDEP-TEL-03",
+                                   "test":  "T-TEL-03",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed"
+                               },
+                               {
+                                   "requirement":  "EDEP-TEL-04",
+                                   "test":  "T-TEL-04",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "Update- und Schutzdienste erreichbar"
+                               },
+                               {
+                                   "requirement":  "EDEP-LOG-01",
+                                   "test":  "T-LOG-01",
+                                   "art":  "auto",
+                                   "status":  "FAIL",
+                                   "detail":  "LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert"
+                               },
+                               {
+                                   "requirement":  "EDEP-LOG-02",
+                                   "test":  "T-LOG-02",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "Firewall-Log lokal"
+                               },
+                               {
+                                   "requirement":  "EDEP-LOG-06",
+                                   "test":  "T-LOG-06",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)"
+                               },
+                               {
+                                   "requirement":  "EDEP-OPS-01",
+                                   "test":  "T-OPS-01",
+                                   "art":  "auto",
+                                   "status":  "PASS",
+                                   "detail":  "Sicherung vorhanden: C:\\ProgramData\\EDEP\\backup\\20261010-214004"
+                               }
+                           ]
+           },
+    "unitTests":  {
+                      "ran":  false
+                  },
+    "audit":  {
+                  "score":  41,
+                  "grade":  "D",
+                  "counts":  {
+                                 "INFO":  1,
+                                 "PASS":  10,
+                                 "FAIL":  13,
+                                 "WARN":  0,
+                                 "UNKNOWN":  0
+                             }
+              },
+    "destructive":  {
+                        "ran":  true,
+                        "failed":  0,
+                        "passed":  13,
+                        "notAssessable":  0,
+                        "restored":  true,
+                        "fingerprintIdentical":  true,
+                        "errors":  [
+
+                                   ],
+                        "steps":  [
+                                      {
+                                          "id":  "D-A1",
+                                          "tests":  [
+                                                        "T-NET-03a"
+                                                    ],
+                                          "name":  "Ausgangszustand: Netz und unbekanntes Programm erreichen das Ziel",
+                                          "expected":  "200 und 200",
+                                          "observed":  "curl.exe 200, x.exe 200",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-B1",
+                                          "tests":  [
+                                                        "T-OPS-02",
+                                                        "T-NET-03"
+                                                    ],
+                                          "name":  "Audit-Modus ohne App Control (Vorlage fehlt): nur EDEP-ID-01 und EDEP-NET-03 sind nicht erfüllt",
+                                          "expected":  "FAIL nur bei EDEP-ID-01 und EDEP-NET-03",
+                                          "observed":  "nicht erfüllt: EDEP-ID-01, EDEP-NET-03",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-B2",
+                                          "tests":  [
+                                                        "T-NET-04a"
+                                                    ],
+                                          "name":  "Audit-Modus: curl.exe ist blockiert (LOLBin-Regel)",
+                                          "expected":  "000",
+                                          "observed":  "000",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-B3",
+                                          "tests":  [
+                                                        "T-BYP-07"
+                                                    ],
+                                          "name":  "Audit-Modus: umbenannte Kopie von curl.exe kommt durch (B-07)",
+                                          "expected":  "200",
+                                          "observed":  "200",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-C1",
+                                          "tests":  [
+                                                        "T-NET-03"
+                                                    ],
+                                          "name":  "Enforce mit -AllowWindowsUpdate ohne App Control (Vorlage fehlt): nur EDEP-ID-01 nicht erfüllt (TEL-02 und TEL-04 dürfen WARN sein)",
+                                          "expected":  "nur EDEP-ID-01 FAIL",
+                                          "observed":  "nicht erfüllt: EDEP-ID-01",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-C2",
+                                          "tests":  [
+                                                        "T-NET-04a",
+                                                        "T-NET-03a"
+                                                    ],
+                                          "name":  "Enforce: curl.exe ist blockiert",
+                                          "expected":  "000",
+                                          "observed":  "000",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-C3",
+                                          "tests":  [
+                                                        "T-BYP-07",
+                                                        "T-NET-03a"
+                                                    ],
+                                          "name":  "Enforce: umbenannte Kopie von curl.exe ist blockiert",
+                                          "expected":  "000",
+                                          "observed":  "000",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-C4",
+                                          "tests":  [
+                                                        "T-BYP-01"
+                                                    ],
+                                          "name":  "Enforce: BITS zu example.org gelingt nicht (B-01, gemessen: blockiert)",
+                                          "expected":  "FEHLER oder HÄNGT",
+                                          "observed":  "FEHLER",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-D1",
+                                          "tests":  [
+                                                        "T-NET-10a",
+                                                        "T-BYP-04"
+                                                    ],
+                                          "name":  "-AllowProgram mit beschreibbarem Pfad bricht ab (EDEP-NET-10)",
+                                          "expected":  "Abbruch mit Verweis auf EDEP-NET-10",
+                                          "observed":  "Abbruch: AllowProgram \u0027C:\\Users\\test2\\AppData\\Local\\edep-test.exe\u0027 ist für Nicht-Administratoren änderbar und darf nicht freigegeben werden (EDEP-NET-10):",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-D2",
+                                          "tests":  [
+                                                        "T-NET-04b",
+                                                        "T-BYP-05"
+                                                    ],
+                                          "name":  "Authenticated-Bypass-Regel anlegen: EDEP-NET-04 meldet FAIL (B-05)",
+                                          "expected":  "FAIL",
+                                          "observed":  "FAIL",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-D3",
+                                          "tests":  [
+                                                        "T-NET-03b",
+                                                        "T-BYP-08"
+                                                    ],
+                                          "name":  "Uneingeschränkte ausgehende Erlaubnisregel: EDEP-NET-03 meldet FAIL (B-08)",
+                                          "expected":  "FAIL",
+                                          "observed":  "FAIL",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-D4",
+                                          "tests":  [
+
+                                                    ],
+                                          "name":  "Testregeln wieder entfernt",
+                                          "expected":  "0 Reste",
+                                          "observed":  "0 Reste",
+                                          "status":  "PASS"
+                                      },
+                                      {
+                                          "id":  "D-E1",
+                                          "tests":  [
+                                                        "T-OPS-01a"
+                                                    ],
+                                          "name":  "Rücknahme: Fingerabdruck identisch zum Ausgangszustand",
+                                          "expected":  "identisch",
+                                          "observed":  "identisch",
+                                          "status":  "PASS"
+                                      }
+                                  ],
+                        "olderBackups":  1,
+                        "restoreMode":  "eigene Sicherung 20261010-214741",
+                        "appControlAvailable":  false,
+                        "note":  "Nach der Rücknahme ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6, E-76)."
+                    },
+    "notRun":  [
+                   {
+                       "test":  "T-NET-02a",
+                       "requirement":  "EDEP-NET-02",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-TEL-02a",
+                       "requirement":  "EDEP-TEL-02",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-TEL-04a",
+                       "requirement":  "EDEP-TEL-04",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-OPS-05",
+                       "requirement":  "EDEP-OPS-05",
+                       "art":  "Review",
+                       "reason":  "Prüfung von Code oder Dokumentation (Review)"
+                   },
+                   {
+                       "test":  "T-INF-04",
+                       "requirement":  "EDEP-INF-04",
+                       "art":  "Review",
+                       "reason":  "Prüfung von Code oder Dokumentation (Review)"
+                   },
+                   {
+                       "test":  "T-BYP-02",
+                       "requirement":  "B-02 DNS",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   },
+                   {
+                       "test":  "T-BYP-03",
+                       "requirement":  "B-03 erlaubtes Programm",
+                       "art":  "aktiv",
+                       "reason":  "Angriffssimulation nur in einer Test-VM (siehe docs/TESTPLAN-L1.md)"
+                   }
+               ],
+    "verdict":  {
+                    "exitCode":  1,
+                    "text":  "Abweichungen gefunden (FAIL)."
+                },
+    "note":  "Dieses Protokoll hält fest, was gemessen wurde. Es ist kein Konformitätsnachweis. Siehe SPEC.md Abschnitt 5 und docs/EVIDENCE.md."
+}

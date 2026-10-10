@@ -25,20 +25,21 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] E-86 gemessen (Enterprise 25H2): Die Dienstregel gegen `DiagTrack` blockiert nicht; TEL-02 meldet WARN ([Messprotokoll](../conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV-E86/run.md))
 - [x] E-86 auf Pro nachgemessen ([Messprotokoll](../conformance/runs/2026-10-04-Pro26H2-26300.9457-HyperV-E86/run.md)): Dienstregel blockiert auch dort nicht; Telemetrie-Level senkt die Verbindungen nicht erkennbar; `dmwappushservice` war gestoppt
 - [ ] E-86 weiter: eine Programmregel oder das Abschalten des Dienstes als Ersatz prüfen
-- [ ] Zuordnung offen: Kompendium-Edition bei Veröffentlichung erneut prüfen
+- [x] Kompendium-Edition vor der Veröffentlichung erneut geprüft: am 2026-10-10 listet das BSI weiter nur die Edition 2023 ([BSI-MAPPING.md](BSI-MAPPING.md)); vor jedem Release zu wiederholen
 - [x] `Test-EdepConformance.ps1` Stufen „nur lesen“ und „Probe“ (lokal und als ZIP-Stand erprobt, Einheitentests, CI-Rauchtest)
 - [x] `Test-EdepConformance.ps1` Stufe „Destructive“ geschrieben (Schutz gegen Fehlbedienung, Einheitentests für die Auswertung)
 - [x] Stufe „Destructive“ in der Enterprise-VM gelaufen: 13 von 13 Schritten, Rücknahme identisch ([Protokoll](../conformance/runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Destructive/run.md))
 - [x] Stufe „Destructive“ in der Pro-VM gelaufen: 12 von 13 Schritten, `D-E1` (Rücknahme identisch) schlug fehl, weil `Restore-EdepL1` die älteste Sicherung nahm ([Protokoll](../conformance/runs/2026-10-10-Pro26H2-26300.9457-HyperV-Destructive/run.md), [E-91](EVIDENCE.md))
 - [x] Stufe „Destructive“ in der Pro-VM wiederholt (mit E-92, eigene Sicherung): 13 von 13 Schritten, `D-E1` identisch, auch nach Neustart ([Lauf 2](../conformance/runs/2026-10-10-Pro26H2-26300.9457-HyperV-Destructive/run.md))
-- [x] Signierter Release `0.1.0-draft.3` (SHA256SUMS, SSH-Signatur, signierter Tag; Anleitung in [SIGNING.md](SIGNING.md)); Authenticode-Signatur der Skripte (SYS.2.2.3.A22) bleibt offen, es fehlt ein anerkanntes Zertifikat
+- [x] Signierte Releases `0.1.0-draft.3` bis `0.1.0-draft.5` (SHA256SUMS, SSH-Signatur, signierter Tag; draft.4 und draft.5 mit Bitcoin-Zeitstempel, der von draft.5 noch ausstehend; Anleitung in [SIGNING.md](SIGNING.md)); Authenticode-Signatur der Skripte (SYS.2.2.3.A22) bleibt offen, es fehlt ein anerkanntes Zertifikat
 - [ ] Kontakt zum BSI erst nach vollständiger Zuordnung und signiertem Release; eine Unterstützung durch das BSI ist nicht zugesagt
 - [x] Neustart-Vorfall (E-76) protokolliert nachgemessen ([Lauf 4](../conformance/runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Lauf4/run.md)): Telemetriewert nach hartem Neustart reproduziert und mit Flush in `Restore-EdepL1` behoben (6 von 6); die früheren umfassenderen Vorfälle bleiben ungeklärt
 - [x] Geänderten `Restore-EdepL1` ohne den Fehlalarm zu SECURITY in einer VM gesehen (Pro, Lauf E-86 vom 2026-10-04); auf Enterprise noch nicht
-- [ ] Windows 11 Home und Windows Server prüfen
-- [ ] E-63/E-64: Vollständiger L1-Durchlauf auf frischer VM (Windows 11 Pro **und** Enterprise); Lauf 1 in Hyper-V mit Evaluierungs-ISO in Vorbereitung:
-      Install `-Enforce`, `Test-EdepL1` 15/15, Wirkungstests aus VERIFY-YOURSELF 2.2,
-      Umgehungstests T-BYP-01/-04/-05/-07, Restore. Protokoll unter `conformance/runs/<datum>-<edition>/`
+- [x] Windows 11 Home geprüft (Hyper-V, Build 26300.9457, [Protokoll](../conformance/runs/2026-10-10-Home26H2-26300.9457-HyperV/run.md)); App Control dort nicht prüfbar
+- [ ] Windows Server prüfen
+- [ ] Vergleichsmaßstab der Stufe überdenken: Die Gesamtzahl erlaubender Firewallregeln ist auf Home kein stabiles Kriterium (E-96)
+- [ ] Neuer Release mit den Korrekturen von Installer und Stufe (E-94, E-97)
+- [x] E-63/E-64: Vollständiger L1-Durchlauf auf frischer VM: Windows 11 Enterprise 25H2 ([Lauf 1](../conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md)) und Windows 11 Pro 26H2 ([Lauf 2](../conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md), Phasen A bis E, Phase F ausgelassen), mit `-Enforce`, `Test-EdepL1`, Wirkungstests und Restore; Einschränkungen in [SPEC 3.6](../SPEC.md)
 - [x] E-16: Spaltenposition „Setting Value“ in `auditpol /backup` bestätigt (CI, 2026-09-30)
 - [x] E-22: JSON-Feldname `IsSystemPolicy` in `CiTool -lp -json` bestätigt (CI, 2026-09-30)
 - [x] E-34: Herstellerbeleg für `PublishUserActivities`/`UploadUserActivities` verlinkt (Q-26, 2026-09-30)
@@ -49,7 +50,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 
 - [x] `Invoke-EdepAudit`: Punktzahl, Erklärungen, HTML-Bericht, läuft ohne Adminrechte
 - [x] PowerShell-Modul `EDEP` mit Manifest, Build-Skript
-- [x] CI: Syntax, BOM, Einheitentests (81), Sperre für fehlerhafte native Argumente, PSScriptAnalyzer, Rauchtests, Schema-Validierung, Prüfung der Seitenzahlen
+- [x] CI: Syntax, BOM, Einheitentests (89), Sperre für fehlerhafte native Argumente, PSScriptAnalyzer, Rauchtests, Schema-Validierung, Prüfung der Seitenzahlen
 - [ ] Signiert in der PowerShell Gallery veröffentlichen: `Install-Module EDEP`
 - [x] Englische Texte: Audit, Prüfdetails, HTML-Bericht, `README.en.md`; Sprache nach Windows-Anzeigesprache oder `-Language`
 - [ ] Englische Texte für `Install-EdepL1`/`Restore-EdepL1` und die Spezifikation
@@ -57,7 +58,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 
 ## M2: L1 produktionsreif (dieses Repo, MIT)
 
-- [ ] `Install-EdepL1` auf frischen VMs testen: Windows 11 Home, Pro, Enterprise, Server 2022/2025
+- [ ] `Install-EdepL1` auf frischen VMs testen: Windows 11 Home, Pro und Enterprise (gemessen), Server 2022/2025 (offen)
 - [ ] Aktive Konformitätstests aus `conformance/README.md` (T-NET-03a, T-NET-04a/b, T-TEL-04a, T-OPS-01a) als Skript
 - [ ] Store-Apps: Umgang mit AppContainer-Regeln dokumentieren
 - [ ] Ausnahmen für `winget` / `Install-Module` im Wartungsfall dokumentieren

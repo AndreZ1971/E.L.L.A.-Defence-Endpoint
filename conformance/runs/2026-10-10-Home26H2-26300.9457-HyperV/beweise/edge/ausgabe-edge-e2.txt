@@ -1,0 +1,64 @@
+﻿Install-Start: 10/10/2026 22:00:49
+Eigene Sicherung: 20261010-220049
+--- Test-EdepL1 unter Enforce ---
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+PASS    EDEP-NET-03  Ausgehend Block in allen Profilen; 141 aktive ausgehende Erlaubnisregeln, keine davon 
+uneingeschränkt
+PASS    EDEP-NET-04  21 LOLBins ausgehend blockiert, keine Authenticated-Bypass-Regel
+PASS    EDEP-NET-05  Public eingehend gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  19 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+WARN    EDEP-TEL-01  AllowTelemetry=0, wirksam auf 'Core': 1 (Required) — niedrigste Stufe dieser Edition
+WARN    EDEP-TEL-02  Blockregeln und Dienst-SID-Typ in Ordnung (DiagTrack, dmwappushservice), Wirkung nicht belegt: 
+DiagTrack verband in der Messung trotz Regel (E-86)
+PASS    EDEP-TEL-03  Werbe-ID und Aktivitätsverlauf per Richtlinie deaktiviert
+WARN    EDEP-TEL-04  Update-Domainregeln und Netzwerkschutz vorhanden, Wirkung nicht gemessen. Messen: 
+.\Test-EdepL1.ps1 -ProbeUpdates. Betrieb: Enforce nur mit definiertem Update-Weg (SPEC 3.5)
+PASS    EDEP-LOG-01  Firewall-Log und Ereignis 5157 aktiv
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261010-214004
+
+EDEP 0.1.0 L1 — geprüft 2026-10-10 — 14/15 erfüllt
+
+Ausgehend: Domain=Block, Private=Block, Public=Block
+--- Kontrolle: curl.exe unter Enforce ---
+curl example.org: 000
+--- Edge headless unter Enforce ---
+https://example.com -> Länge 2378, Titel: Example Domain
+https://example.org -> Länge 2378, Titel: Example Domain
+Restore-Start: 10/10/2026 22:01:28
+Restore-Ende: 10/10/2026 22:01:33
+Fingerabdruck geschrieben: C:\edep-fix\edge\fp-edge-nachher.json
+
+--- Unterschiede vor Enforce gegen nach Rücknahme ---
+
+Pfad                      Wert SideIndicator
+----                      ---- -------------
+.regeln.ausgehendErlauben 122  <=           
+.regeln.ausgehendErlauben 123  =>           
+
+
+
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, 
+InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  15 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, 
+EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261010-214004
+
+EDEP 0.1.0 L1 — geprüft 2026-10-10 — 7/15 erfüllt
+
+Ausgehend: Domain=Allow, Private=Allow, Public=Allow

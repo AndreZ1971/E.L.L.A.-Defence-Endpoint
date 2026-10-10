@@ -33,6 +33,30 @@ function Get-EdepOwnFirstBackup {
     $new[0]
 }
 
+function Test-EdepRestoreNeeded {
+    # Die Rücknahme ist nötig, sobald der Install angewendet wurde oder auch nur eine eigene Sicherung angelegt hat
+    # (ein Install kann nach der Sicherung abbrechen, dann ist das System teilweise geändert).
+    param([bool]$Applied, [string]$OwnBackup)
+    $Applied -or -not [string]::IsNullOrEmpty($OwnBackup)
+}
+
+function Test-EdepAppControlTemplate {
+    # Ohne die Beispielvorlage lässt sich -DeployAppControlAudit nicht ausführen (zum Beispiel Windows 11 Home).
+    Test-Path -LiteralPath $EdepAppControlTemplate
+}
+
+function Get-EdepExpectedAuditFailures {
+    # Erwartete nicht erfüllte Prüfungen im Audit-Modus (sortiert wie Get-EdepFailedIds).
+    param([bool]$AppControl)
+    if ($AppControl) { @('EDEP-NET-03') } else { @('EDEP-ID-01', 'EDEP-NET-03') }
+}
+
+function Get-EdepExpectedEnforceFailures {
+    # Erwartete nicht erfüllte Prüfungen unter Enforce.
+    param([bool]$AppControl)
+    if ($AppControl) { @() } else { @('EDEP-ID-01') }
+}
+
 function Get-EdepFailedIds {
     # IDs der Prüfungen mit FAIL oder UNKNOWN (sortiert).
     param($Results)
@@ -80,6 +104,7 @@ function Invoke-EdepDestructiveRun {
     $backupsBefore = & $backupNames
     $olderBackups = @($backupsBefore).Count
     $ownBackup = $null; $restoreMode = 'älteste Sicherung (Standard)'
+    $appControl = [bool](Test-EdepAppControlTemplate)
     $install = Join-Path $L1 'Install-EdepL1.ps1'; $restore = Join-Path $L1 'Restore-EdepL1.ps1'
     $edge = "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
     $x = Join-Path $env:TEMP 'edep-x.exe'; $bad = Join-Path $env:LOCALAPPDATA 'edep-test.exe'
@@ -95,12 +120,16 @@ function Invoke-EdepDestructiveRun {
         Add-Step (New-EdepStep 'D-A1' @('T-NET-03a') 'Ausgangszustand: Netz und unbekanntes Programm erreichen das Ziel' '200 und 200' ("curl.exe $netCurl, x.exe $netX") $(if ($netOk) { 'PASS' } else { 'NOT_ASSESSABLE' }))
 
         # Phase B: Audit-Modus
-        $null = & $install -DeployAppControlAudit -Confirm:$false *>&1 | Out-String
+        $pB = @{ Confirm = $false }
+        if ($appControl) { $pB.DeployAppControlAudit = $true }
+        $null = & $install @pB *>&1 | Out-String
         $applied = $true
         $ownBackup = Get-EdepOwnFirstBackup -Before $backupsBefore -After (& $backupNames)
         $b = @(Get-EdepL1CheckResult)
         $failedB = Get-EdepFailedIds $b
-        Add-Step (New-EdepStep 'D-B1' @('T-OPS-02', 'T-NET-03') 'Audit-Modus: nur EDEP-NET-03 ist nicht erfüllt' 'FAIL nur bei EDEP-NET-03' ('nicht erfüllt: ' + ($failedB -join ', ')) $(if (($failedB -join ',') -eq 'EDEP-NET-03') { 'PASS' } else { 'FAIL' }))
+        $expB = @(Get-EdepExpectedAuditFailures -AppControl $appControl)
+        $nameB = if ($appControl) { 'Audit-Modus: nur EDEP-NET-03 ist nicht erfüllt' } else { 'Audit-Modus ohne App Control (Vorlage fehlt): nur EDEP-ID-01 und EDEP-NET-03 sind nicht erfüllt' }
+        Add-Step (New-EdepStep 'D-B1' @('T-OPS-02', 'T-NET-03') $nameB ('FAIL nur bei ' + ($expB -join ' und ')) ('nicht erfüllt: ' + ($failedB -join ', ')) $(if ((@($failedB) -join ',') -eq ($expB -join ',')) { 'PASS' } else { 'FAIL' }))
         if ($netOk) {
             $cB = Get-EdepCurlCode $curl; $xB = Get-EdepCurlCode $x
             Add-Step (New-EdepStep 'D-B2' @('T-NET-04a') 'Audit-Modus: curl.exe ist blockiert (LOLBin-Regel)' '000' $cB $(if ($cB -eq '000') { 'PASS' } else { 'FAIL' }))
@@ -108,12 +137,16 @@ function Invoke-EdepDestructiveRun {
         }
 
         # Phase C: Enforce
-        $p = @{ Enforce = $true; DeployAppControlAudit = $true; AllowWindowsUpdate = $true; Confirm = $false }
+        $p = @{ Enforce = $true; AllowWindowsUpdate = $true; Confirm = $false }
+        if ($appControl) { $p.DeployAppControlAudit = $true }
         if (Test-Path -LiteralPath $edge) { $p.AllowProgram = $edge }
         $null = & $install @p *>&1 | Out-String
         $c = @(Get-EdepL1CheckResult)
         $failedC = Get-EdepFailedIds $c
-        Add-Step (New-EdepStep 'D-C1' @('T-NET-03') 'Enforce mit -AllowWindowsUpdate: alle 15 Prüfungen erfüllt (TEL-02 und TEL-04 dürfen WARN sein)' 'keine Prüfung FAIL oder UNKNOWN' $(if ($failedC.Count) { 'nicht erfüllt: ' + ($failedC -join ', ') } else { 'alle erfüllt' }) $(if ($failedC.Count -eq 0) { 'PASS' } else { 'FAIL' }))
+        $expC = @(Get-EdepExpectedEnforceFailures -AppControl $appControl)
+        $nameC = if ($appControl) { 'Enforce mit -AllowWindowsUpdate: alle 15 Prüfungen erfüllt (TEL-02 und TEL-04 dürfen WARN sein)' } else { 'Enforce mit -AllowWindowsUpdate ohne App Control (Vorlage fehlt): nur EDEP-ID-01 nicht erfüllt (TEL-02 und TEL-04 dürfen WARN sein)' }
+        $expTextC = if ($appControl) { 'keine Prüfung FAIL oder UNKNOWN' } else { 'nur EDEP-ID-01 FAIL' }
+        Add-Step (New-EdepStep 'D-C1' @('T-NET-03') $nameC $expTextC $(if ($failedC.Count) { 'nicht erfüllt: ' + ($failedC -join ', ') } else { 'alle erfüllt' }) $(if ((@($failedC) -join ',') -eq ($expC -join ',')) { 'PASS' } else { 'FAIL' }))
         if ($netOk) {
             $cC = Get-EdepCurlCode $curl; $xC = Get-EdepCurlCode $x
             Add-Step (New-EdepStep 'D-C2' @('T-NET-04a', 'T-NET-03a') 'Enforce: curl.exe ist blockiert' '000' $cC $(if ($cC -eq '000') { 'PASS' } else { 'FAIL' }))
@@ -150,9 +183,9 @@ function Invoke-EdepDestructiveRun {
     }
     catch { $errors += $_.Exception.Message }
     finally {
-        if ($applied) {
+        if (-not $ownBackup) { $ownBackup = Get-EdepOwnFirstBackup -Before $backupsBefore -After (& $backupNames) }
+        if (Test-EdepRestoreNeeded -Applied $applied -OwnBackup $ownBackup) {
             try {
-                if (-not $ownBackup) { $ownBackup = Get-EdepOwnFirstBackup -Before $backupsBefore -After (& $backupNames) }
                 if ($ownBackup) {
                     $restoreMode = "eigene Sicherung $ownBackup"
                     $null = & $restore -BackupPath (Join-Path $EdepBackupRoot $ownBackup) -Confirm:$false *>&1 | Out-String
@@ -182,7 +215,7 @@ function Invoke-EdepDestructiveRun {
         ran = $true; failed = $failed; passed = @($steps | Where-Object { $_.status -eq 'PASS' }).Count
         notAssessable = @($steps | Where-Object { $_.status -eq 'NOT_ASSESSABLE' }).Count
         restored = $restored; fingerprintIdentical = $identical; errors = @($errors); steps = @($steps)
-        olderBackups = $olderBackups; restoreMode = $restoreMode
+        olderBackups = $olderBackups; restoreMode = $restoreMode; appControlAvailable = $appControl
         note = 'Nach der Rücknahme ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6, E-76).'
     }
 }

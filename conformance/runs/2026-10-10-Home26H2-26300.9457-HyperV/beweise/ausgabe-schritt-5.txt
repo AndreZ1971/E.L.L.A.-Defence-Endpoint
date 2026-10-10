@@ -1,0 +1,57 @@
+﻿Start: 10/10/2026 21:39:47  Benutzer: test2  Admin: True  Letzter Start der VM: 10/10/2026 21:28:14
+Sicherungen vor dem Lauf: 0
+Fingerabdruck geschrieben: C:\edep-home\out\fp-vorher.json
+
+--- Test-EdepL1 (Ausgangszustand) ---
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, 
+InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  14 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, 
+EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+FAIL    EDEP-OPS-01  Keine EDEP-Sicherung unter C:\ProgramData\EDEP\backup
+
+EDEP 0.1.0 L1 — geprüft 2026-10-10 — 6/15 erfüllt
+
+--- Test-EdepConformance -Destructive (mit Integrität) ---
+EDEP-Konformitätsprüfung (Version 0.1.0) auf DESKTOP-73J5TGL
+PASS    Prüfsummen
+PASS    Signatur
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, 
+InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  14 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, 
+EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+FAIL    EDEP-OPS-01  Keine EDEP-Sicherung unter C:\ProgramData\EDEP\backup
+Destructive: das System wird verändert und am Ende zurückgenommen ...
+PASS           D-A1   Ausgangszustand: Netz und unbekanntes Programm erreichen das Ziel  [curl.exe 200, x.exe 200]
+FAIL           D-E1   Rücknahme: Fingerabdruck identisch zum Ausgangszustand  [Rücknahme nicht ausgeführt]
+FEHLER Vorlage fehlt: C:\WINDOWS\schemas\CodeIntegrity\ExamplePolicies\DefaultWindows_Audit.xml
+Bitte jetzt ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6).
+
+Abweichungen gefunden (FAIL).
+Protokoll: C:\edep-home\out\edep-conformance-DESKTOP-73J5TGL-20261010-214013.json
+
+Exit-Code: 1
+Ende: 10/10/2026 21:40:13

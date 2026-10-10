@@ -6,6 +6,9 @@ $script:EdepRuleGroup = 'EDEP-L1'
 $script:EdepDataRoot  = Join-Path $env:ProgramData 'EDEP'
 $script:EdepBackupRoot = Join-Path $script:EdepDataRoot 'backup'
 
+# Beispielrichtlinie von Microsoft für App Control im Audit-Modus (EDEP-ID-01). Nicht auf jeder Edition vorhanden (fehlt unter Windows 11 Home).
+$script:EdepAppControlTemplate = Join-Path $env:SystemRoot 'schemas\CodeIntegrity\ExamplePolicies\DefaultWindows_Audit.xml'
+
 # Überwachung "Filterplattformverbindung" (Ereignis 5157). GUID statt Namen, damit es auf jeder Sprachversion funktioniert.
 $script:AuditFilteringPlatformConnection = '{0CCE9226-69AE-11D9-BED3-505054503030}'
 

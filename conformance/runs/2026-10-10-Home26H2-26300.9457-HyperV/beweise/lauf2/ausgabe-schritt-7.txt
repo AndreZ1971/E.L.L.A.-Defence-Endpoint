@@ -1,0 +1,34 @@
+﻿Letzter Start nachher: 10/10/2026 21:52:38  (neuer Start: True)
+Fingerabdruck geschrieben: C:\edep-fix\out\fp2-nachher.json
+
+--- Unterschiede vorher gegen nach Neustart ---
+
+Pfad                      Wert SideIndicator
+----                      ---- -------------
+.regeln.ausgehendErlauben 107  <=           
+.regeln.ausgehendErlauben 122  =>           
+.regeln.eingehendErlauben 99   <=           
+.regeln.eingehendErlauben 105  =>           
+
+
+
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, 
+InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  15 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, 
+EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261010-214004
+
+EDEP 0.1.0 L1 — geprüft 2026-10-10 — 7/15 erfüllt
+

@@ -71,6 +71,12 @@ foreach ($p in $AllowProgram) {
     }
 }
 
+# Vorprüfung vor jedem Eingriff: Fehlt die Vorlage (zum Beispiel unter Windows 11 Home), wird nichts geändert.
+if ($DeployAppControlAudit -and -not (Test-Path -LiteralPath $EdepAppControlTemplate)) {
+    throw ("Vorlage fehlt: $EdepAppControlTemplate`nAuf manchen Editionen (zum Beispiel Windows 11 Home) ist sie nicht vorhanden; " +
+        "-DeployAppControlAudit lässt sich dort nicht ausführen. Ohne diese Option erneut starten. Es wurde nichts geändert.")
+}
+
 if ($Enforce -and $AllowProgram.Count -eq 0) {
     Write-Warning ('-Enforce ohne -AllowProgram: Browser und alle Programme ohne eigene ' +
         'Erlaubnisregel verlieren den Netzzugang. Store-Apps mit eigenen Windows-Regeln bleiben erreichbar.')
@@ -289,7 +295,7 @@ if ($DisableDiagTrack -and (Get-Service -Name DiagTrack -ErrorAction SilentlyCon
 # 7. Optional: App Control for Business im Audit-Modus (EDEP-ID-01)
 # ---------------------------------------------------------------------------
 if ($DeployAppControlAudit) {
-    $template = "$env:SystemRoot\schemas\CodeIntegrity\ExamplePolicies\DefaultWindows_Audit.xml"
+    $template = $EdepAppControlTemplate
     if (-not (Test-Path $template)) { throw "Vorlage fehlt: $template" }
     if ($PSCmdlet.ShouldProcess('App Control for Business', 'Richtlinie DefaultWindows_Audit aktivieren')) {
         Write-Step 'Aktiviere App-Control-Richtlinie (Audit)'
