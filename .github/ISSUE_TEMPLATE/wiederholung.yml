@@ -1,0 +1,76 @@
+name: Wiederholung melden
+description: Du hast eine Messung von EDEP L1 in einer eigenen Test-VM wiederholt (Anleitung docs/WIEDERHOLUNG.md)
+title: "Wiederholung: <Edition> <Build>"
+labels: ["wiederholung"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke. Gesucht ist auch, was **abweicht**. Bitte schicke keine Kennwörter, Schlüssel oder Kontodaten und nichts aus einer echten Umgebung.
+        Anleitung: [docs/WIEDERHOLUNG.md](https://github.com/AndreZ1971/E.L.L.A.-Defence-Endpoint/blob/main/docs/WIEDERHOLUNG.md).
+  - type: input
+    id: release
+    attributes:
+      label: Release (Tag)
+      description: Welchen Stand hast du geprüft?
+      placeholder: "0.1.0-draft.6"
+    validations:
+      required: true
+  - type: input
+    id: edition
+    attributes:
+      label: Windows-Edition und Build
+      description: Aus `winver`, vor und nach den Updates, wenn sie sich geändert haben.
+      placeholder: "Windows 11 Pro 26H2, Build 26300.9550"
+    validations:
+      required: true
+  - type: input
+    id: vm
+    attributes:
+      label: Art der VM
+      description: Hypervisor und Version. Bisher gemessen haben wir nur Hyper-V; andere sind willkommen.
+      placeholder: "Hyper-V auf Windows 11, Generation 2"
+    validations:
+      required: true
+  - type: dropdown
+    id: integritaet
+    attributes:
+      label: Integrität (Schritt 2, Prüfsummen und Signatur)
+      options:
+        - Beides PASS
+        - Prüfsummen FAIL oder WARN
+        - Signatur FAIL, SKIPPED oder UNKNOWN
+        - Nicht ausgeführt
+    validations:
+      required: true
+  - type: input
+    id: destructive
+    attributes:
+      label: Stufe „Destructive“ (Schritt 4)
+      description: Wie viele der Schritte `D-A1` bis `D-E1` waren PASS, wie viele FAIL oder NOT_ASSESSABLE?
+      placeholder: "13 PASS, 0 FAIL, 0 NOT_ASSESSABLE"
+    validations:
+      required: true
+  - type: textarea
+    id: abweichungen
+    attributes:
+      label: Abweichungen von den Erwartungen
+      description: Mit dem **Wortlaut** der Ausgabe. Wenn nichts abwich, schreibe „keine“.
+    validations:
+      required: true
+  - type: textarea
+    id: protokoll
+    attributes:
+      label: Protokoll
+      description: Ziehe die Datei `edep-conformance-<Rechner>-<Datum>.json` hier hinein oder hänge sie an. Ersetze vorher den Rechnernamen, wenn du ihn nicht veröffentlichen willst.
+  - type: checkboxes
+    id: einverstaendnis
+    attributes:
+      label: Einverständnis und Unabhängigkeit
+      options:
+        - label: Die Angaben dürfen im Repository veröffentlicht werden.
+          required: true
+        - label: Ich habe an der Entwicklung, den Tests und der Dokumentation von EDEP nicht mitgewirkt (unabhängig im Sinne von docs/WIEDERHOLUNG.md).
+          required: false
+        - label: Mein Name darf genannt werden.
+          required: false

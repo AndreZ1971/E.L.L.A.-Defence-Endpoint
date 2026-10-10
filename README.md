@@ -51,7 +51,7 @@ richtet sich nach der Windows-Anzeigesprache; `-Language de` oder `-Language en`
 | Woher stammen die Fakten?                   | 28 verlinkte Quellen, überwiegend Microsoft Learn und MITRE ATT&CK: [SPEC, Anhang B](SPEC.md#anhang-b--quellen)                                         |
 | Was kann EDEP **nicht**?                    | Restrisiken und acht bekannte Umgehungen, jede mit Test: [SPEC 3.3/3.4](SPEC.md#34-bekannte-umgehungen-normativ)                                        |
 | Wo weicht EDEP von Microsoft ab, und warum? | [DD-12](docs/DESIGN-DECISIONS.md)                                                                                                                       |
-| Wie prüfe ich es selbst?                    | In 5 Minuten ohne Risiko, in 30 Minuten in einer VM: [Selbst prüfen](docs/VERIFY-YOURSELF.md)                                                           |
+| Wie prüfe ich es selbst?                    | In 5 Minuten ohne Risiko, in 30 Minuten in einer VM: [Selbst prüfen](docs/VERIFY-YOURSELF.md). Eine Messung für uns wiederholen: [Wiederholung](docs/WIEDERHOLUNG.md)                                                           |
 | Welche Fehler gab es schon?                 | [Errata](docs/EVIDENCE.md#errata)                                                                                                                       |
 | Ich habe eine Lücke gefunden.               | [SECURITY.md](SECURITY.md)                                                                                                                              |
 

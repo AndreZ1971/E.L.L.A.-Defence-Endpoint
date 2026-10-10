@@ -36,7 +36,8 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] Neustart-Vorfall (E-76) protokolliert nachgemessen ([Lauf 4](../conformance/runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Lauf4/run.md)): Telemetriewert nach hartem Neustart reproduziert und mit Flush in `Restore-EdepL1` behoben (6 von 6); die früheren umfassenderen Vorfälle bleiben ungeklärt
 - [x] Geänderten `Restore-EdepL1` ohne den Fehlalarm zu SECURITY in einer VM gesehen (Pro, Lauf E-86 vom 2026-10-04); auf Enterprise noch nicht
 - [x] Windows 11 Home geprüft (Hyper-V, Build 26300.9457, [Protokoll](../conformance/runs/2026-10-10-Home26H2-26300.9457-HyperV/run.md)); App Control dort nicht prüfbar
-- [ ] Windows Server prüfen
+- [ ] Wiederholung durch Dritte vorbereitet ([WIEDERHOLUNG.md](WIEDERHOLUNG.md), Issue-Vorlage); es steht aus, **Personen zu finden** und eine Rückmeldung zu erhalten (K3)
+- [ ] Windows Server: nicht im Geltungsbereich von 1.0.0, später als eigenes Profil (Entscheidung 2026-10-10)
 - [x] Vergleichsmaßstab der Stufe geändert: Die Gesamtzahl erlaubender Firewallregeln zählt nicht mehr, weil sie auf Home von selbst wächst (E-96, E-98); ein Lauf in einer VM
 - [x] Neuer Release mit den Korrekturen von Installer und Stufe (E-94, E-97, E-98): `0.1.0-draft.6`
 - [x] E-63/E-64: Vollständiger L1-Durchlauf auf frischer VM: Windows 11 Enterprise 25H2 ([Lauf 1](../conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md)) und Windows 11 Pro 26H2 ([Lauf 2](../conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md), Phasen A bis E, Phase F ausgelassen), mit `-Enforce`, `Test-EdepL1`, Wirkungstests und Restore; Einschränkungen in [SPEC 3.6](../SPEC.md)
@@ -62,6 +63,24 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [ ] Aktive Konformitätstests aus `conformance/README.md` als Skript: Die Stufe „Destructive“ deckt T-NET-03a, T-NET-04a/b und T-OPS-01a ab; **offen** sind T-NET-02a, T-TEL-02a, T-TEL-04a, T-BYP-02 und T-BYP-03 (im Protokoll unter `notRun`)
 - [ ] Store-Apps: Umgang mit AppContainer-Regeln dokumentieren
 - [ ] Ausnahmen für `winget` / `Install-Module` im Wartungsfall dokumentieren
+
+## Version 1.0.0: Kriterien (Entwurf, nicht beschlossen)
+
+Stand 2026-10-10. Bisher ist nicht festgelegt, was 1.0.0 bedeutet; dies ist ein **Vorschlag** zur Bewertung durch den Herausgeber. Gemeint ist die Stufe L1 (dieses Repository), nicht L2 oder L3. **Geltungsbereich: Windows 11 (Client).** Windows Server und Windows 10 gehören nicht zu 1.0.0; ein Serverprofil wäre eine spätere Erweiterung mit eigenem Profil. Eine Version 1.0.0 wäre **kein Konformitätsnachweis** und keine Aussage des BSI.
+
+| Nr. | Kriterium | Stand |
+| --- | --- | --- |
+| K1 | **Update-Weg:** Für den Weg B („Wartungsfenster“, [SPEC 3.5](../SPEC.md)) ist die **Installation von Updates im Fenster** gemessen (Rücknahme, Updates, erneutes Enforce, Prüfung). Der Weg A (zentraler Update-Server) bleibt **ausdrücklich ungemessen** (Betreiber-Verantwortung, [SPEC 3.5](../SPEC.md)): Seine Messung setzt eine Server-Rolle oder einen Update-Proxy voraus und ist von der Umgebung des Betreibers abhängig. | offen: Installation im Fenster ungemessen ([E-89](EVIDENCE.md)); Weg A steht in der SPEC als ungemessen |
+| K2 | **Telemetrie:** `EDEP-TEL-02` hat eine gemessene Wirkung für `DiagTrack` **oder** SPEC und README sagen ausdrücklich, dass die Sperre nur den Dienstpfad betrifft und die Wirkung nicht belegt ist. Ein Ersatz (Programmregel, Dienst abschalten) ist gemessen oder als ungemessen benannt. | teilweise: Aussage ist so eingeschränkt ([E-86](EVIDENCE.md)), Ersatz ungemessen |
+| K3 | **Reproduzierbarkeit:** Mindestens **eine** Wiederholung der Läufe durch Personen **außerhalb des Projekts**, mit dem Ausgabeformat von `Test-EdepConformance.ps1`, veröffentlicht. | offen: keine |
+| K4 | **Fachliche Durchsicht:** Eine fachkundige Person hat die BSI-Zuordnung ([BSI-MAPPING.md](BSI-MAPPING.md)) gelesen; das Ergebnis ist dokumentiert. | offen |
+| K5 | **Keine undokumentierte Abweichung:** Jeder bekannte Fehler steht in SPEC 3.6 oder im Belegregister; keine ⏳-Aussage wird als Tatsache verwendet. | bei jedem Release zu prüfen |
+| K6 | **Umfang ehrlich:** SPEC 3.6 nennt die ungemessenen Umgebungen innerhalb des Geltungsbereichs (echte Hardware, andere Sprachen, fremder Virenschutz, DoH) und nennt Windows 10 und Windows Server als nicht im Geltungsbereich. Mindestens Windows 11 Enterprise, Pro und Home sind gemessen. | erfüllt (je eine VM, wenige Läufe) |
+| K7 | **Release-Hygiene:** signierter Release mit Prüfsummen und bestätigtem Bitcoin-Zeitstempel, CI grün. | erfüllt für `0.1.0-draft.5`; der Zeitstempel von draft.6 steht aus |
+
+**Nicht Voraussetzung** (Vorschlag): Authenticode-Signatur der Skripte (braucht ein anerkanntes Zertifikat, bleibt als Einschränkung), PowerShell Gallery, englische Spezifikation, Messungen auf echter Hardware (K6 verlangt nur, sie ehrlich zu benennen), L2 und L3. **Ausdrücklich nicht im Geltungsbereich:** Windows Server und Windows 10.
+
+**Entschieden (2026-10-10):** Windows Server gehört nicht in den Geltungsbereich von 1.0.0; für K3 genügt eine Wiederholung durch Dritte. **Entschieden:** Weg A bleibt ausdrücklich ungemessen, K1 verlangt nur die Messung des Weges B. **Offen:** Der Entwurf ist als Ganzes noch nicht beschlossen.
 
 ## Weitere Stufen
 

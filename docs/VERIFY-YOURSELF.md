@@ -2,7 +2,7 @@
 
 Diese Anleitung ist für alle, die EDEP nicht glauben, sondern prüfen wollen. Jeder Schritt
 nennt den Befehl und das erwartete Ergebnis. Weicht das Ergebnis ab, ist das ein Fehler in
-EDEP: bitte als Issue melden ([SECURITY.md](../SECURITY.md) bei Sicherheitsrelevanz).
+EDEP: bitte als Issue melden ([SECURITY.md](../SECURITY.md) bei Sicherheitsrelevanz). Wer eine Messung als **Wiederholung** für das Projekt melden will, findet Ablauf und Meldeweg in [WIEDERHOLUNG.md](WIEDERHOLUNG.md).
 
 **Grundregel:** Nichts davon auf einem Produktivrechner. Eine VM mit Snapshot genügt, z. B.
 Windows 11 Enterprise als Evaluierungsversion oder Windows 11 Pro.

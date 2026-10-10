@@ -6,6 +6,8 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 
 ## [Unveröffentlicht]
 
+- **Wiederholung durch Dritte vorbereitet:** [`docs/WIEDERHOLUNG.md`](docs/WIEDERHOLUNG.md) (Ablauf, Datenschutz, Stolpersteine), Issue-Vorlage `.github/ISSUE_TEMPLATE/wiederholung.yml`, Verweise aus README, Seiten und `docs/VERIFY-YOURSELF.md`.
+- **`docs/ROADMAP.md`: Entwurf der Kriterien für 1.0.0** (K1 bis K7, Geltungsbereich Windows 11 Client; Windows Server und Windows 10 nicht im Geltungsbereich, Weg A der Updates ausdrücklich ungemessen, für K3 genügt eine Wiederholung durch Dritte); noch nicht beschlossen. `SPEC.md` 3.6 entsprechend angepasst.
 ## [0.1.0-draft.6] – 2026-10-10
 
 **Entwurf, kein Konformitätsnachweis.** Ergänzt `0.1.0-draft.5`: Windows 11 Home gemessen, Korrekturen an Installer und Prüfstufe, neuer Vergleichsmaßstab der Stufe, Vorlage für die Begründung von Abweichungen in SPEC 3.5, Zeitstempel je Release unter `timestamps/` (der von draft.5 ist in Bitcoin-Block 970810 bestätigt). Dieser Stand ist signiert (`SHA256SUMS`, `SHA256SUMS.sig`, signierter Tag, [SIGNING.md](docs/SIGNING.md)). Bekannte Einschränkungen: [SPEC.md, Abschnitt 3.6](SPEC.md).

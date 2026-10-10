@@ -52,7 +52,7 @@ language; `-Language en` or `-Language de` forces it.
 | Where do the facts come from?                    | 28 linked sources, mostly Microsoft Learn and MITRE ATT&CK: [SPEC, Annex B](SPEC.md#anhang-b--quellen)                                           |
 | What can EDEP **not** do?                        | Residual risks and eight known bypasses, each with a test: [SPEC 3.3/3.4](SPEC.md#34-bekannte-umgehungen-normativ)                               |
 | Where does EDEP deviate from Microsoft, and why? | [DD-12](docs/DESIGN-DECISIONS.md)                                                                                                                |
-| How do I check it myself?                        | In 5 minutes without risk, in 30 minutes in a VM: [verify yourself](docs/VERIFY-YOURSELF.md)                                                     |
+| How do I check it myself?                        | In 5 minutes without risk, in 30 minutes in a VM: [verify yourself](docs/VERIFY-YOURSELF.md). Repeat a measurement for us: [repeat a run](docs/WIEDERHOLUNG.md) (German)                                                     |
 | Which mistakes were already found?               | [Errata](docs/EVIDENCE.md#errata)                                                                                                                |
 | I found a hole.                                  | [SECURITY.md](SECURITY.md)                                                                                                                       |
 
