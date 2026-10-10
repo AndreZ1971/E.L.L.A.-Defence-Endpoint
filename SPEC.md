@@ -8,7 +8,7 @@
 | **Status**    | Entwurf (Draft) — nicht versiegelt, Änderungen erwartet    |
 | **Datum**     | 2026-09-30                                                 |
 | **Autor**     | Andre Zabel                                                |
-| **Plattform** | Windows 11 (22H2+) und Windows Server 2022+, x64 und ARM64 |
+| **Plattform** | Windows 11 (22H2+), Client. Gemessen sind 25H2 und 26H2 auf x64. Windows Server 2022+ und ARM64 sind nicht Teil von 1.0.0 und nicht gemessen ([ROADMAP](docs/ROADMAP.md)) |
 | **Lizenz**    | MIT                                                        |
 
 ---

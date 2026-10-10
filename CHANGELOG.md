@@ -6,6 +6,7 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 
 ## [Unveröffentlicht]
 
+- **`SPEC.md`, Plattformzeile:** Windows 11 (22H2+), Client; gemessen sind 25H2 und 26H2 auf x64. Windows Server 2022+ und ARM64 stehen nicht mehr als unterstützt da, sondern als nicht Teil von 1.0.0 und ungemessen (Entscheidung zum Geltungsbereich, 2026-10-10).
 - **Wiederholung durch Dritte vorbereitet:** [`docs/WIEDERHOLUNG.md`](docs/WIEDERHOLUNG.md) (Ablauf, Datenschutz, Stolpersteine), Issue-Vorlage `.github/ISSUE_TEMPLATE/wiederholung.yml`, Verweise aus README, Seiten und `docs/VERIFY-YOURSELF.md`.
 - **`docs/ROADMAP.md`: Entwurf der Kriterien für 1.0.0** (K1 bis K7, Geltungsbereich Windows 11 Client; Windows Server und Windows 10 nicht im Geltungsbereich, Weg A der Updates ausdrücklich ungemessen, für K3 genügt eine Wiederholung durch Dritte); noch nicht beschlossen. `SPEC.md` 3.6 entsprechend angepasst.
 ## [0.1.0-draft.6] – 2026-10-10

@@ -59,7 +59,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 
 ## M2: L1 produktionsreif (dieses Repo, MIT)
 
-- [ ] `Install-EdepL1` auf frischen VMs testen: Windows 11 Home, Pro und Enterprise (gemessen), Server 2022/2025 (offen)
+- [ ] `Install-EdepL1` auf frischen VMs testen: Windows 11 Home, Pro und Enterprise (gemessen), Server 2022/2025 (nicht im Geltungsbereich von 1.0.0)
 - [ ] Aktive Konformitätstests aus `conformance/README.md` als Skript: Die Stufe „Destructive“ deckt T-NET-03a, T-NET-04a/b und T-OPS-01a ab; **offen** sind T-NET-02a, T-TEL-02a, T-TEL-04a, T-BYP-02 und T-BYP-03 (im Protokoll unter `notRun`)
 - [ ] Store-Apps: Umgang mit AppContainer-Regeln dokumentieren
 - [ ] Ausnahmen für `winget` / `Install-Module` im Wartungsfall dokumentieren

@@ -62,7 +62,7 @@ PowerShell **als Administrator**, Snapshot vorher anlegen.
 > **Stand:** Zwei vollständige Durchläufe auf Hyper-V-VMs liegen vor: Windows 11 Enterprise 25H2
 > ([Protokoll](../conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md)) und Windows 11 Pro 26H2
 > ([Protokoll](../conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md)). Sie haben Mängel gefunden,
-> die in den Erwartungen unten stehen. Windows Server ist nicht geprüft, Windows 11 Home nur einmal in einer VM (App Control ist dort nicht prüfbar, [E-94](EVIDENCE.md)); jeder Durchlauf eines Dritten
+> die in den Erwartungen unten stehen. Windows Server und Windows 10 sind nicht im Geltungsbereich, Windows 11 Home wurde nur einmal in einer VM geprüft (App Control ist dort nicht prüfbar, [E-94](EVIDENCE.md)); jeder Durchlauf eines Dritten
 > ist ein Beitrag.
 >
 > **Vorbereitung auf einem frischen Windows:** Skripte sind gesperrt. Einmal pro PowerShell-Sitzung
