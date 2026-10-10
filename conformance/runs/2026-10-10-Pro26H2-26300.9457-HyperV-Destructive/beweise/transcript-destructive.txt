@@ -1,0 +1,179 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261010191711
+Benutzername: test\test1
+RunAs-Benutzer: test\test1
+Konfigurationsname: 
+Computer: TEST (Microsoft Windows NT 10.0.26300.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 10620
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Start: 10/10/2026 19:17:11  Benutzer: test1  Admin: True
+EDEP-Konformitätsprüfung (Version 0.1.0) auf TEST
+SKIPPED Prüfsummen
+SKIPPED Signatur
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  15 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-132020
+
+EDEP-Audit TEST — 41/100 (Stufe D)
+Offen: 13  Teilweise: 0  Erfüllt: 10  Nicht prüfbar: 0
+
+FAIL     Ausgehender Verkehr standardmäßig blockiert
+         Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL     Windows-Bordwerkzeuge (LOLBins) ausgehend gesperrt
+         21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL     App Control for Business aktiv
+         Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL     SMB/RDP/WinRM/RPC in öffentlichen Netzen gesperrt
+         Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+FAIL     Telemetrie-Dienste ausgehend gesperrt
+         Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL     Defender Network Protection aktiv
+         Deaktiviert
+FAIL     Blockierte Verbindungen werden protokolliert
+         LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+FAIL     LLMNR deaktiviert
+         Aktiv (Windows-Standard)
+FAIL     Defender-ASR-Regeln im Blockiermodus
+         Keine ASR-Regel aktiv
+FAIL     Telemetrie auf niedrigster Stufe
+         Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL     Werbe-ID und Aktivitätsverlauf deaktiviert
+         Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed
+FAIL     NetBIOS über TCP/IP deaktiviert
+         Auf 2 von 2 Schnittstellen aktiv oder per DHCP gesteuert
+FAIL     PowerShell-Skriptblockprotokollierung aktiv
+         Nicht aktiv
+INFO     Aus dem Netz erreichbare Dienste
+         20 lauschende TCP-Endpunkte: lsass (49664); services (49670); spoolsv (49668); svchost (135); svchost (49666); svchost (49667); svchost (49669); svchost (5040); svchost (7680); System (139,445); wininit (49665)
+PASS     Firewall aktiv, eingehend blockiert
+PASS     Freigegebene Programme nur durch Admins änderbar
+PASS     SMBv1-Client nicht aktiv
+PASS     Sicherheitsupdates erreichbar
+PASS     Remotedesktop aus oder mit NLA
+PASS     BITS-Übertragungen werden protokolliert
+PASS     Stealth-Modus aktiv
+PASS     PowerShell 2.0 entfernt
+PASS     Firewall-Log bleibt lokal
+PASS     EDEP-Sicherung vorhanden
+Destructive: das System wird verändert und am Ende zurückgenommen ...
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261010-191717
+==> Firewall-Profile: eingehend Block, ausgehend Allow, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Setze Telemetrie-Richtlinien
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: AUDIT).
+Sicherung:      C:\ProgramData\EDEP\backup\20261010-191717
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261010-191717'
+
+Audit-Modus: EDEP-NET-03 ist noch nicht erfüllt. Firewall-Log auswerten, dann mit -Enforce erneut ausführen.
+==> Sichere aktuellen Zustand nach C:\ProgramData\EDEP\backup\20261010-191724
+==> Firewall-Profile: eingehend Block, ausgehend Block, Protokollierung verworfener Pakete
+==> Lege Regelgruppe EDEP-L1 neu an
+==> Lege Update-Domainregeln an (9 Domains, Stand 2026-10-03)
+==> Setze Telemetrie-Richtlinien
+==> Aktiviere Ereignis 5157 (blockierte Verbindungen)
+==> Aktiviere App-Control-Richtlinie (Audit)
+
+EDEP L1 angewendet (Modus: ENFORCE).
+Sicherung:      C:\ProgramData\EDEP\backup\20261010-191724
+Prüfen:         .\Test-EdepL1.ps1
+Rückgängig:     .\Restore-EdepL1.ps1 -BackupPath 'C:\ProgramData\EDEP\backup\20261010-191724'
+
+Enforce-Modus: Updates sind nur mit einem festgelegten Update-Weg erreichbar (WSUS/Intune/Proxy oder Wartungsfenster, SPEC 3.5).
+PS>TerminatingError(): "AllowProgram 'C:\Users\test1\AppData\Local\edep-test.exe' ist für Nicht-Administratoren änderbar und darf nicht freigegeben werden (EDEP-NET-10):
+  C:\Users\test1\AppData\Local\edep-test.exe schreibbar für test\test1
+  C:\Users\test1\AppData\Local gehört test\test1
+  C:\Users\test1\AppData\Local schreibbar für test\test1
+  C:\Users\test1\AppData gehört test\test1
+  C:\Users\test1\AppData schreibbar für test\test1
+  C:\Users\test1 schreibbar für test\test1
+Programm systemweit (z. B. unter C:\Program Files) installieren und erneut versuchen."
+Sicherung vom 2026-10-03T13:20:20.6679314+02:00 (TEST)
+
+Wiederherstellung abgeschlossen. Ein Neustart wird empfohlen (App Control, Dienste).
+PASS           D-A1   Ausgangszustand: Netz und unbekanntes Programm erreichen das Ziel  [curl.exe 200, x.exe 200]
+PASS           D-B1   Audit-Modus: nur EDEP-NET-03 ist nicht erfüllt  [nicht erfüllt: EDEP-NET-03]
+PASS           D-B2   Audit-Modus: curl.exe ist blockiert (LOLBin-Regel)  [000]
+PASS           D-B3   Audit-Modus: umbenannte Kopie von curl.exe kommt durch (B-07)  [200]
+PASS           D-C1   Enforce mit -AllowWindowsUpdate: alle 15 Prüfungen erfüllt (TEL-02 und TEL-04 dürfen WARN sein)  [alle erfüllt]
+PASS           D-C2   Enforce: curl.exe ist blockiert  [000]
+PASS           D-C3   Enforce: umbenannte Kopie von curl.exe ist blockiert  [000]
+PASS           D-C4   Enforce: BITS zu example.org gelingt nicht (B-01, gemessen: blockiert)  [FEHLER]
+PASS           D-D1   -AllowProgram mit beschreibbarem Pfad bricht ab (EDEP-NET-10)  [Abbruch: AllowProgram 'C:\Users\test1\AppData\Local\edep-test.exe' ist für Nicht-Administratoren änderbar und darf nicht freigegeben werden (EDEP-NET-10):]
+PASS           D-D2   Authenticated-Bypass-Regel anlegen: EDEP-NET-04 meldet FAIL (B-05)  [FAIL]
+PASS           D-D3   Uneingeschränkte ausgehende Erlaubnisregel: EDEP-NET-03 meldet FAIL (B-08)  [FAIL]
+PASS           D-D4   Testregeln wieder entfernt  [0 Reste]
+FAIL           D-E1   Rücknahme: Fingerabdruck identisch zum Ausgangszustand  [weicht ab]
+Bitte jetzt ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6).
+
+Abweichungen gefunden (FAIL).
+Protokoll: C:\edep-draft4\edep\edep-conformance-TEST-20261010-191908.json
+EDEP-Konformitätsprüfung (Version 0.1.0) auf TEST
+SKIPPED Prüfsummen
+SKIPPED Signatur
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, InstallUtil.exe, 
+MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  15 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-132020
+Destructive: das System wird verändert und am Ende zurückgenommen ...
+PASS           D-A1   Ausgangszustand: Netz und unbekanntes Programm erreichen das Ziel  [curl.exe 200, x.exe 200]
+PASS           D-B1   Audit-Modus: nur EDEP-NET-03 ist nicht erfüllt  [nicht erfüllt: EDEP-NET-03]
+PASS           D-B2   Audit-Modus: curl.exe ist blockiert (LOLBin-Regel)  [000]
+PASS           D-B3   Audit-Modus: umbenannte Kopie von curl.exe kommt durch (B-07)  [200]
+PASS           D-C1   Enforce mit -AllowWindowsUpdate: alle 15 Prüfungen erfüllt (TEL-02 und TEL-04 dürfen WARN sein)  [alle erfüllt]
+PASS           D-C2   Enforce: curl.exe ist blockiert  [000]
+PASS           D-C3   Enforce: umbenannte Kopie von curl.exe ist blockiert  [000]
+PASS           D-C4   Enforce: BITS zu example.org gelingt nicht (B-01, gemessen: blockiert)  [FEHLER]
+PASS           D-D1   -AllowProgram mit beschreibbarem Pfad bricht ab (EDEP-NET-10)  [Abbruch: AllowProgram 
+'C:\Users\test1\AppData\Local\edep-test.exe' ist für Nicht-Administratoren änderbar und darf nicht freigegeben werden (EDEP-NET-10):]
+PASS           D-D2   Authenticated-Bypass-Regel anlegen: EDEP-NET-04 meldet FAIL (B-05)  [FAIL]
+PASS           D-D3   Uneingeschränkte ausgehende Erlaubnisregel: EDEP-NET-03 meldet FAIL (B-08)  [FAIL]
+PASS           D-D4   Testregeln wieder entfernt  [0 Reste]
+FAIL           D-E1   Rücknahme: Fingerabdruck identisch zum Ausgangszustand  [weicht ab]
+Bitte jetzt ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6).
+
+Abweichungen gefunden (FAIL).
+Protokoll: C:\edep-draft4\edep\edep-conformance-TEST-20261010-191908.json
+Exit-Code: 1
+Ende: 10/10/2026 19:19:08
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261010191908
+**********************

@@ -6,6 +6,9 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 
 ## [Unveröffentlicht]
 
+- **`docs/BSI-MAPPING.md`: Abschnitt Grundschutz++** (Stand-der-Technik-Bibliothek, Katalog Version 2026-09-24, Zuordnung IT-GS 2023 → GS++ als Entwurf des BSI). Neu: KONF.7.15 „Lokale Firewall“, TEST.5.4 „Persistenz“, die BSI-Aussage zur Ablösung des Kompendiums mit Terminen, Abgrenzung Windows 10 und 11 (E-86).
+- **Stufe „Destructive“ in der Pro-VM gemessen** ([Protokoll](conformance/runs/2026-10-10-Pro26H2-26300.9457-HyperV-Destructive/run.md), E-91): 12 von 13 Schritten, `D-E1` (Rücknahme identisch) schlug fehl, weil `Restore-EdepL1` ohne `-BackupPath` die älteste von 19 Sicherungen früherer Läufe nahm.
+- **Stufe „Destructive“ übergibt der Rücknahme ihre eigene erste Sicherung** (`-BackupPath`) und meldet ältere Sicherungen (`olderBackups`, `restoreMode` im Protokoll und als Hinweis in der Ausgabe); `Get-EdepOwnFirstBackup`, 4 neue Einheitentests (81). In einer VM noch nicht wiederholt gemessen (E-92).
 - **Bitcoin-Zeitstempel (OpenTimestamps)** für Releases: `tools/ots.py` (`stamp`, `upgrade`, `verify`, braucht nur `pip install opentimestamps`), `SHA256SUMS.ots` für `0.1.0-draft.4` (bei vier Kalendern eingereicht; **bestätigt in Bitcoin-Block 969890, 2026-10-04 19:35:29 UTC**), Beschreibung in [docs/SIGNING.md](docs/SIGNING.md). Das Werkzeug wurde an einem echten Zeitstempel geprüft (Test an einem Zeitstempel eines anderen Projekts, Bitcoin-Block 952238, 2026-06-03 16:29 UTC).
 
 ## [0.1.0-draft.4] – 2026-10-04

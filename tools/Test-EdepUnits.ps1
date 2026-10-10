@@ -242,6 +242,10 @@ Assert-That 'Fingerabdruck: leere Eingaben gelten nie als identisch' (-not (Test
 $res = @([pscustomobject]@{ Id = 'EDEP-NET-03'; Status = 'FAIL' }, [pscustomobject]@{ Id = 'EDEP-TEL-02'; Status = 'WARN' }, [pscustomobject]@{ Id = 'EDEP-ID-01'; Status = 'UNKNOWN' }, [pscustomobject]@{ Id = 'EDEP-NET-01'; Status = 'PASS' })
 Assert-That 'Statusabgleich: FAIL und UNKNOWN werden sortiert genannt, WARN und PASS nicht' (((Get-EdepFailedIds $res) -join ',') -eq 'EDEP-ID-01,EDEP-NET-03')
 Assert-That 'Statusabgleich: Status einer Prüfung und fehlende Prüfung' (((Get-EdepStatusOf $res 'EDEP-TEL-02') -eq 'WARN') -and ((Get-EdepStatusOf $res 'EDEP-XXX-99') -eq 'FEHLT'))
+Assert-That 'Eigene Sicherung: nur neu angelegte zählen, die älteste neue gewinnt' ((Get-EdepOwnFirstBackup -Before @('20261003-132020', '20261004-193523') -After @('20261003-132020', '20261004-193523', '20261010-191724', '20261010-191717')) -eq '20261010-191717')
+Assert-That 'Eigene Sicherung: ohne neue Sicherung kommt $null' ($null -eq (Get-EdepOwnFirstBackup -Before @('20261003-132020') -After @('20261003-132020')))
+Assert-That 'Eigene Sicherung: ohne vorherige Sicherungen gilt die erste neue' ((Get-EdepOwnFirstBackup -Before @() -After @('20261010-191724', '20261010-191717')) -eq '20261010-191717')
+Assert-That 'Eigene Sicherung: leere Eingaben ergeben $null' ($null -eq (Get-EdepOwnFirstBackup))
 $stp = New-EdepStep 'D-X1' @('T-A', 'T-B') 'Name' 'erwartet' 'beobachtet' 'PASS'
 Assert-That 'Schritt: enthält Kennung, Tests, Erwartung, Beobachtung und Status' (($stp.id -eq 'D-X1') -and ($stp.tests.Count -eq 2) -and ($stp.status -eq 'PASS') -and ($stp.observed -eq 'beobachtet'))
 

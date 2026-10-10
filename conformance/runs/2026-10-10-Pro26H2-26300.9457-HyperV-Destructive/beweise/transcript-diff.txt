@@ -1,0 +1,48 @@
+﻿**********************
+nStart der Windows PowerShell-Aufzeichnung
+Startzeit: 20261010192041
+Benutzername: test\test1
+RunAs-Benutzer: test\test1
+Konfigurationsname: 
+Computer: TEST (Microsoft Windows NT 10.0.26300.0)
+Hostanwendung: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Prozess-ID: 10620
+PSVersion: 5.1.26100.9444
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.9444
+BuildVersion: 10.0.26100.9444
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+--- Dateien der Stufe ---
+
+FullName                                                                                                                                             Length LastWriteTime      
+--------                                                                                                                                             ------ -------------      
+C:\edep-draft4\edep\conformance\runs\2026-10-04-Enterprise25H2-26200.9550-HyperV-Lauf4\beweise\edep-conformance-DESKTOP-QKILAOK-20261003-235949.json  13897 04.10.2026 20:17:16
+C:\edep-draft4\edep\conformance\runs\2026-10-04-Enterprise25H2-26200.9550-HyperV-Lauf4\beweise\edep-conformance-DESKTOP-QKILAOK-20261004-000222.json  13832 04.10.2026 20:17:16
+C:\edep-draft4\edep\destructive-nachher.json                                                                                                           2730 10.10.2026 19:19:08
+C:\edep-draft4\edep\destructive-vorher.json                                                                                                            2730 10.10.2026 19:17:16
+C:\edep-draft4\edep\edep-conformance-TEST-20261010-191908.json                                                                                        19884 10.10.2026 19:19:08
+C:\edep-draft4\out\fp-vorher.json                                                                                                                      2730 10.10.2026 19:16:24
+Fingerabdruck geschrieben: C:\edep-draft4\out\fp-jetzt.json
+--- Unterschiede vorher (fp-vorher.json) gegen jetzt ---
+
+Pfad                      Wert SideIndicator
+----                      ---- -------------
+.regeln.ausgehendErlauben 121  <=           
+.regeln.ausgehendErlauben 122  =>           
+.regeln.eingehendErlauben 107  <=           
+.regeln.eingehendErlauben 106  =>
+--- Firewall-Profile jetzt ---
+
+Name    Enabled DefaultInboundAction DefaultOutboundAction LogBlocked
+----    ------- -------------------- --------------------- ----------
+Domain     True                Block                 Allow      False
+Private    True                Block                 Allow      False
+Public     True                Block                 Allow      False
+**********************
+Ende der Windows PowerShell-Aufzeichnung
+Endzeit: 20261010192042
+**********************

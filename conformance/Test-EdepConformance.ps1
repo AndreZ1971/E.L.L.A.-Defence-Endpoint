@@ -162,6 +162,9 @@ if ($Destructive) {
             Write-Host ('{0,-14} {1,-6} {2}  [{3}]' -f $st.status, $st.id, $st.name, $st.observed) -ForegroundColor $color
         }
         foreach ($e in $destructiveResult.errors) { Write-Host "FEHLER $e" -ForegroundColor Red }
+        if ($destructiveResult.olderBackups -gt 0) {
+            Write-Host (T "Hinweis: Vor dem Lauf lagen $($destructiveResult.olderBackups) Sicherung(en) früherer Läufe vor. Die Rücknahme erfolgte aus: $($destructiveResult.restoreMode). Restore-EdepL1.ps1 ohne -BackupPath nimmt die älteste Sicherung." "Note: $($destructiveResult.olderBackups) backup(s) from earlier runs existed before this run. Rolled back from: $($destructiveResult.restoreMode). Restore-EdepL1.ps1 without -BackupPath uses the oldest backup.") -ForegroundColor Yellow
+        }
         Write-Host (T 'Bitte jetzt ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6).' 'Please restart normally now and run Test-EdepL1 (SPEC 3.6).') -ForegroundColor Yellow
     }
 }

@@ -24,6 +24,15 @@ function Test-EdepFingerprintIdentical {
     @(Compare-Object $x $y).Count -eq 0
 }
 
+function Get-EdepOwnFirstBackup {
+    # Name der ersten Sicherung, die ein Lauf neu angelegt hat (Namen sind Zeitstempel, die älteste neue gewinnt).
+    # $null, wenn keine neue Sicherung entstanden ist.
+    param([string[]]$Before = @(), [string[]]$After = @())
+    $new = @($After | Where-Object { $_ -and ($Before -notcontains $_) } | Sort-Object)
+    if ($new.Count -eq 0) { return $null }
+    $new[0]
+}
+
 function Get-EdepFailedIds {
     # IDs der Prüfungen mit FAIL oder UNKNOWN (sortiert).
     param($Results)
@@ -64,6 +73,13 @@ function Invoke-EdepDestructiveRun {
     param([string]$L1, [string]$FingerprintScript, [string]$WorkDir)
     $errors = @(); $applied = $false; $restored = $false
     $stepList = New-Object System.Collections.ArrayList
+    # Restore ohne -BackupPath nimmt die ÄLTESTE Sicherung (Zustand vor der ersten Installation überhaupt). Liegen
+    # Sicherungen früherer Läufe vor, ginge die Rücknahme auf deren Stand zurück, nicht auf den vor diesem Lauf.
+    # Deshalb übergibt die Stufe ihre eigene erste Sicherung (E-76-Messung auf Pro, 2026-10-10).
+    $backupNames = { @(Get-ChildItem -Path $EdepBackupRoot -Directory -ErrorAction SilentlyContinue | Where-Object { Test-Path (Join-Path $_.FullName 'manifest.json') } | ForEach-Object { $_.Name }) }
+    $backupsBefore = & $backupNames
+    $olderBackups = @($backupsBefore).Count
+    $ownBackup = $null; $restoreMode = 'älteste Sicherung (Standard)'
     $install = Join-Path $L1 'Install-EdepL1.ps1'; $restore = Join-Path $L1 'Restore-EdepL1.ps1'
     $edge = "${env:ProgramFiles(x86)}\Microsoft\Edge\Application\msedge.exe"
     $x = Join-Path $env:TEMP 'edep-x.exe'; $bad = Join-Path $env:LOCALAPPDATA 'edep-test.exe'
@@ -81,6 +97,7 @@ function Invoke-EdepDestructiveRun {
         # Phase B: Audit-Modus
         $null = & $install -DeployAppControlAudit -Confirm:$false *>&1 | Out-String
         $applied = $true
+        $ownBackup = Get-EdepOwnFirstBackup -Before $backupsBefore -After (& $backupNames)
         $b = @(Get-EdepL1CheckResult)
         $failedB = Get-EdepFailedIds $b
         Add-Step (New-EdepStep 'D-B1' @('T-OPS-02', 'T-NET-03') 'Audit-Modus: nur EDEP-NET-03 ist nicht erfüllt' 'FAIL nur bei EDEP-NET-03' ('nicht erfüllt: ' + ($failedB -join ', ')) $(if (($failedB -join ',') -eq 'EDEP-NET-03') { 'PASS' } else { 'FAIL' }))
@@ -134,7 +151,15 @@ function Invoke-EdepDestructiveRun {
     catch { $errors += $_.Exception.Message }
     finally {
         if ($applied) {
-            try { $null = & $restore -Confirm:$false *>&1 | Out-String; $restored = $true }
+            try {
+                if (-not $ownBackup) { $ownBackup = Get-EdepOwnFirstBackup -Before $backupsBefore -After (& $backupNames) }
+                if ($ownBackup) {
+                    $restoreMode = "eigene Sicherung $ownBackup"
+                    $null = & $restore -BackupPath (Join-Path $EdepBackupRoot $ownBackup) -Confirm:$false *>&1 | Out-String
+                }
+                else { $null = & $restore -Confirm:$false *>&1 | Out-String }
+                $restored = $true
+            }
             catch { $errors += ('Restore fehlgeschlagen: ' + $_.Exception.Message) }
         }
         Remove-NetFirewallRule -DisplayName 'EDEP-Test-B05', 'EDEP-Test-offen' -ErrorAction SilentlyContinue
@@ -157,6 +182,7 @@ function Invoke-EdepDestructiveRun {
         ran = $true; failed = $failed; passed = @($steps | Where-Object { $_.status -eq 'PASS' }).Count
         notAssessable = @($steps | Where-Object { $_.status -eq 'NOT_ASSESSABLE' }).Count
         restored = $restored; fingerprintIdentical = $identical; errors = @($errors); steps = @($steps)
+        olderBackups = $olderBackups; restoreMode = $restoreMode
         note = 'Nach der Rücknahme ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6, E-76).'
     }
 }
