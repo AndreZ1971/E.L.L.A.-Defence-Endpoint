@@ -1,0 +1,72 @@
+﻿Start: 10/10/2026 19:36:02  Benutzer: test1  Admin: True  Letzter Start der VM: 10/10/2026 19:25:56
+Sicherungen vor dem Lauf: 19
+Fingerabdruck geschrieben: C:\edep-lauf2\out\fp2-vorher.json
+
+--- Test-EdepL1 (Ausgangszustand) ---
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, 
+InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  15 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, 
+EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-132020
+
+EDEP 0.1.0 L1 — geprüft 2026-10-10 — 7/15 erfüllt
+
+--- Test-EdepConformance -Destructive ---
+EDEP-Konformitätsprüfung (Version 0.1.0) auf TEST
+SKIPPED Prüfsummen
+SKIPPED Signatur
+PASS    EDEP-NET-01  Alle Profile aktiv, eingehend Block
+PASS    EDEP-NET-02  Stealth-Modus aktiv (Standard)
+FAIL    EDEP-NET-03  Ausgehend standardmäßig erlaubt: Domain, Private, Public. Jedes Programm darf ins Netz.
+FAIL    EDEP-NET-04  21 von 21 ohne ausgehende Blockregel: bitsadmin.exe, certutil.exe, cscript.exe, curl.exe, hh.exe, 
+InstallUtil.exe, MSBuild.exe, mshta.exe und 5 weitere
+FAIL    EDEP-NET-05  Public eingehend nicht explizit gesperrt: TCP 135, 445, 3389, 5985, 5986
+PASS    EDEP-NET-10  15 freigegebene Programmpfade nur durch Admins änderbar
+FAIL    EDEP-ID-01   Keine aktive, nicht-systemeigene App-Control-Richtlinie
+FAIL    EDEP-TEL-01  Richtlinie AllowTelemetry nicht gesetzt (Windows-Standard: Optional/Full möglich)
+FAIL    EDEP-TEL-02  Ohne ausgehende Blockregel: DiagTrack, dmwappushservice
+FAIL    EDEP-TEL-03  Nicht gesetzt: DisabledByGroupPolicy, PublishUserActivities, UploadUserActivities, 
+EnableActivityFeed
+PASS    EDEP-TEL-04  Update- und Schutzdienste erreichbar
+FAIL    EDEP-LOG-01  LogBlocked aus: Domain, Private, Public; Ereignis 5157 (Fehler) nicht aktiviert
+PASS    EDEP-LOG-02  Firewall-Log lokal
+PASS    EDEP-LOG-06  BITS-Jobs werden protokolliert (Microsoft-Windows-Bits-Client/Operational)
+PASS    EDEP-OPS-01  Sicherung vorhanden: C:\ProgramData\EDEP\backup\20261003-132020
+Destructive: das System wird verändert und am Ende zurückgenommen ...
+PASS           D-A1   Ausgangszustand: Netz und unbekanntes Programm erreichen das Ziel  [curl.exe 200, x.exe 200]
+PASS           D-B1   Audit-Modus: nur EDEP-NET-03 ist nicht erfüllt  [nicht erfüllt: EDEP-NET-03]
+PASS           D-B2   Audit-Modus: curl.exe ist blockiert (LOLBin-Regel)  [000]
+PASS           D-B3   Audit-Modus: umbenannte Kopie von curl.exe kommt durch (B-07)  [200]
+PASS           D-C1   Enforce mit -AllowWindowsUpdate: alle 15 Prüfungen erfüllt (TEL-02 und TEL-04 dürfen WARN sein)  
+[alle erfüllt]
+PASS           D-C2   Enforce: curl.exe ist blockiert  [000]
+PASS           D-C3   Enforce: umbenannte Kopie von curl.exe ist blockiert  [000]
+PASS           D-C4   Enforce: BITS zu example.org gelingt nicht (B-01, gemessen: blockiert)  [FEHLER]
+PASS           D-D1   -AllowProgram mit beschreibbarem Pfad bricht ab (EDEP-NET-10)  [Abbruch: AllowProgram 
+'C:\Users\test1\AppData\Local\edep-test.exe' ist für Nicht-Administratoren änderbar und darf nicht freigegeben werden 
+(EDEP-NET-10):]
+PASS           D-D2   Authenticated-Bypass-Regel anlegen: EDEP-NET-04 meldet FAIL (B-05)  [FAIL]
+PASS           D-D3   Uneingeschränkte ausgehende Erlaubnisregel: EDEP-NET-03 meldet FAIL (B-08)  [FAIL]
+PASS           D-D4   Testregeln wieder entfernt  [0 Reste]
+PASS           D-E1   Rücknahme: Fingerabdruck identisch zum Ausgangszustand  [identisch]
+Hinweis: Vor dem Lauf lagen 19 Sicherung(en) früherer Läufe vor. Die Rücknahme erfolgte aus: eigene Sicherung 
+20261010-193612. Restore-EdepL1.ps1 ohne -BackupPath nimmt die älteste Sicherung.
+Bitte jetzt ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6).
+
+Abweichungen gefunden (FAIL).
+Protokoll: C:\edep-lauf2\out\edep-conformance-TEST-20261010-193720.json
+
+Exit-Code: 1
+Ende: 10/10/2026 19:37:20

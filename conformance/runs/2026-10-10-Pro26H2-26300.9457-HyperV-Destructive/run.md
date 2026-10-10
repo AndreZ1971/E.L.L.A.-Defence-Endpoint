@@ -1,6 +1,6 @@
 # Testprotokoll: Stufe „Destructive“ von Test-EdepConformance.ps1 (Pro-VM)
 
-**Stand: gemessen 2026-10-10, 19:17 bis 19:2x (Uhr der VM). Ein Lauf der Stufe in der Pro-VM.** Hyper-V-VM `EDEP-Test-Pro`, Windows 11 Pro 26H2, Build 26300.9457, Computername `TEST`, Konto `test1`, PowerShell 5.1.26100.9444. Stand: Tag `0.1.0-draft.4` (Commit `d1975c8`) als ZIP, SHA-256 `a19179e1a9c25e4146e46385f2d947b6c9d3882b6071fda89b2242a13fa279e6`, die 141 Hashes der beiliegenden `SHA256SUMS` stimmen mit dem Inhalt überein. Der Code der Stufe ist seit `40d6d2e` unverändert.
+**Stand: gemessen 2026-10-10 (Uhr der VM). Lauf 1: 19:17 bis 19:2x, `D-E1` FAIL. Lauf 2 (Gegenversuch mit geänderter Stufe): 19:34 bis 19:40, 13 von 13 PASS.** Hyper-V-VM `EDEP-Test-Pro`, Windows 11 Pro 26H2, Build 26300.9457, Computername `TEST`, Konto `test1`, PowerShell 5.1.26100.9444. Stand: Tag `0.1.0-draft.4` (Commit `d1975c8`) als ZIP, SHA-256 `a19179e1a9c25e4146e46385f2d947b6c9d3882b6071fda89b2242a13fa279e6`, die 141 Hashes der beiliegenden `SHA256SUMS` stimmen mit dem Inhalt überein. Der Code der Stufe ist seit `40d6d2e` unverändert.
 
 **Verfahren:** `Test-EdepConformance.ps1 -SkipIntegrity -Destructive -ConfirmDestructive` im Gast in einer erhöhten PowerShell (Administrator, Konsole der VM), Ausgangszustand ohne EDEP-Regeln, alle Profile `Allow`. Danach ordentlicher Neustart des Gastes und Vergleich mit dem Ausgangszustand. Vor dem Lauf wurde der Hyper-V-Prüfpunkt `vor-destructive-pro-2026-10-10` angelegt (19:05:05). Der Teststand wurde per PowerShell Direct in die VM kopiert; Schritt 4 (Ausgangszustand) und Schritt 5 (Stufe) liefen in der VM.
 
@@ -24,7 +24,27 @@
 - **Gestützt, nicht bewiesen:** Dass die ±1-Abweichung von der Rücknahme auf die alte Sicherung kommt. Belegt ist, dass Restore die Sicherung vom 2026-10-03 verwendet hat und dass alle EDEP-Felder identisch sind. Ein Gegenversuch ohne ältere Sicherungen (oder mit `-BackupPath` der eigenen Sicherung der Stufe) wurde in diesem Lauf nicht gemacht.
 - **Fehler der Stufe:** Die Stufe setzt voraus, dass Restore auf den Zustand vor ihrem Lauf zurückgeht. Das gilt nur, wenn keine ältere Sicherung existiert. Der Lauf auf Enterprise hat das nicht erkannt. Diese Annahme der Stufe ist ein Befund und noch nicht geändert.
 
-## Abweichungen
+## Lauf 2: Gegenversuch mit der geänderten Stufe (19:34 bis 19:40)
+
+**Stand:** Commit `e9babc3` als ZIP, SHA-256 `d37c02030917cc5003462d135daff19a73b1c5cb67beb18663a34afba7c142bc`, 159 Dateien (`Neue Stufe: True`). Dieselbe VM mit denselben 19 Altsicherungen, Hyper-V-Prüfpunkt `vor-destructive-pro-lauf2-2026-10-10` (19:34:41). Diesmal vom Host per PowerShell Direct gesteuert; die Sitzung war erhöht (`Per PowerShell Direct erhöht: True`, gemessen mit der korrigierten Prüfung).
+
+**Erwartung vorab:** 13 von 13 PASS einschließlich `D-E1`, `restored = true`, `fingerprintIdentical = true`, ein Hinweis auf ältere Sicherungen und `restoreMode = eigene Sicherung …`; nach dem Neustart keine Abweichung zu `fp2-vorher.json`, 7 von 15. (Ich hatte „21 ältere Sicherungen“ erwartet; das war ein Rechenfehler, die Liste des ersten Laufs enthielt schon 19.)
+
+| Nr. | Messwert (wörtlich) | Einordnung |
+|---|---|---|
+| 2-1 | `Sicherungen vor dem Lauf: 19`; `7/15 erfüllt` (dieselben Prüfungen PASS und FAIL wie im Ausgangszustand von Lauf 1) | Ausgangszustand, nach der Rücknahme aus Lauf 1 |
+| 2-2 | `D-A1` bis `D-E1`: **13 von 13 PASS**, darunter `D-E1  Rücknahme: Fingerabdruck identisch zum Ausgangszustand  [identisch]` | Erwartung eingetreten |
+| 2-3 | `Hinweis: Vor dem Lauf lagen 19 Sicherung(en) früherer Läufe vor. Die Rücknahme erfolgte aus: eigene Sicherung 20261010-193612.` Rohdatei: `passed` 13, `failed` 0, `restored` true, `fingerprintIdentical` true, `errors` [], `olderBackups` 19, `restoreMode` `eigene Sicherung 20261010-193612` | wie erwartet (außer der Zahl in der Klammer oben) |
+| 2-4 | Exit-Code der Stufe: 1; Zeile „Abweichungen gefunden (FAIL)“ | kommt vom ungehärteten Ausgangszustand (7 von 15), nicht von der Stufe; wie auf Enterprise |
+| 2-5 | Nach ordentlichem Neustart (`Restart-Computer`; `Letzter Start vorher: 10/10/2026 19:25:56`, `nachher: 10/10/2026 19:39:13`, `neuer Start: True`): `KEINE Unterschiede` zum Fingerabdruck `fp2-vorher.json`; `7/15 erfüllt` | Ausgangszustand wiederhergestellt, auch nach Neustart |
+
+**Einordnung:** Mit derselben VM, denselben Altsicherungen und demselben Ausgangszustand besteht `D-E1`, sobald die Rücknahme die **eigene** Sicherung verwendet. Das stützt die Erklärung von Lauf 1 (Rücknahme auf die älteste Sicherung); es ist eine zweite Messung, kein formaler Beweis. Welche Regeln in Lauf 1 abwichen, bleibt unbekannt. Das Verhalten von `Restore-EdepL1.ps1` ohne `-BackupPath` (älteste Sicherung) ist unverändert.
+
+**Abweichungen in Lauf 2:** Der Kopierblock brach am Ende ab, weil er `destructive-vorher.json` und `-nachher.json` im falschen Ordner suchte (`-OutputPath` zeigte nach `C:\edep-lauf2\out`); die Dateien aus `out` waren zuvor kopiert. Nicht gemessen: Integrität (`-SkipIntegrity`), Edge-Laden.
+
+Rohdaten: [beweise/lauf2/](beweise/lauf2/) mit Prüfsummen in `beweise/lauf2/SHA256SUMS-lauf2.txt`.
+
+## Abweichungen (Lauf 1)
 
 | Nr. | Was weicht ab                           | Befund                                                                                                                                                                                                                                                                                                                                                                                                         |
 | --- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -37,6 +57,8 @@
 
 ## Fazit
 
-Die Stufe „Destructive“ läuft in der Pro-VM durch, **12 von 13 Schritten** erfüllen die Erwartung. **`D-E1` schlägt fehl**: Der Fingerabdruck nach der Rücknahme weicht in zwei Zählern ab (ausgehend erlaubt +1, eingehend erlaubt −1), auch nach einem ordentlichen Neustart. **Von EDEP ist nichts zurückgeblieben.** Die Abweichung ist durch die Rücknahme auf die älteste Sicherung vom 2026-10-03 plausibel erklärt, aber nicht bewiesen. Die Stufe geht davon aus, dass Restore auf den Zustand vor dem Lauf zurückgeht; das stimmt nur ohne ältere Sicherungen.
+**Lauf 1:** 12 von 13 Schritten, **`D-E1` FAIL**: Der Fingerabdruck nach der Rücknahme wich in zwei Zählern ab (ausgehend erlaubt +1, eingehend erlaubt −1), auch nach einem ordentlichen Neustart; von EDEP blieb nichts zurück. Ursache: `Restore-EdepL1` ohne `-BackupPath` nahm die älteste Sicherung vom 2026-10-03.
 
-Rohdaten: [beweise/](beweise/) mit Prüfsummen in `beweise/SHA256SUMS-beweise.txt`.
+**Lauf 2 (nach der Änderung, Commit `e9babc3`):** **13 von 13 Schritten PASS**, `D-E1` identisch, auch nach einem ordentlichen Neustart. Die Stufe übergibt der Rücknahme ihre eigene erste Sicherung. Beides zusammen stützt die Erklärung; Lauf 2 ist eine einzelne Wiederholung in einer VM.
+
+Rohdaten: [beweise/](beweise/) (Lauf 1) und [beweise/lauf2/](beweise/lauf2/) (Lauf 2), Prüfsummen jeweils in der Datei `SHA256SUMS-*.txt`.

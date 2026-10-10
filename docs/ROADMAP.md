@@ -30,7 +30,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] `Test-EdepConformance.ps1` Stufe „Destructive“ geschrieben (Schutz gegen Fehlbedienung, Einheitentests für die Auswertung)
 - [x] Stufe „Destructive“ in der Enterprise-VM gelaufen: 13 von 13 Schritten, Rücknahme identisch ([Protokoll](../conformance/runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Destructive/run.md))
 - [x] Stufe „Destructive“ in der Pro-VM gelaufen: 12 von 13 Schritten, `D-E1` (Rücknahme identisch) schlug fehl, weil `Restore-EdepL1` die älteste Sicherung nahm ([Protokoll](../conformance/runs/2026-10-10-Pro26H2-26300.9457-HyperV-Destructive/run.md), [E-91](EVIDENCE.md))
-- [ ] Stufe „Destructive“ in der Pro-VM wiederholen: seit E-92 übergibt die Stufe ihre eigene Sicherung; ob `D-E1` damit besteht, ist nicht gemessen
+- [x] Stufe „Destructive“ in der Pro-VM wiederholt (mit E-92, eigene Sicherung): 13 von 13 Schritten, `D-E1` identisch, auch nach Neustart ([Lauf 2](../conformance/runs/2026-10-10-Pro26H2-26300.9457-HyperV-Destructive/run.md))
 - [x] Signierter Release `0.1.0-draft.3` (SHA256SUMS, SSH-Signatur, signierter Tag; Anleitung in [SIGNING.md](SIGNING.md)); Authenticode-Signatur der Skripte (SYS.2.2.3.A22) bleibt offen, es fehlt ein anerkanntes Zertifikat
 - [ ] Kontakt zum BSI erst nach vollständiger Zuordnung und signiertem Release; eine Unterstützung durch das BSI ist nicht zugesagt
 - [x] Neustart-Vorfall (E-76) protokolliert nachgemessen ([Lauf 4](../conformance/runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Lauf4/run.md)): Telemetriewert nach hartem Neustart reproduziert und mit Flush in `Restore-EdepL1` behoben (6 von 6); die früheren umfassenderen Vorfälle bleiben ungeklärt
