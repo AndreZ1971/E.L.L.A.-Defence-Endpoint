@@ -32,7 +32,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] Stufe „Destructive“ in der Pro-VM gelaufen: 12 von 13 Schritten, `D-E1` (Rücknahme identisch) schlug fehl, weil `Restore-EdepL1` die älteste Sicherung nahm ([Protokoll](../conformance/runs/2026-10-10-Pro26H2-26300.9457-HyperV-Destructive/run.md), [E-91](EVIDENCE.md))
 - [x] Stufe „Destructive“ in der Pro-VM wiederholt (mit E-92, eigene Sicherung): 13 von 13 Schritten, `D-E1` identisch, auch nach Neustart ([Lauf 2](../conformance/runs/2026-10-10-Pro26H2-26300.9457-HyperV-Destructive/run.md))
 - [x] Signierte Releases `0.1.0-draft.3` bis `0.1.0-draft.5` (SHA256SUMS, SSH-Signatur, signierter Tag; draft.4 und draft.5 mit Bitcoin-Zeitstempel, der von draft.5 noch ausstehend; Anleitung in [SIGNING.md](SIGNING.md)); Authenticode-Signatur der Skripte (SYS.2.2.3.A22) bleibt offen, es fehlt ein anerkanntes Zertifikat
-- [ ] Kontakt zum BSI erst nach vollständiger Zuordnung und signiertem Release; eine Unterstützung durch das BSI ist nicht zugesagt
+- [ ] Kontakt zum BSI erst nach fachkundiger Durchsicht der Zuordnung ([BSI-MAPPING.md](BSI-MAPPING.md), Entwurf; ein signierter Release liegt vor); eine Unterstützung durch das BSI ist nicht zugesagt
 - [x] Neustart-Vorfall (E-76) protokolliert nachgemessen ([Lauf 4](../conformance/runs/2026-10-04-Enterprise25H2-26200.9550-HyperV-Lauf4/run.md)): Telemetriewert nach hartem Neustart reproduziert und mit Flush in `Restore-EdepL1` behoben (6 von 6); die früheren umfassenderen Vorfälle bleiben ungeklärt
 - [x] Geänderten `Restore-EdepL1` ohne den Fehlalarm zu SECURITY in einer VM gesehen (Pro, Lauf E-86 vom 2026-10-04); auf Enterprise noch nicht
 - [x] Windows 11 Home geprüft (Hyper-V, Build 26300.9457, [Protokoll](../conformance/runs/2026-10-10-Home26H2-26300.9457-HyperV/run.md)); App Control dort nicht prüfbar
@@ -59,7 +59,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 ## M2: L1 produktionsreif (dieses Repo, MIT)
 
 - [ ] `Install-EdepL1` auf frischen VMs testen: Windows 11 Home, Pro und Enterprise (gemessen), Server 2022/2025 (offen)
-- [ ] Aktive Konformitätstests aus `conformance/README.md` (T-NET-03a, T-NET-04a/b, T-TEL-04a, T-OPS-01a) als Skript
+- [ ] Aktive Konformitätstests aus `conformance/README.md` als Skript: Die Stufe „Destructive“ deckt T-NET-03a, T-NET-04a/b und T-OPS-01a ab; **offen** sind T-NET-02a, T-TEL-02a, T-TEL-04a, T-BYP-02 und T-BYP-03 (im Protokoll unter `notRun`)
 - [ ] Store-Apps: Umgang mit AppContainer-Regeln dokumentieren
 - [ ] Ausnahmen für `winget` / `Install-Module` im Wartungsfall dokumentieren
 

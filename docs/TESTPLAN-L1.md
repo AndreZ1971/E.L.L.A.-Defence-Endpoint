@@ -16,7 +16,7 @@ ist der Beleg. Bekannte Umgehungen werden als „gelingt“ erwartet und müssen
 | Beweist                                                           | Beweist nicht                                                             |
 | ----------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | L1 lässt sich anwenden, erzwingen, prüfen und zurücknehmen        | Verhalten auf Hardware mit anderer Netzwerkausstattung (WLAN, VPN, Proxy) |
-| Die Wirkung tritt ein: Unbekanntes bleibt draußen, Erlaubtes geht | Windows Home, andere Sprachen als Deutsch                                 |
+| Die Wirkung tritt ein: Unbekanntes bleibt draußen, Erlaubtes geht | Windows Server und Windows 10, andere Sprachen als Deutsch                |
 | Die dokumentierten Umgehungen verhalten sich wie beschrieben      | Langzeitverhalten über mehrere Feature-Updates                            |
 | Einstellungen überstehen einen Neustart                           | Alles, was L2 und L3 betrifft                                             |
 
@@ -155,7 +155,7 @@ Weicht es ab, ist entweder die Doku oder das Skript falsch; beides wird als Fehl
 | R-E2 | `.\Restore-EdepL1.ps1 -WhatIf`                       | zeigt die geplanten Schritte, ändert nichts                                                                                                  | T-OPS-01a |
 | R-E3 | `.\Restore-EdepL1.ps1`                               | endet ohne Fehler                                                                                                                            | T-OPS-01a |
 | R-E4 | Neustart, dann `.\Test-EdepL1.ps1`                   | 7/15, nicht 5/15 wie in R-A2: NET-10 ist nach der Korrektur PASS, OPS-01 bleibt PASS, weil die Sicherungen bestehen bleiben                  | T-OPS-01a |
-| R-E5 | Fingerabdruck sichern, mit `vorher.json` vergleichen | **gleich** in allen Werten aus Abschnitt 6 (Sandbox: Regelanzahlen können abweichen, weil das Image beim Start Regeln anlegt, Abweichung 12) | T-OPS-01a |
+| R-E5 | Fingerabdruck sichern, mit `vorher.json` vergleichen | **gleich** in allen Werten aus Abschnitt 6 (Sandbox: Regelanzahlen können abweichen, weil das Image beim Start Regeln anlegt, Abweichung 12; Windows 11 Home: die Zahl der erlaubenden Regeln wächst auch ohne EDEP von selbst, E-96) | T-OPS-01a |
 | R-E6 | R-A4, R-A5, R-A6 wiederholen                         | gelingen wieder wie in Phase A                                                                                                               |           |
 
 ### Phase F: Wiederholbarkeit (nur bei Lauf 1)

@@ -15,7 +15,9 @@ EDEP defines what a Windows computer must technically enforce so that:
 
 EDEP is **not an antivirus**. It is designed to complement Microsoft Defender or another AV product.
 
-> **Status:** draft 0.1.0. The specification is not yet sealed. The normative specification
+> **Status:** draft 0.1.0. The specification is not yet sealed. Latest signed draft: `0.1.0-draft.5`
+> ([SIGNING.md](docs/SIGNING.md)). L1 is measured in Hyper-V VMs with Windows 11 Enterprise, Pro and Home; what remained open is
+> listed in [SPEC.md, section 3.6](SPEC.md) (German). The BSI does not support this project. The normative specification
 > and the detailed documentation are currently written in German; the audit tool and this
 > page are available in English.
 
