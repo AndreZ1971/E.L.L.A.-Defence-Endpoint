@@ -37,7 +37,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 - [x] Geänderten `Restore-EdepL1` ohne den Fehlalarm zu SECURITY in einer VM gesehen (Pro, Lauf E-86 vom 2026-10-04); auf Enterprise noch nicht
 - [x] Windows 11 Home geprüft (Hyper-V, Build 26300.9457, [Protokoll](../conformance/runs/2026-10-10-Home26H2-26300.9457-HyperV/run.md)); App Control dort nicht prüfbar
 - [ ] Windows Server prüfen
-- [ ] Vergleichsmaßstab der Stufe überdenken: Die Gesamtzahl erlaubender Firewallregeln ist auf Home kein stabiles Kriterium (E-96)
+- [x] Vergleichsmaßstab der Stufe geändert: Die Gesamtzahl erlaubender Firewallregeln zählt nicht mehr, weil sie auf Home von selbst wächst (E-96, E-98); ein Lauf in einer VM
 - [ ] Neuer Release mit den Korrekturen von Installer und Stufe (E-94, E-97)
 - [x] E-63/E-64: Vollständiger L1-Durchlauf auf frischer VM: Windows 11 Enterprise 25H2 ([Lauf 1](../conformance/runs/2026-10-03-Enterprise25H2-26200.9550-HyperV/run.md)) und Windows 11 Pro 26H2 ([Lauf 2](../conformance/runs/2026-10-03-Pro26H2-26300.9457-HyperV/run.md), Phasen A bis E, Phase F ausgelassen), mit `-Enforce`, `Test-EdepL1`, Wirkungstests und Restore; Einschränkungen in [SPEC 3.6](../SPEC.md)
 - [x] E-16: Spaltenposition „Setting Value“ in `auditpol /backup` bestätigt (CI, 2026-09-30)
@@ -50,7 +50,7 @@ Aus [EVIDENCE.md](EVIDENCE.md), alle mit ⏳ markierten Punkte:
 
 - [x] `Invoke-EdepAudit`: Punktzahl, Erklärungen, HTML-Bericht, läuft ohne Adminrechte
 - [x] PowerShell-Modul `EDEP` mit Manifest, Build-Skript
-- [x] CI: Syntax, BOM, Einheitentests (89), Sperre für fehlerhafte native Argumente, PSScriptAnalyzer, Rauchtests, Schema-Validierung, Prüfung der Seitenzahlen
+- [x] CI: Syntax, BOM, Einheitentests (92), Sperre für fehlerhafte native Argumente, PSScriptAnalyzer, Rauchtests, Schema-Validierung, Prüfung der Seitenzahlen
 - [ ] Signiert in der PowerShell Gallery veröffentlichen: `Install-Module EDEP`
 - [x] Englische Texte: Audit, Prüfdetails, HTML-Bericht, `README.en.md`; Sprache nach Windows-Anzeigesprache oder `-Language`
 - [ ] Englische Texte für `Install-EdepL1`/`Restore-EdepL1` und die Spezifikation

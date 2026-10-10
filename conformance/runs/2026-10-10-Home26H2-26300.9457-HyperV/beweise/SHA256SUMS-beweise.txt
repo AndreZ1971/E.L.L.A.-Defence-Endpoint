@@ -14,3 +14,10 @@ a971566d9d8465d68ad7d70833cc42c635f06efa513d8d52963131f84447f0dc  ./lauf2/fp-nac
 ae416b550510e52c47e5eb223f8fcfa1f0457ea6d190ef3a7d784d033b2316c0  ./lauf2/fp2-nachher.json
 9c092e501a8024d1fdf38bba32b2ea5d3e5b64f8374064910b56ba363eaa8148  ./lauf2/fp2-vorher.json
 1e3eca274b979936f210f3960152ac6925ce48b48e1490aede2c113c99db14a8  ./lauf2/sicherungen-in-der-vm.txt
+50fa99c29c0385e47b7ba265457a45f005b6919c139b8e1226303842c3fceaf5  ./massstab/ausgabe-lauf.txt
+cc304b2da7a2743d71b5f36613b43a6f793b33aea05473a8a714aaa36f2a1494  ./massstab/ausgabe-vergleich.txt
+0895869ab967855d85164c9617183b77e45f551d0117e13b3b64a9627af757b0  ./massstab/destructive-nachher.json
+836f6757e63fed746516b7ec2d13a5cbc141daaa5b1c1744d258ec99ac75b9f6  ./massstab/destructive-vorher.json
+d67fe2a660b4c1283d0ddf45b991b7a4bde7180c47204b2ca5dcc2f76b084a34  ./massstab/edep-conformance-DESKTOP-73J5TGL-20261010-231306.json
+433dbe02e4404478a0ecd7afab13f6dd91021a193b399bb2c3ad0a14e7fa7e5a  ./massstab/fp-nach-4-minuten.json
+8f9d2f1339f661ddc1d14975913a076e781682a27a45b2bb446955c3687d5f50  ./massstab/fp-nach-neustart.json

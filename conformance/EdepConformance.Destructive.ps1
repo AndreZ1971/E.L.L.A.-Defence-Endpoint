@@ -16,10 +16,13 @@ function Test-EdepDestructiveGuard {
 }
 
 function Test-EdepFingerprintIdentical {
-    # Vergleicht zwei Fingerabdruck-Dateien (Zeilen) ohne Zeitstempel.
+    # Vergleicht zwei Fingerabdruck-Dateien (Zeilen) ohne Zeitstempel und ohne die Gesamtzahl der ERLAUBENDEN Firewallregeln.
+    # Windows legt solche Regeln selbst an (auf Windows 11 Home wächst die Zahl auch ohne EDEP, E-96). Alles, was EDEP anlegt,
+    # bleibt im Vergleich: die Regelgruppe EDEP-L1, die Update-Regeln, die Blockregeln, Profile, Registrierung, Audit, App Control.
     param([string[]]$A, [string[]]$B)
-    $x = @($A | Where-Object { $_ -notmatch 'erzeugt' })
-    $y = @($B | Where-Object { $_ -notmatch 'erzeugt' })
+    $ignore = 'erzeugt|ausgehendErlauben|eingehendErlauben'
+    $x = @($A | Where-Object { $_ -notmatch $ignore })
+    $y = @($B | Where-Object { $_ -notmatch $ignore })
     if ($x.Count -eq 0 -and $y.Count -eq 0) { return $false }
     @(Compare-Object $x $y).Count -eq 0
 }
@@ -200,11 +203,13 @@ function Invoke-EdepDestructiveRun {
     }
     $steps = @($stepList.ToArray())
     # Phase E: Rücknahme prüfen
-    $identical = $false
+    $identical = $false; $allowRules = $null
     if ($restored) {
         try {
             & $FingerprintScript -Root $L1 -Out $fpAfter | Out-Null
             $identical = Test-EdepFingerprintIdentical (Get-Content $fpBefore) (Get-Content $fpAfter)
+            $rb = (Get-Content $fpBefore -Raw | ConvertFrom-Json).regeln; $ra = (Get-Content $fpAfter -Raw | ConvertFrom-Json).regeln
+            $allowRules = [ordered]@{ ausgehendVorher = $rb.ausgehendErlauben; ausgehendNachher = $ra.ausgehendErlauben; eingehendVorher = $rb.eingehendErlauben; eingehendNachher = $ra.eingehendErlauben }
         }
         catch { $errors += ('Fingerabdruck nach der Rücknahme: ' + $_.Exception.Message) }
         $steps += ,(New-EdepStep 'D-E1' @('T-OPS-01a') 'Rücknahme: Fingerabdruck identisch zum Ausgangszustand' 'identisch' $(if ($identical) { 'identisch' } else { 'weicht ab' }) $(if ($identical) { 'PASS' } else { 'FAIL' }))
@@ -215,7 +220,7 @@ function Invoke-EdepDestructiveRun {
         ran = $true; failed = $failed; passed = @($steps | Where-Object { $_.status -eq 'PASS' }).Count
         notAssessable = @($steps | Where-Object { $_.status -eq 'NOT_ASSESSABLE' }).Count
         restored = $restored; fingerprintIdentical = $identical; errors = @($errors); steps = @($steps)
-        olderBackups = $olderBackups; restoreMode = $restoreMode; appControlAvailable = $appControl
+        olderBackups = $olderBackups; restoreMode = $restoreMode; appControlAvailable = $appControl; allowRules = $allowRules
         note = 'Nach der Rücknahme ordentlich neu starten und Test-EdepL1 ausführen (SPEC 3.6, E-76).'
     }
 }

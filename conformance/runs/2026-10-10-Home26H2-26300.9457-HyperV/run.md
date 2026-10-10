@@ -73,6 +73,20 @@ Ruhige Messung nach den Updates, drei Fingerabdrücke im Abstand von zwei Minute
 
 **Einordnung:** Auf der Home-VM wächst die Zahl der erlaubenden Firewallregeln **ohne EDEP** von selbst (+15 ausgehend, +9 eingehend zwischen A und D; +3 und +3 in fünf Minuten ohne Neustart) und bleibt danach stehen. Die Abweichungen in 2-4 und 3-6 liegen auf diesem Niveau und sind damit **sehr wahrscheinlich nicht EDEP**. Die Messung D ist durch die Update-Installation **gestört**: ob die Regeln von den Updates, von der Erstbereitstellung der Apps oder von beidem stammen, ist nicht getrennt. Auf Pro (länger in Betrieb) trat die Abweichung ±1 auf; dass sie dort dieselbe Ursache hat, ist nicht gemessen.
 
+## 6. Gegenversuch mit dem neuen Vergleichsmaßstab (23:11 bis 23:25)
+
+Der Fingerabdruck-Vergleich der Stufe wertet die Gesamtzahl der erlaubenden Firewallregeln nicht mehr (E-98). Teststand: `edep-massstab.zip`, SHA-256 `e128c76c61c39a9677a3db42f111848fde62a6a8ecbab48af5017f12fde91aea`, 193 Dateien, 92 Einheitentests, `-SkipIntegrity`. Die VM wurde auf den sauberen Prüfpunkt `S0-sauber-home-2026-10-10` zurückgesetzt (`Sicherungen: 0`, Build 26300.9457), die Stufe ausgeführt, dann ordentlich neu gestartet und der Fingerabdruck nach beiden Maßstäben mit dem von vor der Stufe verglichen.
+
+**Erwartung vorab:** Stufe 13 von 13; nach dem Neustart der neue Maßstab „identisch“; der alte Maßstab „nicht identisch“, **wenn** der Drift wieder auftritt (tritt er nicht auf, wäre der Versuch für die Frage nicht aussagekräftig).
+
+| Nr. | Messwert (wörtlich) | Einordnung |
+|---|---|---|
+| 6-1 | `Start: 10/10/2026 23:11:27  Build 26300.9457  Sicherungen: 0`; `D-A1` bis `D-E1`: **13 von 13 PASS**, `D-E1 … [identisch]`; Hinweis zur fehlenden App-Control-Vorlage; Exit-Code 1 | wie in Abschnitt 2 |
+| 6-2 | `[nach-neustart] neuer Start: True; erlaubend ausgehend 106 -> 106, eingehend 96 -> 96`; `Maßstab neu … identisch = True`; `Maßstab alt (streng, alle Zeilen): identisch = True` | direkt nach dem Neustart noch kein Drift |
+| 6-3 | `[nach-4-minuten] neuer Start: True; erlaubend ausgehend 106 -> 121, eingehend 96 -> 105`; `Maßstab neu … identisch = True`; `Maßstab alt (streng, alle Zeilen): identisch = False` | **der Drift trat vier Minuten nach dem Neustart auf; der neue Maßstab wertet ihn nicht, der alte hätte `D-E1` und den Neustart-Vergleich als Abweichung gemeldet** |
+
+**Einordnung:** Das ist **ein Lauf in einer VM**. Er zeigt, dass der neue Maßstab den Drift der Windows-eigenen Regeln nicht als Abweichung zählt und dass der alte es getan hätte. Er zeigt nicht, dass kein EDEP-Rest in erlaubenden Regeln außerhalb der Gruppe `EDEP-L1` und der Update-Regeln übersehen würde; solche Regeln erkennt der Vergleich nicht mehr über die Gesamtzahl. Blockregeln, die Regelgruppe, die Update-Regeln, Profile, Registrierung, Audit und App Control bleiben im Vergleich (drei Einheitentests). Rohdaten: [beweise/massstab/](beweise/massstab/).
+
 ## Abweichungen
 
 | Nr. | Was weicht ab                                                                                                                                    | Befund                                                                                                                                                    |
@@ -85,11 +99,12 @@ Ruhige Messung nach den Updates, drei Fingerabdrücke im Abstand von zwei Minute
 | 6   | Messungen aus den Abschnitten 4 und 5 (Ruhe, Update-Stand, DNS, Edge ohne Fenster) liegen nur in der eingefügten Ausgabe, nicht als Datei | die Tabellen oben geben sie wörtlich wieder                                                                                                               |
 | 7   | Die VM wurde während der Messungen durch Windows Update auf Build 26300.9550 aktualisiert                                                        | Abschnitte 0 bis 3 liefen auf 26300.9457; Abschnitt 5 teilweise bei laufender Installation                                                                |
 | 8   | Nicht gemessen                                                                                                                                   | Updateinstallation unter Enforce, `-ProbeUpdates`, App Control auf Home (Vorlage fehlt), die Wirkung von `AllowTelemetry` auf Home                        |
+| 9 | Der Teststand von Abschnitt 6 (`edep-massstab.zip`) ist kein Release | `-SkipIntegrity` |
 
 ## Fazit
 
 Auf **Windows 11 Home (Build 26300.9457)** laufen die Prüfungen, die Stufe „Destructive“, die Rücknahme und die Edge-Messung mit **einer Einschränkung**: Die Beispielvorlage für App Control fehlt, `Install-EdepL1 -DeployAppControlAudit` ist dort nicht ausführbar, und `EDEP-ID-01` ist nicht prüfbar. Mit dem korrigierten Arbeitsstand (Home-Modus) erreicht die Stufe **13 von 13 Schritten**, Enforce 14 von 15 (nur `ID-01`), Edge lädt im Ausgangszustand und unter Enforce, und die Rücknahme stellt den Zustand her (direkt: identisch; nach Neustart und Zeit: Zähler der erlaubenden Regeln weichen ab, wie es die Kontrollmessung auch ohne EDEP zeigt).
 
-Zwei Fehler der Stufe und des Installers wurden gefunden und im Arbeitsstand behoben; der **Release `0.1.0-draft.5` enthält sie noch**. Der Fingerabdruck-Vergleich über die Gesamtzahl der erlaubenden Regeln ist auf Home **kein stabiles Kriterium**; eine Änderung des Maßstabs ist vorgeschlagen und nicht beschlossen.
+Zwei Fehler der Stufe und des Installers wurden gefunden und im Arbeitsstand behoben; der **Release `0.1.0-draft.5` enthält sie noch**. Der Fingerabdruck-Vergleich über die Gesamtzahl der erlaubenden Regeln ist auf Home **kein stabiles Kriterium**; der Maßstab wurde deshalb geändert (Abschnitt 6, E-98): Die Gesamtzahl erlaubender Regeln zählt nicht mehr.
 
 Rohdaten: [beweise/](beweise/) mit Prüfsummen in `beweise/SHA256SUMS-beweise.txt`.

@@ -165,6 +165,10 @@ if ($Destructive) {
         if ($destructiveResult.olderBackups -gt 0) {
             Write-Host (T "Hinweis: Vor dem Lauf lagen $($destructiveResult.olderBackups) Sicherung(en) früherer Läufe vor. Die Rücknahme erfolgte aus: $($destructiveResult.restoreMode). Restore-EdepL1.ps1 ohne -BackupPath nimmt die älteste Sicherung." "Note: $($destructiveResult.olderBackups) backup(s) from earlier runs existed before this run. Rolled back from: $($destructiveResult.restoreMode). Restore-EdepL1.ps1 without -BackupPath uses the oldest backup.") -ForegroundColor Yellow
         }
+        $ar = $destructiveResult.allowRules
+        if ($ar -and (($ar.ausgehendVorher -ne $ar.ausgehendNachher) -or ($ar.eingehendVorher -ne $ar.eingehendNachher))) {
+            Write-Host (T "Hinweis: Die Zahl der erlaubenden Firewallregeln wich ab (ausgehend $($ar.ausgehendVorher) zu $($ar.ausgehendNachher), eingehend $($ar.eingehendVorher) zu $($ar.eingehendNachher)). Sie wird im Vergleich nicht gewertet: Windows legt solche Regeln selbst an (E-96)." "Note: the number of allowing firewall rules differed (outbound $($ar.ausgehendVorher) to $($ar.ausgehendNachher), inbound $($ar.eingehendVorher) to $($ar.eingehendNachher)). It is not counted in the comparison: Windows creates such rules itself (E-96).") -ForegroundColor Yellow
+        }
         if ($destructiveResult.appControlAvailable -eq $false) {
             Write-Host (T 'Hinweis: Die App-Control-Vorlage fehlt auf diesem System (zum Beispiel Windows 11 Home). Die Stufe lief ohne -DeployAppControlAudit; EDEP-ID-01 ist hier nicht prüfbar und wurde als erwartet nicht erfüllt gewertet.' 'Note: the App Control template is missing on this system (for example Windows 11 Home). The stage ran without -DeployAppControlAudit; EDEP-ID-01 cannot be assessed here and was counted as expected not met.') -ForegroundColor Yellow
         }

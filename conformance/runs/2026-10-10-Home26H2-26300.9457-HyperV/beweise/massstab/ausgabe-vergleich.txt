@@ -1,0 +1,6 @@
+﻿[nach-neustart] neuer Start: True; erlaubend ausgehend 106 -> 106, eingehend 96 -> 96
+[nach-neustart] Maßstab neu (ohne Gesamtzahl erlaubender Regeln): identisch = True
+[nach-neustart] Maßstab alt (streng, alle Zeilen): identisch = True
+[nach-4-minuten] neuer Start: True; erlaubend ausgehend 106 -> 121, eingehend 96 -> 105
+[nach-4-minuten] Maßstab neu (ohne Gesamtzahl erlaubender Regeln): identisch = True
+[nach-4-minuten] Maßstab alt (streng, alle Zeilen): identisch = False
