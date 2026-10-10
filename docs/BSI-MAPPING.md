@@ -107,7 +107,7 @@ Das BSI veröffentlicht in der [Stand-der-Technik-Bibliothek](https://github.com
 
 - Die Zuordnung des BSI trägt in ihren eigenen Metadaten `mode = draft` und `only_done = false`. Sie ist ein **Entwurf** und **nicht vollständig**: Sie enthält 1185 Zuordnungen, und mehrere der oben genannten Anforderungen (SYS.2.2.3 A4, A5, A12, A15, A19, A25; SYS.2.1 A16, A33, A42; OPS.1.1.3 A3) kommen darin **nicht** vor. Das heißt nicht, dass sie entfallen; es heißt nur, dass das BSI sie dort (noch) nicht zugeordnet hat.
 - Die Zuordnung verweist auf **Unteranforderungen** (Endung `-UA.n`) der Kompendium-Anforderungen. Die Beziehungen (`equivalent-to`, `subset-of`, `superset-of`, `intersects-with`) sind die des BSI.
-- Ich habe die Aussagetexte der unten genannten Kontrollen gelesen, aber **nicht den ganzen Katalog** (1160 Kontrollen). Die Spalte „EDEP“ ist die Einschätzung des Projekts.
+- Der Katalog enthält 1000 Anforderungen. **Gesichtet** (Titel, Stufe, Verb, Geltungsbereich) habe ich alle der Gruppen `KONF`, `DET`, `ARCH`, `TEST` und alle mit Zielobjekt IT-Systeme, Anwendungen oder Webbrowser aus den übrigen; **im Wortlaut gelesen** (Aussage und Anfang der Erläuterung) etwa 80. Die organisatorischen Gruppen (Governance, Personal, Gebäude, Notfallplanung, Beschaffung und andere) habe ich **nur nach Titel** als außerhalb von EDEP eingeordnet. Die Spalte „EDEP“ ist die Einschätzung des Projekts.
 - Der Katalog kennt andere Stufen (`normal-SdT`, `erhöht`) und eine andere Gliederung als B/S/H. Die Stufen aus den Tabellen oben lassen sich daher nicht übertragen.
 - **Zum Verhältnis zum Kompendium** sagt die BSI-Seite zu Grundschutz++ (gelesen 2026-10-04, Meilensteinplan „Stand September 2026“; [Quelle](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Grundschutz-in-der-Informationssicherheit/Grundschutz-Plus-Plus/grundschutz-plus-plus_node.html)): Die Stand-der-Technik-Bibliothek „löst das IT-Grundschutz-Kompendium ab“. Grundschutz++ ist ab dem **1. Januar 2027** zertifizierbar (ISO 27001 auf Basis GS++); die Zertifizierbarkeit des IT-Grundschutzes endet am **30. November 2031**. Der Plan wird laut BSI „stetig angepasst“; vor einer Veröffentlichung erneut prüfen. Beide Fassungen werden hier nebeneinander geführt.
 
@@ -131,6 +131,40 @@ Das BSI veröffentlicht in der [Stand-der-Technik-Bibliothek](https://github.com
 | **KONF.7.15** Lokale Firewall (`normal-SdT`, SOLLTE) | „Konfiguration für IT-Systeme SOLLTE ein- und ausgehende Netzverbindungen einschränken.“ Die Erläuterung nennt nur die **zum Betrieb und zur Wartung** notwendigen Verbindungen, lässt eine mitgelieferte Betriebssystem-Firewall genügen, wenn sie konfiguriert ist, und empfiehlt eine Allowlist (Beispiel: Server-IP und Port) | EDEP-NET-01, NET-03 | passt für einen Host genauer als ARCH.5.2 und stützt den Outbound-Block. „Zur Wartung“ passt zum Update-Weg in SPEC 3.5. **Spannung:** Die Erläuterung nennt IP und Port als Beispiel; EDEP wählt für Telemetrie die Programmidentität (DD-08). Das ist kein Widerspruch zur Anforderung, aber zu begründen. |
 | **KONF.7.12** Einschränkung von Skripten (`erhöht`, KANN)                   | Constrained Language Mode als Beispiel                                                                    |                     | EDEP L1 setzt ihn nicht. Er wäre ein möglicher Weg, die Spannung zu A22 anders anzugehen; ungeprüft.                                                                                 |
 
+**C. Zuordnung der 15 L1-Prüfungen (Einschätzung des Projekts, nicht bestätigt)**
+
+Bedeutung: _deckt_ = die Prüfung setzt den Kern der Anforderung technisch um; _teilweise_ = nur ein Teil; _angrenzend_ = gleiches Thema, aber nicht dasselbe; _Spannung_ = Konflikt; _kein Bezug_ = im Katalog nichts Entsprechendes gefunden. Jeweils „SOLLTE“ und Stufe `normal-SdT`, wenn nichts anderes steht.
+
+| EDEP | Grundschutz++ | Beziehung | Anmerkung |
+| --- | --- | --- | --- |
+| NET-01 Firewall aktiv, eingehend Block | KONF.7.15 | teilweise | KONF.7.15 verlangt ein- **und** ausgehend; NET-01 deckt eingehend |
+| NET-02 Stealth-Modus | – | kein Bezug | keine Anforderung nennt es |
+| NET-03 ausgehend Block (Enforce) | KONF.7.15; ARCH.5.2; ARCH.5.1; ARCH.2.3 (KANN, erhöht) | **deckt** (KONF.7.15), teilweise (ARCH.5.2, ARCH.2.3) | ARCH.5.1 gilt für „Architektur für Netze“; ein Host-Filter ist nur ein Baustein |
+| NET-04 LOLBin-Blockregeln | KONF.7.10 | angrenzend | KONF.7.10 meint die Ausführung, EDEP sperrt nur ausgehende Verbindungen |
+| NET-05 Public eingehend 135, 445, 3389, 5985, 5986 | KONF.7.15; KONF.4.4; ARCH.5.1.1 | teilweise | KONF.4.4 nennt RDP, EDEP deaktiviert RDP nicht; ARCH.5.1.1 nennt SMB v1, Telnet, SNMP, EDEP sperrt Port 445 nur in Public |
+| NET-10 `-AllowProgram` nur aus admin-schreibbaren Pfaden | KONF.7.10; ASST.2.3.1 | teilweise | KONF.7.10 beschreibt das Risiko von Programmen an beschreibbaren Orten; ASST.2.3.1 verlangt die Autorisierung von Anwendungen |
+| ID-01 App Control | KONF.7.10 | teilweise | nur Audit-Modus, keine Durchsetzung |
+| TEL-01 AllowTelemetry | KONF.2.4; KONF.2.4.2 | teilweise | die Richtlinie begrenzt, schaltet den Dienst nicht ab; auf Pro ist Level 0 nicht wirksam |
+| TEL-02 DiagTrack und dmwappushservice blockieren | KONF.2.4; BES.7.4.5 | teilweise, **Wirkung nicht belegt** | [E-86](EVIDENCE.md): `DiagTrack` verbindet trotz Regel |
+| TEL-03 Werbe-ID, Aktivitätsverlauf | KONF.2.4; KONF.2.4.2 | teilweise | KONF.2.4.2 nennt Hintergrund-Synchronisation und Cloud-Anbindungen |
+| TEL-04 Update-Dienste erreichbar | KONF.8.1; KONF.8.1.1; KONF.7.6; DET.5.10; DET.5.10.1 | **Spannung** | siehe Abschnitt A; DET.5.10.1 („autorisierte Bezugsquellen“) passt zur Allowlist der Update-Domains; KONF.7.6 (automatische Updates des Schadcodeschutzes) betrifft [E-85](EVIDENCE.md) |
+| LOG-01 Firewall-Log, Ereignis 5157 | DET.3.1.6 (KANN, erhöht); DET.4.1; DET.3.4 | teilweise | DET.4.1 (Funktionsfähigkeit der Protokollierung überwachen): `Test-EdepL1` prüft punktuell, nicht laufend; DET.3.4 (Speicherplatz): LOG-01 meldet WARN bei kleinem Log, überwacht keinen freien Platz |
+| LOG-02 Log lokal | – | kein Bezug | zentrale Protokollierung ist nicht Gegenstand von L1 |
+| LOG-06 BITS-Jobs protokolliert | DET.3.1.6 (KANN, erhöht) | teilweise | „systemspezifische Ereignisse“ |
+| OPS-01 Sicherung und Rücknahme | TEST.4.3; TEST.5.4; KONF.2.1.1; NOT.4.2; ASST.5.4 | teilweise | TEST.5.4 verlangt Persistenz über Neustart und Backups ([E-76](EVIDENCE.md), [E-91](EVIDENCE.md)); KONF.2.1.1 unterscheidet Versionierung von einem einfachen Backup, EDEP ist zweiteres; NOT.4.2 meint die Datensicherung des Systems, EDEP sichert nur die eigenen Änderungen |
+
+**Anforderungen, zu denen EDEP als Ganzes passt:**
+
+- **KONF.2.5** „Überprüfung der Konfiguration“ (die tatsächliche Konfiguration mit dem Referenzzustand vergleichen): `Test-EdepL1` und `Test-EdepConformance` tun das für den EDEP-Ausschnitt (Firewall, Telemetrie, Protokollierung). Die stärkste Entsprechung im Katalog; sie deckt nur diesen Ausschnitt.
+- **KONF.2.1** „Grundkonfiguration dokumentieren“: Die SPEC und das Profil sind für diesen Ausschnitt eine dokumentierte Grundkonfiguration (teilweise).
+- **TEST.3.1.3** und **DET.5.10.4** (Integrität von Software und Patches): Die Anforderungen richten sich an die Institution; EDEP stellt dafür signierte `SHA256SUMS` mit Bitcoin-Zeitstempel bereit ([SIGNING.md](SIGNING.md)).
+
+**Abweichung von „SOLLTE“:** Die Namensräume des BSI (`modal_verbs.csv` im Repository, Stand `a12831136f41`) definieren SOLLTE so: Die Anforderung muss normalerweise erfüllt werden, es kann aber Gründe geben, es nicht zu tun; das muss sorgfältig abgewogen und stichhaltig begründet werden. Der Enforce-Modus ohne Update-Weg ist keine Erfüllung von DET.5.10 und KONF.8.1.1; er ist nur mit einer solchen Begründung vertretbar ([SPEC 3.5](../SPEC.md)). Der „Leitfaden zur Methodik Grundschutz++“ (Fassung März 2026, Abschnitt 4.5) verlangt für Ausnahmen eine Genehmigung durch eine verantwortliche Rolle und eine nachvollziehbare Begründung.
+
+**Nicht von EDEP L1 behandelt**, obwohl der Katalog es für einen Windows-Client nennt: Änderungen an Firewallregeln protokollieren oder überwachen (DET.4.4, DET.3.1.8), ausgeführte Kommandozeilenbefehle protokollieren (DET.3.1.2), DNS-Verschlüsselung (KONF.4.2.1), Wechselmedien und Peripherie (KONF.3.7, KONF.3.8), Treibersignatur und Anti-Exploit (KONF.7.14, KONF.7.16), Speicherverschlüsselung (KONF.3.2), Schadcodeschutz und Angriffserkennung (KONF.7.1 bis 7.5, DET.4.2; das leisten Defender oder ein EDR-Produkt). Das sind Lücken im Umfang, keine Behauptung, dass EDEP sie schließen soll.
+
+**Falsche Freunde:** ASST.6.4 („Zurücksetzen auf Ausgangszustand“) und ASST.6.3 („bei Rücknahme die Konformität testen“) betreffen **Geräte** (Rücknahme eines Assets), nicht `Restore-EdepL1` oder `Test-EdepConformance`.
+
 Diese Zuordnung ist ein **Arbeitsstand**. Bevor sie in eine Mail oder eine Veröffentlichung eingeht, sollte sie eine fachkundige Person gegen den ganzen Katalog prüfen.
 
 ## Schlussfolgerungen
@@ -140,5 +174,5 @@ Diese Zuordnung ist ein **Arbeitsstand**. Bevor sie in eine Mail oder eine Verö
 3. **SiSyPHuS stützt den Ansatz von EDEP-TEL-02** (Dienstregel gegen `DiagTrack`) und die Firewall-Protokollierung (LOG-01). **Die Wirkung der Dienstregel unter Windows 11 ist nach E-86 nicht belegt** (eine Verbindung trotz Regel). SiSyPHuS empfiehlt zusätzlich, die Anwendungssteuerung zu **signieren**, was L1 nicht tut.
 4. **Der größte Teil der BSI-Anforderungen liegt außerhalb von L1** (Authentisierung, Berechtigungen, Organisation). EDEP versteht sich als technische Ergänzung und nicht als Ersatz des Grundschutzes.
 5. Eine **Konformität mit dem IT-Grundschutz** behauptet EDEP **nicht**. Die Tabellen zeigen Schnittmengen.
-6. **Grundschutz++** ordnet das BSI nur teilweise und als Entwurf zu (siehe Abschnitt oben). Daraus ergeben sich für EDEP **keine neuen Deckungen**; gestützt werden die Wege in SPEC 3.5 (DET.5.10) und die Persistenzprüfung nach Neustart (TEST.5.4). Die Telemetrie-Anforderung A4 hat im Mapping des BSI keine Zuordnung.
+6. **Grundschutz++** ordnet das BSI nur teilweise und als Entwurf zu (siehe Abschnitt oben). Der Abgleich der 15 L1-Prüfungen mit dem Katalog (Abschnitt C) ergibt **keine neue Deckung**, aber eine klare Zuordnung: gedeckt ist nur NET-03 (KONF.7.15), die übrigen Prüfungen sind teilweise, angrenzend oder ohne Bezug, TEL-04 steht in Spannung; gestützt werden die Wege in SPEC 3.5 (DET.5.10) und die Persistenzprüfung nach Neustart (TEST.5.4). Die Telemetrie-Anforderung A4 hat im Mapping des BSI keine Zuordnung.
 7. **Windows 10 und Windows 11 sind getrennt zu betrachten.** SiSyPHuS gilt für Windows 10; eine Windows-11-Fassung wurde nicht gefunden. Was dort empfohlen wird, ist für Windows 11 nicht automatisch belegt: Die Dienstregel gegen `DiagTrack` (AP4) hat auf Windows 11 Enterprise 25H2 und Pro 26H2 nicht gewirkt ([E-86](EVIDENCE.md)). Das Kompendium (SYS.2.2.3) nennt Windows 11 ausdrücklich; Grundschutz++ ist betriebssystemneutral. Als belegt gilt in EDEP nur, was auf Windows 11 gemessen wurde.
