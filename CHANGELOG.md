@@ -6,6 +6,7 @@ Korrekturen an der Spezifikation stehen zusätzlich mit Begründung in
 
 ## [Unveröffentlicht]
 
+- **`SPEC.md`, Abschnitt 3.5: Vorlage für die Festlegung und Begründung** (informativ) des Update-Wegs und von Abweichungen, nach der Definition von „SOLLTE“ in den Namensräumen des BSI und dem Leitfaden zur Methodik Grundschutz++ (Abschnitt 4.5). Vorschlag des Projekts, vom BSI nicht geprüft; das Normative von 3.5 bleibt unverändert.
 - **Zeitstempel je Release unter `timestamps/`** (`SHA256SUMS-<TAG>.ots`): Der bestätigte Beweis von draft.4 (Bitcoin-Block 969890) und der ausstehende von draft.5 liegen dort; die Datei `SHA256SUMS.ots` im Wurzelordner entfällt (das ZIP von draft.5 enthält sie noch, sie gehört zu draft.4, siehe [SIGNING.md](docs/SIGNING.md)).
 
 ## [0.1.0-draft.5] – 2026-10-10

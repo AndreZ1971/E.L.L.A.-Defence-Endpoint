@@ -140,6 +140,19 @@ Ohne festgelegten Weg ist der Enforce-Modus **nicht empfohlen**. Für Einzelplat
 Audit-Modus mit den Sperren nach EDEP-NET-04 und EDEP-TEL-02 (siehe README). `Test-EdepL1` meldet unter Enforce für
 EDEP-TEL-04 einen Hinweis mit Handlungsanweisung auf diesen Abschnitt; er ersetzt die Festlegung des Weges nicht.
 
+**Vorlage für die Festlegung und Begründung (informativ).** Der Betreiber hält die Festlegung des Update-Wegs und jede Abweichung davon schriftlich fest. Die Namensräume des BSI zu Grundschutz++ definieren „SOLLTE“ so, dass eine Anforderung normalerweise erfüllt werden muss, es aber Gründe geben kann, dies nicht zu tun, die sorgfältig abgewogen und stichhaltig begründet werden müssen. Der Leitfaden zur Methodik Grundschutz++ (Fassung März 2026, Abschnitt 4.5) verlangt für Ausnahmen die Genehmigung durch eine verantwortliche Rolle und eine nachvollziehbare Begründung; wo sie abgelegt wird (Ticketsystem, Dokumentenablage, Commit-Nachricht), ist dort offen. Diese Vorlage ist ein Vorschlag des Projekts. Sie wurde vom BSI nicht geprüft und ersetzt keine Vorgaben der Institution ([BSI-MAPPING.md](docs/BSI-MAPPING.md)).
+
+| Feld | Inhalt |
+| --- | --- |
+| **Anforderung** | Von welcher Anforderung wird abgewichen, zum Beispiel DET.5.10 „Zeitnahes Patchmanagement“ und KONF.8.1.1 „Automatische Sicherheitsupdates“ (Grundschutz++, jeweils SOLLTE), SYS.2.1.A3 und OPS.1.1.3.A15 (Kompendium 2023) |
+| **Umfang** | Welche Systeme oder Gruppen betrifft es? |
+| **Gewählter Weg** | A (zentraler Update-Server), B (Wartungsfenster), C (`-AllowWindowsUpdate`, nur als Hilfe) oder keiner |
+| **Begründung** | Warum wird ausgehend gesperrt, und warum genügt kein Weg ohne Verzug? |
+| **Restrisiko und Ausgleich** | Wie lange können Aktualisierungen ausbleiben (Intervall des Wartungsfensters), wie wird der Patchstand überwacht (zum Beispiel `Test-EdepL1 -ProbeUpdates`, das nur die Erreichbarkeit misst), was geschieht bei einer kritischen Sicherheitslücke? |
+| **Genehmigung** | Verantwortliche Rolle, Datum |
+| **Befristung** | Datum der nächsten Überprüfung |
+| **Ablage** | Wo ist die Festlegung dokumentiert? |
+
 ### 3.6 Bekannte Einschränkungen der L1-Referenzimplementierung
 
 Stand `0.1.0-draft`. Diese Punkte sind **ungeklärt, ungemessen oder nur eingeschränkt belegt** und werden nicht als erfüllt dargestellt. Jede Zeile nennt den gemessenen Stand und was fehlt; die Belege stehen im [Nachweisregister](docs/EVIDENCE.md).
